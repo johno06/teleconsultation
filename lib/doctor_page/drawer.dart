@@ -3,10 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teleconsultation/doctor_page/drawers/chat/screens/select_user_screen.dart';
+import 'package:teleconsultation/doctor_page/drawers/history/history_screen.dart';
 
 import '../starting_page/login.dart';
 import 'drawers/appointment.dart';
-import 'drawers/chat/modules/main_page.dart';
+import 'drawers/eprescription/pdf.dart';
+import 'drawers/eprescription/signature_screen.dart';
 import 'drawers/home_screen.dart';
 import 'drawers/my_drawer_header.dart';
 import 'drawers/profile.dart';
@@ -51,7 +54,7 @@ class _DoctorPageState extends State<DoctorPage> {
     loginData = await SharedPreferences.getInstance();
     setState(() {
       email = loginData.getString('email')!;
-      fName = loginData.getString('fName')!;
+      fName = loginData.getString('name')!;
     });
   }
 
@@ -67,11 +70,11 @@ class _DoctorPageState extends State<DoctorPage> {
     } else if (currentPage == DrawerSections.events) {
       container = const DoctorMyAppointment();
     } else if (currentPage == DrawerSections.notes) {
-      container = const DoctorMainPage();
+      container = const SelectUserScreen();
     } else if (currentPage == DrawerSections.settings) {
-//      container = SettingsPage();
+      container = const HistoryScreen();
     } else if (currentPage == DrawerSections.notifications) {
-//      container = NotificationsPage();
+     container = MyForm();
     } else if (currentPage == DrawerSections.privacy_policy) {
      container = const TermsAndConditions();
     }
@@ -119,7 +122,7 @@ class _DoctorPageState extends State<DoctorPage> {
       child: Column(
         // shows the list of menu drawer
         children: [
-          menuItem(1, "DHome Page", Icons.dashboard_outlined,
+          menuItem(1, "Home Page", Icons.dashboard_outlined,
               currentPage == DrawerSections.dashboard ? true : false),
           menuItem(2, "Profile Information", Icons.people_alt_outlined,
               currentPage == DrawerSections.contacts ? true : false),
@@ -128,10 +131,10 @@ class _DoctorPageState extends State<DoctorPage> {
           menuItem(4, "Chat", Icons.message,
               currentPage == DrawerSections.notes ? true : false),
           // const Divider(),
-          // menuItem(5, "Transaction History", Icons.storage,
-          //     currentPage == DrawerSections.settings ? true : false),
-          // menuItem(6, "Consultation", Icons.notifications_outlined,
-          //     currentPage == DrawerSections.notifications ? true : false),
+          menuItem(5, "Appointment History", Icons.history_edu,
+              currentPage == DrawerSections.settings ? true : false),
+          menuItem(6, "E-Prescription", Icons.edit,
+              currentPage == DrawerSections.notifications ? true : false),
          const Divider(),
          menuItem(7, "Privacy policy", Icons.privacy_tip_outlined,
              currentPage == DrawerSections.privacy_policy ? true : false),

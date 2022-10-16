@@ -1,8 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../constant.dart';
-import '../components/doctor_card.dart';
-import '../components/schedule_card.dart';
+import '../../user.dart';
+import '../components/patient_appointment.dart';
+import '../components/patient_approved_appointment.dart';
+import '../components/patient_card.dart';
+import 'package:http/http.dart' as http;
+import '../components/patient_schedule_card.dart';
 
 
 class DoctorMyAppointment extends StatefulWidget {
@@ -16,11 +24,17 @@ class DoctorMyAppointment extends StatefulWidget {
 class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
 
   // ProfileModel model = ProfileModel();
-
+  final todayFormat = DateFormat("EEEE");
+  final monthFormat = DateFormat("MMM");
+  final dayFormat = DateFormat("d");
+  final timeFormat = DateFormat("hh:mm aaa");
 
   late SharedPreferences loginData;
   String? email, fName, lastName, contactNumber;
 
+  UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
+      phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
+      isAdmin: false, createdAt: '', updatedAt: '');
 
   @override
   void initState(){
@@ -32,10 +46,31 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
     loginData = await SharedPreferences.getInstance();
     setState(() {
       email = loginData.getString('email')!;
-      fName = loginData.getString('fName')!;
-      lastName = loginData.getString('lName')!;
-      contactNumber = loginData.getString('contactNo')!;
+      fName = loginData.getString('name')!;
+      lastName = loginData.getString('surname')!;
+      contactNumber = loginData.getString('phone')!;
     });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      fetchAppointments();
+    });
+  }
+
+  List<dynamic> clients = [];
+  void fetchClients() async {
+    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-all-approved-doctors';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+
+
+    // clientData = await SharedPreferences.getInstance();
+
+    print(json['data']);
+    setState(() {
+      clients = json['data'];
+    });
+    print('fetchclients completed');
   }
 
   @override
@@ -48,23 +83,23 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              //   child: Text(
+              //     'Patient',
+              //     style: TextStyle(
+              //       fontWeight: FontWeight.bold,
+              //       color: kTitleTextColor,
+              //       fontSize: 21,
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 20,
+              // ),
+              // buildDoctor(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                child: Text(
-                  'Patient',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: kTitleTextColor,
-                    fontSize: 21,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              buildDoctor(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Text(
                   'Appointment List',
                   style: TextStyle(
@@ -93,13 +128,13 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
       ),
       child: Column(
         children: <Widget>[
-          DoctorDoctorCard(
-            'Jam Raon',
-            'Age: 33',
-            'Email: jam@gmail.com',
-            'assets/images/profile.png',
-            kBlueColor,
-          ),
+          // PatientCard(
+          //   'Jam Raon',
+          //   'Age: 33',
+          //   'Email: jam@gmail.com',
+          //   'assets/images/profile.png',
+          //   kBlueColor,
+          // ),
           const SizedBox(
             height: 20,
           ),
@@ -108,6 +143,23 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
     );
   }
 
+  List<dynamic> appointments = [];
+  void fetchAppointments() async {
+    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-approved-appointments';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+
+    // appointmentData = await SharedPreferences.getInstance();
+    // clientData = await SharedPreferences.getInstance();
+
+    print(json['data']);
+    setState(() {
+      appointments = json['data'];
+    });
+    print('fetchclients completed');
+  }
 
   buildAppointmentList() {
     return Padding(
@@ -116,33 +168,51 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
       ),
       child: Column(
         children: <Widget>[
-          DoctorScheduleCard(
-            'Consultation',
-            'Sunday . 9am - 11am',
-            '12',
-            'Jan',
-            kBlueColor,
+          Scrollbar(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: appointments.length,
+              itemBuilder: (context, index) {
+                final appointment = appointments[index];
+                final userData = appointment['userInfo'];
+                userval = UserFetch.fromJson(userData);
+                // if(patientId == userval.id){
+                  final appointmentId = appointment['_id'];
+                  final date = appointment['date'];
+                  final time = appointment['time'];
+                  final parseDate = DateTime.parse(date);
+                  // final parseTime = DateTime.parse(time);
+                  final String bookingToday = todayFormat.format(parseDate);
+                  final String bookingMonth = monthFormat.format(parseDate);
+                  final String bookingDay = dayFormat.format(parseDate);
+
+                  final patientName = userval.name;
+                  final patientSurname = userval.surname;
+                  final patientEmail = userval.email;
+                  final patientPhone = userval.phone;
+                  print(patientPhone);
+                  return PatientAppointmentScheduleCard(
+                    // 'Consultation',
+                    patientName, patientSurname, patientPhone, patientEmail,
+                    bookingToday, time,
+                    date, bookingDay, bookingMonth, appointmentId,
+                    kBlueColor,
+                  );
+                // }else{
+                //   // throw contactNumber;
+                //   return SizedBox.shrink();
+                // }
+              },
+              separatorBuilder: (BuildContext context, int index) => const Divider(),
+            ),
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          DoctorScheduleCard(
-            'Consultation',
-            'Sunday . 9am - 11am',
-            '13',
-            'Jan',
-            kYellowColor,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          DoctorScheduleCard(
-            'Consultation',
-            'Sunday . 9am - 11am',
-            '14',
-            'Jan',
-            kOrangeColor,
-          ),
+          // ScheduleCard(
+          //   'Consultation',
+          //   'Sunday . 9am - 11am',
+          //   '12',
+          //   'Jan',
+          //   kBlueColor,
+          // ),
           const SizedBox(
             height: 20,
           ),
@@ -150,4 +220,46 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
       ),
     );
   }
+
+  // buildAppointmentList() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(
+  //       horizontal: 30,
+  //     ),
+  //     child: Column(
+  //       children: <Widget>[
+  //         // PatientScheduleCard(
+  //         //   'Consultation',
+  //         //   'Sunday . 9am - 11am',
+  //         //   '12',
+  //         //   'Jan',
+  //         //   kBlueColor,
+  //         // ),
+  //         // const SizedBox(
+  //         //   height: 10,
+  //         // ),
+  //         // PatientScheduleCard(
+  //         //   'Consultation',
+  //         //   'Sunday . 9am - 11am',
+  //         //   '13',
+  //         //   'Jan',
+  //         //   kYellowColor,
+  //         // ),
+  //         // const SizedBox(
+  //         //   height: 10,
+  //         // ),
+  //         // PatientScheduleCard(
+  //         //   'Consultation',
+  //         //   'Sunday . 9am - 11am',
+  //         //   '14',
+  //         //   'Jan',
+  //         //   kOrangeColor,
+  //         // ),
+  //         const SizedBox(
+  //           height: 20,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }

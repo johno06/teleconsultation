@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:teleconsultation/doctor_page/appointments/pending_appointment_detail_screen.dart';
 
 import '../../constant.dart';
+import '../appointments/pending_appointment_detail_screen.dart';
+//ignore: must_be_immutable
 
-// ignore: must_be_immutable
-class ScheduleCard extends StatefulWidget {
-  dynamic _title;
-  dynamic _description;
-  dynamic _date;
-  dynamic _month;
+class PatientScheduleCard extends StatelessWidget {
   dynamic _bgColor;
+  dynamic bookingDay, bookingMonth, appointmentId;
 
-  ScheduleCard(this._title, this._description, this._date, this._month, this._bgColor, {Key? key}) : super(key: key);
+  dynamic patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date;
 
-  @override
-  State<ScheduleCard> createState() => _ScheduleCardState();
-}
+  PatientScheduleCard(this.patientName, this.patientSurname, this.patientPhone, this.patientEmail, this.bookingToday, this.bookingTime, this.date,
+      this.bookingDay, this.bookingMonth, this.appointmentId, this._bgColor, {Key? key}) : super(key: key);
 
-class _ScheduleCardState extends State<ScheduleCard> {
+//   @override
+//   State<PatientScheduleCard> createState() => _PatientScheduleCardState();
+// }
+
+// class _PatientScheduleCardState extends State<PatientScheduleCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) =>
-        //         PendingDetailScreen(),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                // PendingDetailScreen(),
+              PendingDetailScreen(patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, appointmentId),
+          ),
+        );
       },
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: widget._bgColor.withOpacity(0.1),
+          color: _bgColor.withOpacity(0.1),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -43,24 +44,24 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 horizontal: 16,
               ),
               decoration: BoxDecoration(
-                color: widget._bgColor.withOpacity(0.3),
+                color: _bgColor.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    widget._date,
+                    '$bookingDay',
                     style: TextStyle(
-                      color: widget._bgColor,
+                      color: _bgColor,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
-                    widget._month,
+                    '$bookingMonth',
                     style: TextStyle(
-                      color: widget._bgColor,
+                      color: _bgColor,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -69,14 +70,14 @@ class _ScheduleCardState extends State<ScheduleCard> {
               ),
             ),
             title: Text(
-              widget._title,
+              'consultation',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: kTitleTextColor,
               ),
             ),
             subtitle: Text(
-              widget._description,
+              'Pending: $patientName $patientSurname \n$bookingToday . $bookingTime',
               style: TextStyle(
                 color: kTitleTextColor.withOpacity(0.7),
               ),

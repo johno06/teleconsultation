@@ -57,13 +57,13 @@ class _ChangePasswordDoctorState extends State<ChangePasswordDoctor> {
   void initial() async {
     loginData = await SharedPreferences.getInstance();
     setState(() {
-      id = loginData.getString('id');
+      id = loginData.getString('_id');
       email = loginData.getString('email')!;
-      fName = loginData.getString('fName')!;
-      lastName = loginData.getString('lName')!;
-      contactNumber = loginData.getString('contactNo')!;
-      birthday = loginData.getString('birthday')!;
-      homeAddress = loginData.getString('homeAddress')!;
+      fName = loginData.getString('name')!;
+      lastName = loginData.getString('surname')!;
+      contactNumber = loginData.getString('phone')!;
+      birthday = loginData.getString('birthdate')!;
+      homeAddress = loginData.getString('address')!;
       password = loginData.getString('password')!;
     });
   }
@@ -97,8 +97,8 @@ class _ChangePasswordDoctorState extends State<ChangePasswordDoctor> {
         };
         String body = json.encode(data);
         http.Response response = await http.patch(
-          Uri.parse('https://flutter-auth-server.herokuapp.com/doctor/$id'),
-          headers: {'Content-Type': 'application/json; charset=utf-8'},
+          Uri.parse('https://newserverobgyn.herokuapp.com/api/user/updatePassword/$id'),
+          headers: {"Content-Type": "application/json"},
           body: body,
         );
         // print(response.body);

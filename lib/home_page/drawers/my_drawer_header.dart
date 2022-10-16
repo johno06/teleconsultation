@@ -16,7 +16,7 @@ class _MyHeaderDrawerState extends State<MyHeaderDrawer> {
 
 
   late SharedPreferences loginData;
-  String? email, fName, lastName, contactNumber;
+  String? email, name, surname, phone;
 
 
   @override
@@ -30,9 +30,9 @@ class _MyHeaderDrawerState extends State<MyHeaderDrawer> {
     setState(() {
       email = loginData.getString('email')!;
       // print(email);
-      fName = loginData.getString('fName')!;
-      lastName = loginData.getString('lName')!;
-      contactNumber = loginData.getString('contactNo')!;
+      name = loginData.getString('name')!;
+      surname = loginData.getString('surname')!;
+      phone = loginData.getString('phone')!;
     });
   }
 
@@ -57,7 +57,7 @@ class _MyHeaderDrawerState extends State<MyHeaderDrawer> {
             ),
           ),
           Text(
-            fName??"",
+            name??"",
             style: const TextStyle(color: Colors.black, fontSize: 20),
           ),
           Text(

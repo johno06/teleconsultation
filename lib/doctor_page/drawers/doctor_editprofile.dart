@@ -58,13 +58,13 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
   void initial() async {
     loginData = await SharedPreferences.getInstance();
     setState(() {
-      id = loginData.getString('id');
+      id = loginData.getString('_id');
       email = loginData.getString('email')!;
-      fName = loginData.getString('fName')!;
-      lastName = loginData.getString('lName')!;
-      contactNumber = loginData.getString('contactNo')!;
-      birthday = loginData.getString('birthday')!;
-      homeAddress = loginData.getString('homeAddress')!;
+      fName = loginData.getString('name')!;
+      lastName = loginData.getString('surname')!;
+      contactNumber = loginData.getString('phone')!;
+      birthday = loginData.getString('birthdate')!;
+      homeAddress = loginData.getString('address')!;
     });
   }
 
@@ -93,11 +93,11 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
 
     Map data = {
       "email": updateUser.email,
-      "fName": updateUser.fName,
-      "lName": updateUser.lName,
-      "contactNo": updateUser.contactNo,
-      "homeAddress": updateUser.homeAddress,
-      "birthday": updateUser.birthday,
+      "name": updateUser.fName,
+      "surname": updateUser.lName,
+      "phone": updateUser.contactNo,
+      "address": updateUser.homeAddress,
+      "birthdate": updateUser.birthday,
     };
 
     // else{
@@ -112,8 +112,8 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
 
     String bodyDoc = json.encode(data);
     http.Response responseDoc = await http.patch(
-      Uri.parse('https://flutter-auth-server.herokuapp.com/doctor/$id'),
-      headers: {'Content-Type': 'application/json; charset=utf-8'},
+      Uri.parse('https://newserverobgyn.herokuapp.com/api/user/updateProfile/$id'),
+      headers: {"Content-Type": "application/json"},
       body: bodyDoc,
     );
     if (responseDoc.statusCode == 200) {
@@ -125,11 +125,11 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
           textColor: Colors.white,
           fontSize: 16.0);
       loginData.setString('email', updateUser.email);
-      loginData.setString('fName', updateUser.fName);
-      loginData.setString('lName', updateUser.lName);
-      loginData.setString('contactNo', updateUser.contactNo);
-      loginData.setString('birthday', updateUser.birthday);
-      loginData.setString('homeAddress', updateUser.homeAddress);
+      loginData.setString('name', updateUser.fName);
+      loginData.setString('surname', updateUser.lName);
+      loginData.setString('phone', updateUser.contactNo);
+      loginData.setString('birthdate', updateUser.birthday);
+      loginData.setString('address', updateUser.homeAddress);
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const DoctorPage()));

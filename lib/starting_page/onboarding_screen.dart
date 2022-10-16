@@ -1,30 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant.dart';
 import 'login.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
-
-  @override
-  _OnboardingScreenState createState() => _OnboardingScreenState();
-}
-
-
-class _OnboardingScreenState extends State<OnboardingScreen> {
-
-//  SharedPreferences loginData;
-//  String email;
-
-  @override
-  void initState(){
-    super.initState();
-//    initial();
-  }
-
-
+  // final StreamChatClient client;
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +73,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const LoginScreen(),
+                            builder: (context) => LoginScreen(),
                           ),
                         );
                       },

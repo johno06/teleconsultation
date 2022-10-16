@@ -40,7 +40,7 @@ bool isObscurePassword = true;
 
 class _EditProfileState extends State<EditProfile> {
   late SharedPreferences loginData;
-  String? id, email, fName, lastName, contactNumber, birthday, homeAddress;
+  String? id, email, fName, lastName, contactNumber, birthday, homeAddress, password, gender;
 
   Color shrinePink400 = const Color(0xFFEAA4A4);
 
@@ -64,11 +64,13 @@ class _EditProfileState extends State<EditProfile> {
     setState(() {
       id = loginData.getString('_id');
       email = loginData.getString('email')!;
-      fName = loginData.getString('fName')!;
-      lastName = loginData.getString('lName')!;
-      contactNumber = loginData.getString('contactNo')!;
-      birthday = loginData.getString('birthday')!;
-      homeAddress = loginData.getString('homeAddress')!;
+      fName = loginData.getString('name')!;
+      lastName = loginData.getString('surname')!;
+      contactNumber = loginData.getString('phone')!;
+      birthday = loginData.getString('birthdate')!;
+      homeAddress = loginData.getString('address')!;
+      password = loginData.getString('password')!;
+      gender = loginData.getString('gender')!;
     });
   }
 
@@ -97,16 +99,16 @@ class _EditProfileState extends State<EditProfile> {
 
     Map data = {
       "email": updateUser.email,
-      "fName": updateUser.fName,
-      "lName": updateUser.lName,
-      "contactNo": updateUser.contactNo,
-      "homeAddress": updateUser.homeAddress,
-      "birthday": updateUser.birthday,
+      "name": updateUser.fName,
+      "surname": updateUser.lName,
+      "phone": updateUser.contactNo,
+      "address": updateUser.homeAddress,
+      "birthdate": updateUser.birthday,
     };
     String body = json.encode(data);
     http.Response response = await http.patch(
-      Uri.parse('https://flutter-auth-server.herokuapp.com/user/$id'),
-      headers: {'Content-Type': 'application/json; charset=utf-8'},
+      Uri.parse('https://newserverobgyn.herokuapp.com/api/user/updateProfile/$id'),
+      headers: {"Content-Type": "application/json"},
       body: body,
     );
     //print(response.body);
@@ -119,11 +121,11 @@ class _EditProfileState extends State<EditProfile> {
           textColor: Colors.white,
           fontSize: 16.0);
       loginData.setString('email', updateUser.email);
-      loginData.setString('fName', updateUser.fName);
-      loginData.setString('lName', updateUser.lName);
-      loginData.setString('contactNo', updateUser.contactNo);
-      loginData.setString('birthday', updateUser.birthday);
-      loginData.setString('homeAddress', updateUser.homeAddress);
+      loginData.setString('name', updateUser.fName);
+      loginData.setString('surname', updateUser.lName);
+      loginData.setString('phone', updateUser.contactNo);
+      loginData.setString('birthdate', updateUser.birthday);
+      loginData.setString('address', updateUser.homeAddress);
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()));
@@ -333,13 +335,13 @@ class _EditProfileState extends State<EditProfile> {
                       ),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                          labelText:"City",
+                          labelText:"Address",
                           hintText: homeAddress
                       ),
                       validator: (String ? value){
                         if(value!.isEmpty)
                         {
-                          return 'Please Enter Your City';
+                          return 'Please Enter Your Address';
                         }
                         return null;
                       },

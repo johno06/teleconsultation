@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'package:teleconsultation/app.dart';
 import 'package:teleconsultation/starting_page/onboarding_screen.dart';
 
 import 'doctor_page/drawer.dart';
@@ -9,19 +11,39 @@ import 'home_page/drawer.dart';
 
 
 Future<void> main() async {
+  final client = StreamChatClient(streamKey);
+
   WidgetsFlutterBinding.ensureInitialized();
 //  await MongoDatabase.connect();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  var id = prefs.getString("_id");
-  var docid = prefs.getString("id");
-  if (id != null) {
+  var isDoctor = prefs.getBool("isDoctor");
+  // var docid = prefs.getString("email");
+  if (isDoctor == false) {
     runApp(MaterialApp(
-        home: id == null ? const OnboardingScreen() : const HomePage()));
-  } else if (docid != null) {
+        builder: (context, child) {
+          return StreamChat(
+              client: client,
+              child: ChannelsBloc(
+                  child: UsersBloc(child: child!,)));
+        },
+        home: isDoctor == null ? OnboardingScreen() : const HomePage()));
+  } else if (isDoctor == true) {
     runApp(MaterialApp(
-    home: docid == null ? const OnboardingScreen() : const DoctorPage()));
+        builder: (context, child) {
+          return StreamChat(
+              client: client,
+              child: ChannelsBloc(
+                  child: UsersBloc(child: child!,)));
+        },
+    home: isDoctor == null ? OnboardingScreen() : const DoctorPage()));
   }else{
-    runApp(const MaterialApp(
+    runApp(MaterialApp(
+        builder: (context, child) {
+          return StreamChat(
+              client: client,
+              child: ChannelsBloc(
+                  child: UsersBloc(child: child!,)));
+        },
       home: OnboardingScreen()
     ));
   }

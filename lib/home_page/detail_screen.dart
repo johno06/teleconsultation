@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:teleconsultation/model/sport_field.dart';
 
 import '../constant.dart';
+import 'checkout_screen.dart';
 import 'components/schedule_card.dart';
 
 class DetailScreen extends StatelessWidget {
@@ -11,6 +13,7 @@ class DetailScreen extends StatelessWidget {
   dynamic _description;
   dynamic _imageUrl;
   dynamic _pemail;
+
 
   DetailScreen(this._name, this._pemail, this._description, this._imageUrl, {Key? key}) : super(key: key);
 
@@ -182,47 +185,47 @@ class DetailScreen extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      Text(
-                        'Upcoming Schedules',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: kTitleTextColor,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ScheduleCard(
-                        'Consultation',
-                        'Sunday . 9am - 11am',
-                        '12',
-                        'Jan',
-                        kBlueColor,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ScheduleCard(
-                        'Consultation',
-                        'Sunday . 9am - 11am',
-                        '13',
-                        'Jan',
-                        kYellowColor,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ScheduleCard(
-                        'Consultation',
-                        'Sunday . 9am - 11am',
-                        '14',
-                        'Jan',
-                        kOrangeColor,
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      // Text(
+                      //   'Upcoming Schedules',
+                      //   style: TextStyle(
+                      //     fontWeight: FontWeight.bold,
+                      //     fontSize: 18,
+                      //     color: kTitleTextColor,
+                      //   ),
+                      // ),
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
+                      // ScheduleCard(
+                      //   'Consultation',
+                      //   'Sunday . 9am - 11am',
+                      //   '12',
+                      //   'Jan',
+                      //   kBlueColor,
+                      // ),
+                      // const SizedBox(
+                      //   height: 10,
+                      // ),
+                      // ScheduleCard(
+                      //   'Consultation',
+                      //   'Sunday . 9am - 11am',
+                      //   '13',
+                      //   'Jan',
+                      //   kYellowColor,
+                      // ),
+                      // const SizedBox(
+                      //   height: 10,
+                      // ),
+                      // ScheduleCard(
+                      //   'Consultation',
+                      //   'Sunday . 9am - 11am',
+                      //   '14',
+                      //   'Jan',
+                      //   kOrangeColor,
+                      // ),
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
                     ],
                   ),
                 ),
@@ -230,6 +233,29 @@ class DetailScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(color: Colors.white, boxShadow: [
+          BoxShadow(
+            color: lightBlue300,
+            offset: Offset(0, 0),
+            blurRadius: 10,
+          ),
+        ]),
+        child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                minimumSize: const Size(100, 45),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(borderRadiusSize))),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return CheckoutScreen(
+                );
+              }));
+
+            },
+            child: const Text("Book Now")),
       ),
     );
   }

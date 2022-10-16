@@ -3,32 +3,36 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:teleconsultation/home_page/drawers/appointment.dart';
+import 'package:teleconsultation/home_page/drawers/history/history_screen.dart';
 
+import '../app.dart';
 import '../starting_page/login.dart';
-import 'drawers/chat/modules/main_page.dart';
+import 'drawers/chat/screens/home_screen.dart';
+import 'drawers/chat/screens/select_user_screen.dart';
 import 'drawers/home_screen.dart';
 import 'drawers/my_drawer_header.dart';
 import 'drawers/profile.dart';
 import 'drawers/terms.dart';
 
 
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    );
-  }
-}
+//
+// void main() {
+//   runApp(const MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   const MyApp({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return const MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: HomePage(),
+//     );
+//   }
+// }
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -38,8 +42,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final client = StreamChatClient(streamKey
+    // logLevel: Level.INFO,
+  );
+
+
+
  late SharedPreferences loginData;
- late String email, fName;
+ late String email, name;
 
   @override
   void initState(){
@@ -51,9 +61,35 @@ class _HomePageState extends State<HomePage> {
     loginData = await SharedPreferences.getInstance();
     setState(() {
       email = loginData.getString('email')!;
-      fName = loginData.getString('fName')!;
+      name = loginData.getString('name')!;
     });
   }
+
+
+  // Future<void> getUser() async {
+  //   try {
+  //     final client = StreamChatCore.of(context).client;
+  //     await client.connectUser(
+  //       User(
+  //         id: name,
+  //         extraData: {
+  //           'name': name,
+  //           // 'image': user.image,
+  //         },
+  //       ),
+  //       client.devToken(name).rawValue,
+  //     );
+  //
+  //     Navigator.of(context).pushReplacement(
+  //       MaterialPageRoute(builder: (context) => ChatScreen()),
+  //     );
+  //   } on Exception catch (e, st) {
+  //     logger.e('Could not connect user', e, st);
+  //     setState(() {
+  //       // _loading = false;
+  //     });
+  //   }
+  // }
 
   var currentPage = DrawerSections.dashboard;
 
@@ -63,13 +99,13 @@ class _HomePageState extends State<HomePage> {
     if (currentPage == DrawerSections.dashboard) {
      container = const HomeScreen();
     } else if (currentPage == DrawerSections.contacts) {
-     container = const Profile();
+     container = ProfileScreen();
     } else if (currentPage == DrawerSections.events) {
      container = const MyAppointment();
     } else if (currentPage == DrawerSections.notes) {
-     container = const MainPage();
+      container = SelectUserScreen();
     } else if (currentPage == DrawerSections.settings) {
-//      container = SettingsPage();
+     container = const HistoryScreen();
     } else if (currentPage == DrawerSections.notifications) {
 //      container = NotificationsPage();
     } else if (currentPage == DrawerSections.privacy_policy) {
@@ -131,8 +167,8 @@ class _HomePageState extends State<HomePage> {
           menuItem(4, "Chat", Icons.message,
               currentPage == DrawerSections.notes ? true : false),
           // const Divider(),
-          // menuItem(5, "Transaction History", Icons.storage,
-          //     currentPage == DrawerSections.settings ? true : false),
+          menuItem(5, "Appointment History", Icons.history_edu,
+              currentPage == DrawerSections.settings ? true : false),
           // menuItem(6, "Consultation", Icons.notifications_outlined,
           //     currentPage == DrawerSections.notifications ? true : false),
          const Divider(),

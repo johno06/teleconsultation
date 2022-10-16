@@ -5,9 +5,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:teleconsultation/starting_page/register.dart';
 import 'package:http/http.dart' as http;
 import 'package:teleconsultation/user.dart';
+import '../app.dart';
 import '../components/background.dart';
 import '../doctor_page/drawer.dart';
 import '../home_page/drawer.dart';
@@ -29,7 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool circular = true;
   ProfileModel model = ProfileModel(lName: '', fName: '', id: '', contactNo: '', email: '');
 
-  UserFetch userval = UserFetch(lName: '', fName: '', id: '', birthday: '', homeAddress: '', contactNo: '', email: '', cPassword: '', password: '');
+  UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
+      phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
+    isAdmin: false, createdAt: '', updatedAt: '');
   DoctorFetch doctorrval = DoctorFetch(lName: '', fName: '', id: '', birthday: '', homeAddress: '', contactNo: '', email: '', cPassword: '', password: '');
 
   late SharedPreferences loginData;
@@ -70,21 +74,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
   Future login() async {
+    var link = 'https://newserverobgyn.herokuapp.com/api/utility/login';
+    Map data2 = {
+      'email': email,
+      'password': password
+    };
+    var body2 = json.encode(data2);
+    var res = await http.post(Uri.parse("https://newserverobgyn.herokuapp.com/api/utility/login"),
+        // headers: <String, String>{
+        //   'Context-Type': 'application/json;charSet=UTF-8'
+        // },
+        // body: <String, String>{
+        //   'email': newUser.email,
+        //   'password': newUser.password
+        // });
+        headers: {"Content-Type": "application/json"},
+        body: body2);
 
-    var res = await http.post(Uri.parse("https://flutter-auth-server.herokuapp.com/signin"),
-        headers: <String, String>{
-          'Context-Type': 'application/json;charSet=UTF-8'
-        },
-        body: <String, String>{
-          'email': newUser.email,
-          'password': newUser.password
-        });
 
     final data = json.decode(res.body);
-    // print(data);
-
+    print(data);
     if (data['success'] == false) {
-      // print(data);
       // print(res.body);
       // print("error");
       // Fluttertoast.showToast(
@@ -97,40 +107,76 @@ class _LoginScreenState extends State<LoginScreen> {
       // );
     }else {
       // print(data);
-      userval = UserFetch.fromJson(data['token']);
+      userval = UserFetch.fromJson(data['data']);
       circular = false;
       checkLogin();
-      loginData.setBool('login' ,true);
-      loginData.setString('_id',userval.id);
-      loginData.setString('email', userval.email);
-      loginData.setString('fName', userval.fName);
-      loginData.setString('lName', userval.lName);
-      loginData.setString('contactNo', userval.contactNo);
-      loginData.setString('birthday', userval.birthday);
-      loginData.setString('homeAddress', userval.homeAddress);
-      loginData.setString('password', userval.password);
-      // print(userval.email);
-      // print(userval.id);
-      // print(userval.contactNo);
+      loginData.setBool('isDoctor', userval.isDoctor);
+      if(userval.isDoctor == false) {
+        loginData.setBool('login' ,true);
+        loginData.setString('_id',userval.id);
+        loginData.setString('email', userval.email);
+        loginData.setString('name', userval.name);
+        loginData.setString('surname', userval.surname);
+        loginData.setString('phone', userval.phone);
+        loginData.setString('birthdate', userval.birthdate);
+        loginData.setString('address', userval.address);
+        loginData.setString('gender', userval.gender);
+        loginData.setString('emailVerificationToken', userval.emailVerificationToken);
+        loginData.setBool('isDoctor', userval.isDoctor);
+        loginData.setBool('verified', userval.verified);
+        loginData.setBool('isAdmin', userval.isAdmin);
+        loginData.setString('createdAt', userval.createdAt);
+        loginData.setString('updatedAt', userval.updatedAt);
+        loginData.setString('password', userval.password);
 
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (BuildContext context){
-            return const HomePage();
-          },
-          ), (router) => false);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (BuildContext context) {
+              return const HomePage();
+            },
+            ), (router) => false);
 
-      // Navigator.push(
-      //     context,
-      //      MaterialPageRoute(builder: (context) => const HomePage()));
-      Fluttertoast.showToast(
-          msg: "Log in successfully",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+        // Navigator.push(
+        //     context,
+        //      MaterialPageRoute(builder: (context) => const HomePage()));
+        Fluttertoast.showToast(
+            msg: "Log in successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }else if(userval.isDoctor == true){
+        loginData.setBool('login' ,true);
+        loginData.setString('_id',userval.id);
+        loginData.setString('email', userval.email);
+        loginData.setString('name', userval.name);
+        loginData.setString('surname', userval.surname);
+        loginData.setString('phone', userval.phone);
+        loginData.setString('birthdate', userval.birthdate);
+        loginData.setString('address', userval.address);
+        loginData.setString('gender', userval.gender);
+        loginData.setString('password', userval.password);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (BuildContext context){
+              return const DoctorPage();
+            },
+            ), (router) => false);
+
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => const DoctorPage()));
+        Fluttertoast.showToast(
+            msg: "Doctors Log in successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
+      }
     }
 
     var resdoc = await http.post(Uri.parse("https://flutter-auth-server.herokuapp.com/docsignin"),
@@ -194,8 +240,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
-  User newUser = User('', '');
-
   // ignore: prefer_typing_uninitialized_variables
   var email, password, token;
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -249,7 +293,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                     onChanged: (value) {
-                      newUser.email = value;
+                      email = value;
                       doctorrval.email = value;
                     },
                   ),
@@ -273,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         return null;
                       },
                       onChanged: (value) {
-                        newUser.password = value;
+                        password = value;
                         doctorrval.password = value;
                       }
                   ),

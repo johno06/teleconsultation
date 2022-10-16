@@ -38,7 +38,7 @@ bool isObscurePassword = true;
 
 class _ChangePasswordState extends State<ChangePassword> {
   late SharedPreferences loginData;
-  String? id, email, fName, lastName, contactNumber, birthday, homeAddress, password, confirmPassword;
+  String? id, email, fName, lastName, contactNumber, birthday, homeAddress, password, gender, confirmPassword;
 
   Color shrinePink400 = const Color(0xFFEAA4A4);
 
@@ -59,12 +59,13 @@ class _ChangePasswordState extends State<ChangePassword> {
     setState(() {
       id = loginData.getString('_id');
       email = loginData.getString('email')!;
-      fName = loginData.getString('fName')!;
-      lastName = loginData.getString('lName')!;
-      contactNumber = loginData.getString('contactNo')!;
-      birthday = loginData.getString('birthday')!;
-      homeAddress = loginData.getString('homeAddress')!;
+      fName = loginData.getString('name')!;
+      lastName = loginData.getString('surname')!;
+      contactNumber = loginData.getString('phone')!;
+      birthday = loginData.getString('birthdate')!;
+      homeAddress = loginData.getString('address')!;
       password = loginData.getString('password')!;
+      gender = loginData.getString('gender')!;
     });
   }
 
@@ -89,19 +90,20 @@ class _ChangePasswordState extends State<ChangePassword> {
     // if(updateUser.birthday == ""){
     //   updateUser.birthday = "$birthday";
     // }
-
-    if(updateUser.password != "" && confirmPassword != "") {
+    print(updateUser.password);
+    print(confirmPassword);
+    if(updateUser.password != "" && confirmPassword != null) {
       if (updateUser.password == confirmPassword) {
         Map data = {
           "password": updateUser.password,
         };
         String body = json.encode(data);
         http.Response response = await http.patch(
-          Uri.parse('https://flutter-auth-server.herokuapp.com/user/$id'),
-          headers: {'Content-Type': 'application/json; charset=utf-8'},
+          Uri.parse('https://newserverobgyn.herokuapp.com/api/user/updatePassword/$id'),
+          headers: {"Content-Type": "application/json"},
           body: body,
         );
-        //print(response.body);
+        print(body);
         if (response.statusCode == 200) {
           Fluttertoast.showToast(
               msg: "Change Password Success",
@@ -119,15 +121,6 @@ class _ChangePasswordState extends State<ChangePassword> {
           Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const HomePage()));
-        } else {
-          return(
-          Fluttertoast.showToast(
-              msg: "Password did not match",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              backgroundColor: Colors.redAccent,
-              textColor: Colors.white,
-              fontSize: 16.0));
         }
       }else {
         return(
@@ -245,7 +238,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         decoration:const InputDecoration(
                             labelText: "Password"),
                       validator: (String ? value){
-                        if(value!.isEmpty)
+                        if(value != null && value.isEmpty)
                         {
                           return 'Please Enter Your Password';
                         }

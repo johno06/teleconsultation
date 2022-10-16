@@ -32,11 +32,11 @@ class _DoctorProfileState extends State<DoctorProfile> {
     loginData = await SharedPreferences.getInstance();
     setState(() {
       email = loginData.getString('email')!;
-      fName = loginData.getString('fName')!;
-      lastName = loginData.getString('lName')!;
-      contactNumber = loginData.getString('contactNo')!;
-      birthday = loginData.getString('birthday')!;
-      homeAddress = loginData.getString('homeAddress')!;
+      fName = loginData.getString('name')!;
+      lastName = loginData.getString('surname')!;
+      contactNumber = loginData.getString('phone')!;
+      birthday = loginData.getString('birthdate')!;
+      homeAddress = loginData.getString('address')!;
     });
   }
 

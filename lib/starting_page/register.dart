@@ -29,18 +29,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if(_formkey.currentState!.validate()) {
       //print("successful");
       Map data = {
-        "fName": newUser.fName,
-        "lName": newUser.lName,
+        "name": newUser.fName,
+        // "lName": newUser.lName,
         "email": newUser.email,
-        "contactNo": newUser.contactNo,
-        "birthday": newUser.birthday,
-        "homeAddress": newUser.homeAddress,
+        // "contactNo": newUser.contactNo,
+        // "birthday": newUser.birthday,
+        // "homeAddress": newUser.homeAddress,
         "password": newUser.password,
-        "cPassword": newUser.cPassword
+        "confirmPassword": newUser.cPassword
       };
       //String body = json.encode(data);
       http.Response response = await http.post(
-          Uri.parse('https://flutter-auth-server.herokuapp.com/signup'), headers: {
+          Uri.parse('https://newserverobgyn.herokuapp.com/api/user/register'), headers: {
         'Content-Type': 'application/json; charset=utf-8'
       },
           body: json.encode(data)
@@ -48,7 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       final data1 = json.decode(response.body);
       // print(data1);
 
-      if(data1['message'] != "email is already used"){
+      if(data1['message'] != "User already exists" && data1['success'] == true){
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const LoginScreen()));
 
@@ -64,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }else{
         //print("UnSuccessfull");
         Fluttertoast.showToast(
-            msg: "email is already used",
+            msg: data1['message'],
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.redAccent,
@@ -103,9 +103,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // After the Selection Screen returns a result, hide any previous snackbars
     // and show the new result.
-    ScaffoldMessenger.of(context)
-      ..removeCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text('$result')));
+    // ScaffoldMessenger.of(context)
+    //   ..removeCurrentSnackBar()
+    //   ..showSnackBar(SnackBar(content: Text('$result')));
     agree = result;
     widget.accept = result;
   }
@@ -145,6 +145,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
 
                 SizedBox(height: size.height * 0.01),
+                Container(
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
+                  child: TextFormField(
+                    keyboardType: TextInputType.text,
+                    decoration: const InputDecoration(
+                        labelText:"Name"),
+                    validator: (String ? value){
+                      if(value != null && value.isEmpty)
+                      {
+                        return 'Please Enter Your Name';
+                      }
+                      return null;
+                    },
+                    onChanged:(value){
+                      newUser.fName = value;
+                    },
+                  ),
+                ),
+
+                SizedBox(height: size.height * 0.01),
 
                 Container(
                   alignment: Alignment.center,
@@ -171,157 +192,137 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 SizedBox(height: size.height * 0.00),
 
-                Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.symmetric(horizontal: 40),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(
-                        labelText:"First Name"),
-                    validator: (String ? value){
-                      if(value != null && value.isEmpty)
-                      {
-                        return 'Please Enter Your First Name';
-                      }
-                      return null;
-                    },
-                    onChanged:(value){
-                      newUser.fName = value;
-                    },
-                  ),
-                ),
-
-                SizedBox(height: size.height * 0.01),
-
-                Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.symmetric(horizontal: 40),
-                  child: TextFormField(
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(
-                        labelText:"Last Name"),
-                    validator: (String ? value){
-                      if(value != null && value.isEmpty)
-                      {
-                        return 'Please Enter Your Last Name';
-                      }
-                      return null;
-                    },
-                    onChanged:(value){
-                      newUser.lName = value;
-                    },
-                  ),
-                ),
-
-                SizedBox(height: size.height * 0.01),
-
-                Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.symmetric(horizontal: 40),
-                  child: TextFormField(
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        labelText: "Phone No"),
-                    validator: (String ? value){
-                      if(value != null && value.isEmpty)
-                      {
-                        return 'Please enter phone no ';
-                      }
-                      return null;
-                    },
-                    onChanged:(value){
-                      newUser.contactNo = value;
-                    },
-                  ),
-                ),
-
-                SizedBox(height: size.height * 0.01),
-
-                SizedBox(height: size.height * 0.01),
-
-                Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.symmetric(horizontal: 40),
-                  // child: TextFormField(
-                  //   keyboardType: TextInputType.number,
-                  //   decoration: const InputDecoration(
-                  //       labelText: "Birthday"),
-                  //   validator: (String ? value){
-                  //     if(value != null && value.isEmpty)
-                  //     {
-                  //       return 'Please enter your birthday ';
-                  //     }
-                  //     return null;
-                  //   },
-                  //   onChanged:(value){
-                  //     newUser.birthday = value;
-                  //   },
-                  // ),
-                    child:Center(
-                        child:TextFormField(
-                          controller: dateinput, //editing controller of this TextField
-                          decoration: const InputDecoration(
-                              // icon: Icon(Icons.calendar_today), //icon of text field
-                              labelText: "Birthday" //label text of field
-                          ),
-                          validator: (String ? value){
-                            if(value != null && value.isEmpty){
-                              return 'Please enter your birthday ';
-                            }
-                          },
-                          readOnly: true,  //set it true, so that user will not able to edit text
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                                context: context, initialDate: DateTime.now(),
-                                firstDate: DateTime(1950), //DateTime.now() - not to allow to choose before today.
-                                lastDate: DateTime(2101)
-                            );
-
-                            if(pickedDate == null){
-                              // return 'Please enter your birthday ';
-                            }else{
-                              //print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
-                              String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                              //print(formattedDate); //formatted date output using intl package =>  2021-03-16
-                              //you can implement different kind of Date Format here according to your requirement
-
-                              setState(() {
-                                newUser.birthday = formattedDate;
-                                dateinput.text = formattedDate; //set output date to TextField value.
-                              });
-                            }
-                          },
-                    )
-                )
-          ),
-
-
-                SizedBox(height: size.height * 0.01),
-
-                SizedBox(height: size.height * 0.01),
-
-                Container(
-                  alignment: Alignment.center,
-                  margin: const EdgeInsets.symmetric(horizontal: 40),
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        labelText: "City"),
-                    validator: (String ? value){
-                      if(value != null && value.isEmpty)
-                      {
-                        return 'Please enter City ';
-                      }
-                      return null;
-                    },
-                    onChanged:(value){
-                      newUser.homeAddress = value;
-                    },
-                  ),
-                ),
-
-                SizedBox(height: size.height * 0.01),
+          //       SizedBox(height: size.height * 0.01),
+          //
+          //       Container(
+          //         alignment: Alignment.center,
+          //         margin: const EdgeInsets.symmetric(horizontal: 40),
+          //         child: TextFormField(
+          //           keyboardType: TextInputType.text,
+          //           decoration: const InputDecoration(
+          //               labelText:"Last Name"),
+          //           validator: (String ? value){
+          //             if(value != null && value.isEmpty)
+          //             {
+          //               return 'Please Enter Your Last Name';
+          //             }
+          //             return null;
+          //           },
+          //           onChanged:(value){
+          //             newUser.lName = value;
+          //           },
+          //         ),
+          //       ),
+          //
+          //       SizedBox(height: size.height * 0.01),
+          //
+          //       Container(
+          //         alignment: Alignment.center,
+          //         margin: const EdgeInsets.symmetric(horizontal: 40),
+          //         child: TextFormField(
+          //           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          //           keyboardType: TextInputType.number,
+          //           decoration: const InputDecoration(
+          //               labelText: "Phone No"),
+          //           validator: (String ? value){
+          //             if(value != null && value.isEmpty)
+          //             {
+          //               return 'Please enter phone no ';
+          //             }
+          //             return null;
+          //           },
+          //           onChanged:(value){
+          //             newUser.contactNo = value;
+          //           },
+          //         ),
+          //       ),
+          //
+          //       SizedBox(height: size.height * 0.01),
+          //
+          //       SizedBox(height: size.height * 0.01),
+          //
+          //       Container(
+          //         alignment: Alignment.center,
+          //         margin: const EdgeInsets.symmetric(horizontal: 40),
+          //         // child: TextFormField(
+          //         //   keyboardType: TextInputType.number,
+          //         //   decoration: const InputDecoration(
+          //         //       labelText: "Birthday"),
+          //         //   validator: (String ? value){
+          //         //     if(value != null && value.isEmpty)
+          //         //     {
+          //         //       return 'Please enter your birthday ';
+          //         //     }
+          //         //     return null;
+          //         //   },
+          //         //   onChanged:(value){
+          //         //     newUser.birthday = value;
+          //         //   },
+          //         // ),
+          //           child:Center(
+          //               child:TextFormField(
+          //                 controller: dateinput, //editing controller of this TextField
+          //                 decoration: const InputDecoration(
+          //                     // icon: Icon(Icons.calendar_today), //icon of text field
+          //                     labelText: "Birthday" //label text of field
+          //                 ),
+          //                 validator: (String ? value){
+          //                   if(value != null && value.isEmpty){
+          //                     return 'Please enter your birthday ';
+          //                   }
+          //                 },
+          //                 readOnly: true,  //set it true, so that user will not able to edit text
+          //                 onTap: () async {
+          //                   DateTime? pickedDate = await showDatePicker(
+          //                       context: context, initialDate: DateTime.now(),
+          //                       firstDate: DateTime(1950), //DateTime.now() - not to allow to choose before today.
+          //                       lastDate: DateTime(2101)
+          //                   );
+          //
+          //                   if(pickedDate == null){
+          //                     // return 'Please enter your birthday ';
+          //                   }else{
+          //                     //print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
+          //                     String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+          //                     //print(formattedDate); //formatted date output using intl package =>  2021-03-16
+          //                     //you can implement different kind of Date Format here according to your requirement
+          //
+          //                     setState(() {
+          //                       newUser.birthday = formattedDate;
+          //                       dateinput.text = formattedDate; //set output date to TextField value.
+          //                     });
+          //                   }
+          //                 },
+          //           )
+          //       )
+          // ),
+          //
+          //
+          //       SizedBox(height: size.height * 0.01),
+          //
+          //       SizedBox(height: size.height * 0.01),
+          //
+          //       Container(
+          //         alignment: Alignment.center,
+          //         margin: const EdgeInsets.symmetric(horizontal: 40),
+          //         child: TextFormField(
+          //           keyboardType: TextInputType.number,
+          //           decoration: const InputDecoration(
+          //               labelText: "City"),
+          //           validator: (String ? value){
+          //             if(value != null && value.isEmpty)
+          //             {
+          //               return 'Please enter City ';
+          //             }
+          //             return null;
+          //           },
+          //           onChanged:(value){
+          //             newUser.homeAddress = value;
+          //           },
+          //         ),
+          //       ),
+          //
+          //       SizedBox(height: size.height * 0.01),
 
                 Container(
                   alignment: Alignment.center,

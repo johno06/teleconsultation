@@ -30,9 +30,9 @@ class _DoctorMyHeaderDrawerState extends State<DoctorMyHeaderDrawer> {
     setState(() {
       email = loginData.getString('email')!;
       // print(email);
-      fName = loginData.getString('fName')!;
-      lastName = loginData.getString('lName')!;
-      contactNumber = loginData.getString('contactNo')!;
+      fName = loginData.getString('name')!;
+      lastName = loginData.getString('surname')!;
+      contactNumber = loginData.getString('phone')!;
     });
   }
 
