@@ -284,6 +284,7 @@ class _MyAppointmentState extends State<MyAppointment> {
                     ),
                   ),
                   Flexible(
+
                     // child: Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: ElevatedButton(
