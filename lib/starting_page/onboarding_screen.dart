@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
@@ -5,11 +6,27 @@ import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import '../constant.dart';
 import 'login.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
-  // final StreamChatClient client;
+  @override
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
+}
 
+class _OnboardingScreenState extends State<OnboardingScreen> {
+
+  String? mtoken = " ";
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print(mtoken);
+      });
+    });
+  }
+
+  // final StreamChatClient client;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery
@@ -70,6 +87,7 @@ class OnboardingScreen extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
+                        getToken();
                         Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -40,16 +40,16 @@ class NoTranscationMessage extends StatelessWidget {
             const SizedBox(
               height: 32.0,
             ),
-            TextButton.icon(
-                onPressed: () {
-                  // Navigator.pop(
-                  //     context, MaterialPageRoute(builder: (context) => const Hi()));
-                },
-                icon: const Icon(Icons.search),
-                label: Text(
-                  "Book Appointment",
-                  style: buttonTextStyle.copyWith(color: primaryColor500),
-                ))
+            // TextButton.icon(
+            //     onPressed: () {
+            //       // Navigator.pop(
+            //       //     context, MaterialPageRoute(builder: (context) => const Hi()));
+            //     },
+            //     icon: const Icon(Icons.search),
+            //     label: Text(
+            //       "Book Appointment",
+            //       style: buttonTextStyle.copyWith(color: primaryColor500),
+            //     ))
           ],
         ),
       ),

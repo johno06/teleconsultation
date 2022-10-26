@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +21,174 @@ class CheckoutScreen extends StatefulWidget {
 }
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
+
+
+  @override
+  void initState(){
+    super.initState();
+    initial();
+    requestPermission();
+    loadFCM();
+    listenFCM();
+  }
+  //
+  var channel = const AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    importance: Importance.high,
+    enableVibration: true,
+  );
+
+  var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  String? mtoken = " ";
+
+
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
+  void loadFCM() async {
+    if (!kIsWeb) {
+      var channel = const AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        importance: Importance.high,
+        enableVibration: true,
+      );
+
+      var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+      /// Create an Android Notification Channel.
+      ///
+      /// We use this channel in the `AndroidManifest.xml` file to override the
+      /// default FCM channel to enable heads up notifications.
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+
+      /// Update the iOS foreground notification presentation options to allow
+      /// heads up notifications.
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
+  }
+
+  void listenFCM() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null && !kIsWeb) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              // TODO add a proper drawable resource to android, for now using
+              //      one that already exists in example app.
+              icon: 'launch_background',
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  Future sendPushMessage(String body, String title, String token) async {
+    try {
+      // String token2 = "dt47JLsvRbGs4DVtb68FpC:APA91bGRmXTZzpSkJ-setdQqNWsEoNqmIMDnr-fErut6lZ9UwT8atcFb2cQuHOvgLtgHlQSdHlnbkKVJ8pgfuHhTuz44PQ_Im3xdDlJjdK0TaP5T0mYUhvevg23R26bk6wCubJQiYAjJ";
+      const postUrl = 'https://fcm.googleapis.com/fcm/send';
+      final data = {
+        "to": token,
+        "notification": {
+          "title": title,
+          "body": body,
+          "sound" : "default"
+        },
+        "data": {
+          "type": '0rder',
+          "id": '28',
+          "click_action": 'FLUTTER_NOTIFICATION_CLICK',
+        },
+      };
+
+      final headers = {
+        'content-type': 'application/json',
+        'Authorization':
+        'key=AAAAIwPjrWE:APA91bEEQEXPtx7sNQzuR7mMer8ypL8v7w-JKtMuiAKt9S2xovbiuvKLyv40oUcmG3jHzTSb0vEfJpFZUBdv3s6pVsXf1CCLr4REjuvvP_YeE9aH4NRkVj5V_Uzfe5BssluGiy0zixiE'};
+
+
+      final response = await http.post(Uri.parse(postUrl),
+          body: json.encode(data),
+          encoding: Encoding.getByName('utf-8'),
+          headers: headers);
+
+      if (response.statusCode == 200) {
+        // on success do sth
+        print('test ok push CFM');
+      } else {
+        print(' CFM error');
+        // on failure do sth
+      }
+      //
+      //
+      // await http.post(
+      //   Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      //   headers: <String, String>{
+      //     'Content-Type': 'application/json',
+      //     'Authorization':
+      //     'key=AAAAIwPjrWE:APA91bEEQEXPtx7sNQzuR7mMer8ypL8v7w-JKtMuiAKt9S2xovbiuvKLyv40oUcmG3jHzTSb0vEfJpFZUBdv3s6pVsXf1CCLr4REjuvvP_YeE9aH4NRkVj5V_Uzfe5BssluGiy0zixiE',
+      //   },
+      //   body: jsonEncode(
+      //     <String, dynamic>{
+      //       'notification': <String, dynamic>{
+      //         'body': body,
+      //         'title': title,
+      //       },
+      //       'priority': 'high',
+      //       'data': <String, dynamic>{
+      //         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      //         'id': '1',
+      //         'status': 'done'
+      //       },
+      //       "to": token,
+      //     },
+      //   ),
+      // );
+      // print('done');
+    } catch (e) {
+      print("error push notification");
+    }
+  }
+
+  //
 
   final TextEditingController _controller = TextEditingController();
   DateTime _dateTime = DateTime.now();
@@ -67,17 +238,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   var closeTime = "22:00";
 
   String? doctorName, doctorLname, doctorOpenTime, doctorCloseTime, doctorId,
-      docUserId, website, docaddress, status, doccreatedAt, docupdateAt, docphone, exp, specialization;
+      docUserId, website, docaddress, status, doccreatedAt, docupdateAt, docphone, exp, specialization,doctorDevice;
 
   bool? isDoctor, isAdmin, verified;
   String ? userId, emailVerificationToken, createdAt, updatedAt,
-      email, name, surname, phone, birthdate, address, gender;
+      email, name, surname, phone, birthdate, address, gender,patientDevice;
   late int doctorFee;
-  @override
-  void initState() {
-    super.initState();
-    initial();
-  }
 
   void initial() async{
     doctorData = await SharedPreferences.getInstance();
@@ -98,6 +264,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       docphone = doctorData?.getString('phone');
       exp = doctorData?.getString('exp');
       specialization = doctorData?.getString('specialization');
+      doctorDevice = doctorData?.getString('doctorDevice');
 
 
       userId = loginData!.getString('_id');
@@ -114,9 +281,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       isAdmin = loginData!.getBool('isAdmin');
       createdAt = loginData!.getString('createdAt');
       updatedAt = loginData!.getString('updatedAt');
+      patientDevice = loginData!.getString('patientDevice');
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       // pickings();
+      print(doctorDevice);
       for (var time in timeList) {
         if (time == doctorOpenTime) {
           currentTime = time;
@@ -182,7 +351,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           "status": status,
           "createdAt": doccreatedAt,
           "updatedAt": docupdateAt,
-          "__v": "0"
+          "__v": "0",
+          "devices": [
+            doctorDevice
+          ],
         },
         "userInfo": {
           "_id": userId,
@@ -200,7 +372,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ],
           "createdAt": createdAt,
           "updatedAt": updatedAt,
-          "__v": "0"
+          "__v": "0",
+          "devices": [
+            patientDevice
+          ],
         }
       };
       http.Response response = await http.post(
@@ -462,6 +637,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     newAppointment.userId = userId!;
                     newAppointment.doctorId = doctorId!;
                     bookAppointment();
+                    print(doctorDevice);
+                    sendPushMessage('Patient: $name $surname has booked an appointment.\n'
+                        'Date: $bookingDate, Time: $value', 'Teleconsultation', '$doctorDevice');
                     // print(newAppointment.time);
                     // print(newAppointment.doctorId);
                     // print("Booking: "+newAppointment.date);

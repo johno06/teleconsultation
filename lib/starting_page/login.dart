@@ -2,6 +2,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,20 +34,57 @@ class _LoginScreenState extends State<LoginScreen> {
 
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
       phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
-    isAdmin: false, createdAt: '', updatedAt: '');
+    isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
   DoctorFetch doctorrval = DoctorFetch(lName: '', fName: '', id: '', birthday: '', homeAddress: '', contactNo: '', email: '', cPassword: '', password: '');
 
   late SharedPreferences loginData;
 
    late bool new_user;
 
+  String? mtoken = " ";
 
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print(mtoken);
+      });
+    });
+  }
+
+  Future update(id ) async {
+    loginData = await SharedPreferences.getInstance();
+
+    Map data = {
+      "devices": ["$mtoken"],
+    };
+    String body = json.encode(data);
+    http.Response response = await http.patch(
+      Uri.parse('https://newserverobgyn.herokuapp.com/api/user/checkDevice/$id'),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    //print(response.body);
+    // if(response.statusCode != 200){
+    //   Fluttertoast.showToast(
+    //       msg: "Update Failed try other email",
+    //       toastLength: Toast.LENGTH_SHORT,
+    //       gravity: ToastGravity.BOTTOM,
+    //       backgroundColor: Colors.redAccent,
+    //       textColor: Colors.white,
+    //       fontSize: 16.0);
+    // }
+
+  }
+
+  List<String> deviceList = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     checkLogin();
+    getToken();
   }
 
 
@@ -113,6 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
       loginData.setBool('isDoctor', userval.isDoctor);
       if(userval.isDoctor == false) {
         loginData.setBool('login' ,true);
+        update(userval.id);
         loginData.setString('_id',userval.id);
         loginData.setString('email', userval.email);
         loginData.setString('name', userval.name);
@@ -128,6 +167,13 @@ class _LoginScreenState extends State<LoginScreen> {
         loginData.setString('createdAt', userval.createdAt);
         loginData.setString('updatedAt', userval.updatedAt);
         loginData.setString('password', userval.password);
+        for(var i = 0; i<userval.devices.length; i++){
+          if(mtoken == userval.devices[i]){
+            loginData.setString('patientDevice', userval.devices[i]);
+          }
+          // deviceList.add(userval.devices[i]);
+          // print(deviceList[i]);
+        }
 
         Navigator.pushAndRemoveUntil(
             context,

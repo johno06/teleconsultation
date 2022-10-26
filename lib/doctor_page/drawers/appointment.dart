@@ -34,7 +34,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
 
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
       phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
-      isAdmin: false, createdAt: '', updatedAt: '');
+      isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
 
   @override
   void initState(){

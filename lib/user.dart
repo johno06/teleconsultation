@@ -29,6 +29,7 @@ class UserFetch {
    bool isDoctor;
    String createdAt;
    String updatedAt;
+   List<dynamic>devices=[];
 
   UserFetch({
     // required this.id,
@@ -54,7 +55,8 @@ class UserFetch {
     required this.isAdmin,
     required this.createdAt,
     required this.updatedAt,
-    required this.password
+    required this.password,
+    required this.devices
   });
 
   bool selected = false;
@@ -84,6 +86,7 @@ class UserFetch {
     createdAt: json["createdAt"] ?? "",
     updatedAt: json["updatedAt"] ?? "",
     password: json["password"] ?? "",
+    devices: json["devices"] ?? []
   );
 
   Map<String, dynamic> toJson() => {
@@ -105,6 +108,7 @@ class UserFetch {
     "phone": phone,
     "gender": gender,
     "isDoctor": isDoctor,
-    "password": password
+    "password": password,
+    "devices": devices
   };
 }

@@ -498,6 +498,8 @@ class _MyFormState extends State<MyForm> {
                     // opening the pdf file
                     FileHandleApi.openFile(pdfFile);
                     tableData.clear();
+                    medicineList.clear();
+                    medicineType.clear();
                   }
                 },
                 child: const Text('Submit'),

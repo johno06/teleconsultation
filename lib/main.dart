@@ -1,9 +1,11 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:teleconsultation/app.dart';
+import 'package:teleconsultation/firebase_options.dart';
 import 'package:teleconsultation/starting_page/onboarding_screen.dart';
 
 import 'doctor_page/drawer.dart';
@@ -12,8 +14,10 @@ import 'home_page/drawer.dart';
 
 Future<void> main() async {
   final client = StreamChatClient(streamKey);
-
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 //  await MongoDatabase.connect();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   var isDoctor = prefs.getBool("isDoctor");

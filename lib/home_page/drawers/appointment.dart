@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../constant.dart';
 import '../../user.dart';
 import '../components/doctor_card.dart';
 import '../components/schedule_card.dart';
-import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 import 'package:http/http.dart' as http;
+import 'notificationservice/local_notification_service.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 
 class MyAppointment extends StatefulWidget {
   const MyAppointment({Key? key}) : super(key: key);
@@ -20,9 +24,6 @@ class MyAppointment extends StatefulWidget {
 
 class _MyAppointmentState extends State<MyAppointment> {
 
-  // ProfileModel model = ProfileModel();
-
-
   late SharedPreferences loginData;
   SharedPreferences? doctorData;
   SharedPreferences? appointmentData;
@@ -32,16 +33,119 @@ class _MyAppointmentState extends State<MyAppointment> {
   final monthFormat = DateFormat("MMM");
   final dayFormat = DateFormat("d");
   final timeFormat = DateFormat("hh:mm aaa");
+  DateTime dateTime = DateTime.now();
+  final TextEditingController _time = TextEditingController();
+  late String date1, time1, time05;
 
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
       phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
-      isAdmin: false, createdAt: '', updatedAt: '');
+      isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
 
+  late final LocalNotificationService service;
+  late final LocalNotificationService service1;
+
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
 
   @override
   void initState(){
     super.initState();
     initial();
+    const AndroidInitializationSettings androidInitializationSettings =
+    AndroidInitializationSettings("@mipmap/ic_launcher");
+
+    const DarwinInitializationSettings iosInitializationSettings =
+    DarwinInitializationSettings();
+
+    const InitializationSettings initializationSettings =
+    InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: iosInitializationSettings,
+      macOS: null,
+      linux: null,
+    );
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      // onSelectNotification: (dataYouNeedToUseWhenNotificationIsClicked) {},
+    );
+  }
+
+  showNotification() {
+    // if (_title.text.isEmpty || _desc.text.isEmpty) {
+    //   return;
+    // }
+
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+      "ScheduleNotification001",
+      "Notify Me",
+      importance: Importance.high,
+    );
+
+    const DarwinNotificationDetails iosNotificationDetails =
+    DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: iosNotificationDetails,
+      macOS: null,
+      linux: null,
+    );
+
+    tz.initializeTimeZones();
+    var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    var inputDate = inputFormat.parse('$date1 $time1');
+    print(date1);
+    final tz.TZDateTime scheduledAt = tz.TZDateTime.from(inputDate, tz.local);
+
+    flutterLocalNotificationsPlugin.zonedSchedule(
+        01, "Teleconsultation", "Your booking will start in 7:55pm minutes.", scheduledAt, notificationDetails,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.wallClockTime,
+        androidAllowWhileIdle: true,
+        payload: 'Ths s the data');
+  }
+  showNotification5() {
+
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+      "ScheduleNotification002",
+      "Notify Me",
+      importance: Importance.high,
+    );
+
+    const DarwinNotificationDetails iosNotificationDetails =
+    DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: iosNotificationDetails,
+      macOS: null,
+      linux: null,
+    );
+
+    tz.initializeTimeZones();
+    var inputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    var inputDate = inputFormat.parse('$date1 $time05');
+    print(date1);
+    final tz.TZDateTime scheduledAt = tz.TZDateTime.from(inputDate, tz.local);
+
+    flutterLocalNotificationsPlugin.zonedSchedule(
+        02, "Teleconsultation", "Your booking will start in 7:57pm minutes.", scheduledAt, notificationDetails,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.wallClockTime,
+        androidAllowWhileIdle: true,
+        payload: 'Ths s the data');
   }
 
   void initial() async{
@@ -80,23 +184,134 @@ class _MyAppointmentState extends State<MyAppointment> {
                   ),
                 ),
               ),
+              // TextField(
+              //   controller: _date,
+              //   decoration: InputDecoration(
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(12.0),
+              //       ),
+              //       suffixIcon: InkWell(
+              //         child: Icon(Icons.date_range),
+              //         onTap: () async {
+              //           final DateTime? newlySelectedDate =
+              //           await showDatePicker(
+              //             context: context,
+              //             initialDate: dateTime,
+              //             firstDate: DateTime.now(),
+              //             lastDate: DateTime(2095),
+              //           );
+              //
+              //           if (newlySelectedDate == null) {
+              //             return;
+              //           }
+              //
+              //           setState(() {
+              //             dateTime = newlySelectedDate;
+              //             _date.text =
+              //                 "${dateTime.year}/${dateTime.month}/${dateTime.day}";
+              //           });
+              //         },
+              //       ),
+              //       label: Text("Date")),
+              // ),
+              // TextField(
+              //   controller: _time,
+              //   decoration: InputDecoration(
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(12.0),
+              //       ),
+              //       suffixIcon: InkWell(
+              //         child: const Icon(
+              //           Icons.timer_outlined,
+              //         ),
+              //         onTap: () async {
+              //           final TimeOfDay? slectedTime = await showTimePicker(
+              //               context: context, initialTime: TimeOfDay.now());
+              //
+              //           if (slectedTime == null) {
+              //             return;
+              //           }
+              //
+              //           _time.text =
+              //           "${slectedTime.hour}:${slectedTime.minute}:${slectedTime.period.toString()}";
+              //
+              //           DateTime newDT = DateTime(
+              //             dateTime.year,
+              //             dateTime.month,
+              //             dateTime.day,
+              //             slectedTime.hour,
+              //             slectedTime.minute,
+              //           );
+              //           setState(() {
+              //             dateTime = newDT;
+              //           });
+              //         },
+              //       ),
+              //       label: Text("Time")),
+              // ),
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     service.showScheduledNotification(
+              //       id: 0,
+              //       title: 'Notification Title',
+              //       body: 'Some body',
+              //       seconds: dateTime,
+              //     );
+              //   },
+              //   child: const Text('Show Scheduled Notification'),
+              // ),
+              // ElevatedButton(
+              //     style: ElevatedButton.styleFrom(
+              //       minimumSize: Size(double.infinity, 55),
+              //     ),
+              //     onPressed: showNotification,
+              //     child: Text("Show Notification")),
               const SizedBox(
                 height: 5,
               ),
               buildDoctor(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Text(
-                  'Appointments',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: kTitleTextColor,
-                    fontSize: 21,
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: Text(
+                      'Appointments',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: kTitleTextColor,
+                        fontSize: 21,
+                      ),
+                    ),
                   ),
-                ),
+                  Flexible(
+                    // child: Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: shrinePink400,
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10))
+                        ),
+                        onPressed: () {
+                          showNotification();
+                          showNotification5();
+                          Fluttertoast.showToast(
+                              msg: "You will be notify 1 hour and 5 minutes before your consultation.",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.green,
+                              textColor: Colors.white,
+                              fontSize: 16.0
+                          );
+                        },
+                        child: const Text('Reminder 🔔'),
+                      ),
+                    ),
+                ],
               ),
               const SizedBox(
-                height: 20,
+                height: 15,
               ),
               buildAppointmentList(),
             ],
@@ -174,12 +389,14 @@ class _MyAppointmentState extends State<MyAppointment> {
                   final closeTime = client['timings'][1];
                   final specialization = client['specialization'];
                   final exp = client['experience'];
+                  final doctorDevice = client['devices'][0];
 
                   doctorData?.setString('docName', name);
                   doctorData?.setString('docLname', lastname);
                   doctorData?.setInt('fee', fee);
                   doctorData?.setString('openTime', openTime);
                   doctorData?.setString('closeTime', closeTime);
+
                   doctorData?.setString('doctorId', id);
                   doctorData?.setString('docUserId', userId);
                   doctorData?.setString('website', website);
@@ -190,6 +407,7 @@ class _MyAppointmentState extends State<MyAppointment> {
                   doctorData?.setString('phone', phone);
                   doctorData?.setString('exp', exp);
                   doctorData?.setString('specialization', specialization);
+                  doctorData?.setString('doctorDevice', doctorDevice);
                   // final verified = client['verified'];
                   return DoctorCard(
                     'Dr. $name $lastname',
@@ -231,6 +449,7 @@ class _MyAppointmentState extends State<MyAppointment> {
                   color: Colors.black87,),
                 itemBuilder: (context, index) {
                   final appointment = appointments[index];
+
                   final userid = appointment['userId'];
                   if(user_id == userid){
                   final date = appointment['date'];
@@ -244,6 +463,46 @@ class _MyAppointmentState extends State<MyAppointment> {
                   final String bookingToday = todayFormat.format(parseDate);
                   final String bookingMonth = monthFormat.format(parseDate);
                   final String bookingDay = dayFormat.format(parseDate);
+
+                  if(time == "08:00 - 09:00"){
+                    time1 = "07:00";
+                    time05 = "07:55";
+                  }else if(time == "09:00 - 10:00"){
+                    time1 = "08:00";
+                    time05 = "08:55";
+                  }
+                  else if(time == "10:00 - 11:00"){
+                    time1 = "09:00";
+                    time05 = "09:55";
+                  }
+                  else if(time == "11:00 - 12:00"){
+                    time1 = "10:00";
+                    time05 = "10:55";
+                  }
+                  else if(time == "12:00 - 13:00"){
+                    time1 = "11:00";
+                    time05 = "11:55";
+                  }
+                  else if(time == "13:00 - 14:00"){
+                    time1 = "12:00";
+                    time05 = "12:55";
+                  }
+                  else if(time == "14:00 - 15:00"){
+                    time1 = "13:00";
+                    time05 = "13:55";
+                  }
+                  else if(time == "15:00 - 16:00"){
+                    time1 = "14:00";
+                    time05 = "14:55";
+                  }
+                  else if(time == "16:00 - 17:00"){
+                    time1 = "15:00";
+                    time05 = "15:55";
+                  }
+                  date1 = date;
+                  // time1 = "19:55";
+                  // time05 = "19:57";
+
                   // final String bookingTime = dayFormat.format(parseTime);
                   //
                   // final email = appointment['email'];

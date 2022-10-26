@@ -38,7 +38,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 // class PatientDetailScreen extends StatelessWidget {
 
   SharedPreferences? patientData;
-
+  String? patientDevice;
   late SharedPreferences loginData;
   String? email, fName, lastName, contactNumber,user_id;
   SharedPreferences? appointmentData;
@@ -50,7 +50,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
       phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
-      isAdmin: false, createdAt: '', updatedAt: '');
+      isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
 
   @override
   void initState(){
@@ -60,6 +60,11 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   void initial() async{
     loginData = await SharedPreferences.getInstance();
+    patientData = await SharedPreferences.getInstance();
+    setState(() {
+      patientDevice = patientData?.getString('patientDevice')!;
+      print(patientDevice);
+    });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchAppointments();
     });

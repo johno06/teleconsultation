@@ -1,15 +1,17 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../services/updateservices.dart';
 import '../drawer.dart';
+
 
 // void main(){
 //   runApp(MyApp())
@@ -51,6 +53,20 @@ class _EditProfileState extends State<EditProfile> {
 
   TextEditingController dateinput = TextEditingController();
   //text editing controller for text field
+
+
+  File? imageFile;
+  var byteData;
+  final picker = ImagePicker();
+  chooseImage(ImageSource source) async{
+    final pickedFile = await picker.getImage(source: source);
+    imageFile = File(pickedFile!.path);
+    // Uint8List uint8list = Uint8List.fromList(File(pickedFile!.path).readAsBytesSync());
+    // byteData = uint8list;
+    setState(() {
+      imageFile = File(pickedFile!.path);
+    });
+  }
 
 
   @override
@@ -206,19 +222,60 @@ class _EditProfileState extends State<EditProfile> {
                                 image: AssetImage(
                                     'assets/images/default_user_icon.png'))),
                       ),
+
+                      Container(
+                          child: imageFile != null
+                              ?Container(
+                            height: 130,
+                            width: 130,
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 4, color: Colors.white),
+                                boxShadow: [
+                                  BoxShadow(
+                                      spreadRadius: 2,
+                                      blurRadius: 10,
+                                      color: Colors.black.withOpacity(0.1))
+                                ],
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: FileImage(imageFile!),
+                                )
+                            ),
+                          )
+                              :Container(
+                            height: 130,
+                            width: 130,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 4, color: Colors.white),
+                              boxShadow: [
+                                BoxShadow(
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    color: Colors.black.withOpacity(0.1))
+                              ],
+                              shape: BoxShape.circle,
+                            ),
+                          )
+                      ),
                       Positioned(
                         bottom: 0,
                         right: 0,
                         child: Container(
-                          height: 40,
-                          width: 40,
+                          height: 50,
+                          width: 50,
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(width: 4, color: Colors.white),
                               color: shrinePink400),
-                          child: const Icon(
-                            Icons.edit,
+                          child: IconButton(
+                            icon: const Icon(Icons.edit),
                             color: Colors.white,
+                            onPressed: () {
+                              setState(() {
+                                chooseImage(ImageSource.gallery);
+                              });
+                            },
                           ),
                         ),
                       )

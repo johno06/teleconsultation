@@ -33,7 +33,7 @@ class _MyHomePageState extends State<SignaturePage> {
     ].request();
     final info = statuses[Permission.storage].toString();
     print(info);
-    _toastInfo(info);
+    // _toastInfo(info);
   }
 
   void _handleClearButtonPressed() {

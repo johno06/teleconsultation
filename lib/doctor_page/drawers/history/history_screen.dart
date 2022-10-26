@@ -30,7 +30,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   UserFetch userFetch = UserFetch(id: '', email: '', name: '', surname: '',
       birthdate: '', address: '', phone: '', gender: '', isDoctor: false,
       emailVerificationToken: '', verified: true, isAdmin: false, createdAt: '',
-      updatedAt: '', password: '');
+      updatedAt: '', password: '', devices:['']);
 
   SharedPreferences? appointmentData;
   String? email, fName, lastName, contactNumber, user_id;
@@ -63,7 +63,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 child: NoTranscationMessage(
                   messageTitle: "No Completed Appointments.",
                   messageDesc:
-                  "Book appointment now.",
+                  "",
                 )))
             : ListView.builder(
             itemCount: appointments.length,

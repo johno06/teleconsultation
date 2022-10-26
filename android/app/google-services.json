@@ -1,0 +1,118 @@
+{
+  "project_info": {
+    "project_number": "150389108065",
+    "project_id": "fcmtest-8658e",
+    "storage_bucket": "fcmtest-8658e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150389108065:android:03472fc2f7fbca021ce920",
+        "android_client_info": {
+          "package_name": "com.example.apifcm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150389108065-ul7b2o1prv687sf3k8cmpgsq1gi1vuga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt2MnMC9zm2rifE01k5DUc4kLs28RDrVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150389108065-ul7b2o1prv687sf3k8cmpgsq1gi1vuga.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "150389108065-9275fhvp0gufrn63fbvg6pccr5g03h9m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fcmtest"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150389108065:android:9e32d944747541011ce920",
+        "android_client_info": {
+          "package_name": "com.example.fcmtest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150389108065-ul7b2o1prv687sf3k8cmpgsq1gi1vuga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt2MnMC9zm2rifE01k5DUc4kLs28RDrVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150389108065-ul7b2o1prv687sf3k8cmpgsq1gi1vuga.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "150389108065-9275fhvp0gufrn63fbvg6pccr5g03h9m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fcmtest"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150389108065:android:7f80e8be58303a731ce920",
+        "android_client_info": {
+          "package_name": "com.example.teleconsultation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150389108065-ul7b2o1prv687sf3k8cmpgsq1gi1vuga.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAt2MnMC9zm2rifE01k5DUc4kLs28RDrVE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150389108065-ul7b2o1prv687sf3k8cmpgsq1gi1vuga.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "150389108065-9275fhvp0gufrn63fbvg6pccr5g03h9m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fcmtest"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

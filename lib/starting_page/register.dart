@@ -1,4 +1,5 @@
 // ignore_for_file: must_be_immutable
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +26,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool agree = false;
    // TermsAndConditions tc = TermsAndConditions();
 
+  String? mtoken = " ";
+
+  void initial() async{
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getToken();
+    });
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        // print(mtoken);
+      });
+    });
+  }
   Future addUser() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        // print(mtoken);
+      });
+    });
     if(_formkey.currentState!.validate()) {
       //print("successful");
+      print(mtoken);
+      String devId = newUser.deviceId;
       Map data = {
         "name": newUser.fName,
         // "lName": newUser.lName,
@@ -36,7 +61,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         // "birthday": newUser.birthday,
         // "homeAddress": newUser.homeAddress,
         "password": newUser.password,
-        "confirmPassword": newUser.cPassword
+        "confirmPassword": newUser.cPassword,
+        "devices": ["$mtoken"]
       };
       //String body = json.encode(data);
       http.Response response = await http.post(
@@ -75,9 +101,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  User newUser = User('','','','','','','','');
+  User newUser = User('','','','','','','','','');
   // ignore: prefer_typing_uninitialized_variables
-  var fname, lname, email, contactno, password, cpassword, birthday, homeAddress,token;
+  var fname, lname, email, contactno, password, cpassword, birthday, homeAddress,token, deviceId;
 
 
   //TextController to read text entered in text field

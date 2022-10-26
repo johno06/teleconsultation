@@ -132,15 +132,6 @@ class _ChangePasswordState extends State<ChangePassword> {
                 textColor: Colors.white,
                 fontSize: 16.0));
       }
-      // if (response.statusCode != 200) {
-      //   Fluttertoast.showToast(
-      //       msg: "Update Failed try other email",
-      //       toastLength: Toast.LENGTH_SHORT,
-      //       gravity: ToastGravity.BOTTOM,
-      //       backgroundColor: Colors.redAccent,
-      //       textColor: Colors.white,
-      //       fontSize: 16.0);
-      // }
     }else{
       Fluttertoast.showToast(
                 msg: "Please input all fields",

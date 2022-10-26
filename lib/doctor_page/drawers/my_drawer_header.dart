@@ -48,11 +48,11 @@ class _DoctorMyHeaderDrawerState extends State<DoctorMyHeaderDrawer> {
         children: [
           Container(
             margin: const EdgeInsets.only(bottom: 10),
-            height: 70,
+            height: 90,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: AssetImage('assets/images/default_user_icon.png'),
+                image: AssetImage('assets/profile/johno.jpg'),
               ),
             ),
           ),

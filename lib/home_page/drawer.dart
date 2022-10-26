@@ -1,6 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
+import 'dart:convert';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
@@ -15,6 +19,7 @@ import 'drawers/home_screen.dart';
 import 'drawers/my_drawer_header.dart';
 import 'drawers/profile.dart';
 import 'drawers/terms.dart';
+import 'package:http/http.dart' as http;
 
 
 //
@@ -46,10 +51,8 @@ class _HomePageState extends State<HomePage> {
     // logLevel: Level.INFO,
   );
 
-
-
  late SharedPreferences loginData;
- late String email, name;
+ late String email, name, patientDevice, id;
 
   @override
   void initState(){
@@ -60,8 +63,10 @@ class _HomePageState extends State<HomePage> {
   void initial() async{
     loginData = await SharedPreferences.getInstance();
     setState(() {
+      id = loginData.getString('_id')!;
       email = loginData.getString('email')!;
       name = loginData.getString('name')!;
+      patientDevice = loginData.getString('patientDevice')!;
     });
   }
 
@@ -90,6 +95,49 @@ class _HomePageState extends State<HomePage> {
   //     });
   //   }
   // }
+
+  Future update(id ) async {
+    loginData = await SharedPreferences.getInstance();
+
+    Map data = {
+      "devices": [""],
+    };
+    String body = json.encode(data);
+    http.Response response = await http.patch(
+      Uri.parse('https://newserverobgyn.herokuapp.com/api/user/checkDevice/$id'),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    //print(response.body);
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Updated Successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }else{
+      Fluttertoast.showToast(
+          msg: "Update Failed try other email",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+
+    // if(response.statusCode != 200){
+    //   Fluttertoast.showToast(
+    //       msg: "Update Failed try other email",
+    //       toastLength: Toast.LENGTH_SHORT,
+    //       gravity: ToastGravity.BOTTOM,
+    //       backgroundColor: Colors.redAccent,
+    //       textColor: Colors.white,
+    //       fontSize: 16.0);
+    // }
+
+  }
 
   var currentPage = DrawerSections.dashboard;
 
@@ -139,8 +187,16 @@ class _HomePageState extends State<HomePage> {
                     loginData.setBool('login', true);
                     SharedPreferences prefs = await SharedPreferences.getInstance();
                     prefs.clear();
-                    Navigator.pushReplacement(context,
-                         MaterialPageRoute(builder: (context) => const LoginScreen()));
+                    // Navigator.pushReplacement(context,
+                    //      MaterialPageRoute(builder: (context) => const LoginScreen()));
+                    // print("this is the token: $patientDevice");
+                    update(id);
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (BuildContext context) {
+                          return const LoginScreen();
+                        },
+                        ), (router) => false);
 
                   })
             ],
