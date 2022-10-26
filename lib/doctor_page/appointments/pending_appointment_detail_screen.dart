@@ -415,7 +415,7 @@ class _PendingDetailScreenState extends State<PendingDetailScreen> {
                     update = "rejected";
                     if(update == "rejected"){
                       updateAppointment(context, widget.appointmentId);
-
+                      print("this is the $deviceId");
                       sendPushMessage('Dr: Marilyn Fuentes rejected your appointment', 'Teleconsultation', '$deviceId');
                     }
 
@@ -435,7 +435,7 @@ class _PendingDetailScreenState extends State<PendingDetailScreen> {
                     update = "approved";
                     if(update == "approved"){
                       updateAppointment(context, widget.appointmentId);
-
+                      print("this is the $deviceId");
                       sendPushMessage('Dr: Marilyn Fuentes approved your appointment', 'Teleconsultation', '$deviceId');
                     }
                     // print(update);

@@ -50,9 +50,8 @@ class _HomePageState extends State<HomePage> {
   final client = StreamChatClient(streamKey
     // logLevel: Level.INFO,
   );
-
- late SharedPreferences loginData;
- late String email, name, patientDevice, id;
+ SharedPreferences? loginData;
+ String? email, name, patientDevice, id;
 
   @override
   void initState(){
@@ -63,10 +62,10 @@ class _HomePageState extends State<HomePage> {
   void initial() async{
     loginData = await SharedPreferences.getInstance();
     setState(() {
-      id = loginData.getString('_id')!;
-      email = loginData.getString('email')!;
-      name = loginData.getString('name')!;
-      patientDevice = loginData.getString('patientDevice')!;
+      id = loginData?.getString('_id');
+      email = loginData?.getString('email');
+      name = loginData?.getString('name');
+      patientDevice = loginData?.getString('patientDevice');
     });
   }
 
@@ -110,21 +109,21 @@ class _HomePageState extends State<HomePage> {
     );
     //print(response.body);
     if (response.statusCode == 200) {
-      Fluttertoast.showToast(
-          msg: "Updated Successfully",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      // Fluttertoast.showToast(
+      //     msg: "Updated Successfully",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     backgroundColor: Colors.green,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
     }else{
-      Fluttertoast.showToast(
-          msg: "Update Failed try other email",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      // Fluttertoast.showToast(
+      //     msg: "Update Failed try other email",
+      //     toastLength: Toast.LENGTH_SHORT,
+      //     gravity: ToastGravity.BOTTOM,
+      //     backgroundColor: Colors.redAccent,
+      //     textColor: Colors.white,
+      //     fontSize: 16.0);
     }
 
     // if(response.statusCode != 200){
@@ -183,8 +182,8 @@ class _HomePageState extends State<HomePage> {
                   title: const Text("Logout",
                     style: TextStyle(fontSize: 20),),
                   onTap: () async{
-                    //print("Logout Users");
-                    loginData.setBool('login', true);
+                    print("this is the: $patientDevice");
+                    loginData?.setBool('login', true);
                     SharedPreferences prefs = await SharedPreferences.getInstance();
                     prefs.clear();
                     // Navigator.pushReplacement(context,

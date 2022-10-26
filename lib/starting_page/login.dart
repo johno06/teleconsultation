@@ -167,13 +167,13 @@ class _LoginScreenState extends State<LoginScreen> {
         loginData.setString('createdAt', userval.createdAt);
         loginData.setString('updatedAt', userval.updatedAt);
         loginData.setString('password', userval.password);
-        for(var i = 0; i<userval.devices.length; i++){
-          if(mtoken == userval.devices[i]){
-            loginData.setString('patientDevice', userval.devices[i]);
-          }
+        // for(var i = 0; i<userval.devices.length; i++){
+        //   if(mtoken == userval.devices[i]){
+        loginData.setString('patientDevice', mtoken!);
+          // }
           // deviceList.add(userval.devices[i]);
           // print(deviceList[i]);
-        }
+        // }
 
         Navigator.pushAndRemoveUntil(
             context,
