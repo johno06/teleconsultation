@@ -52,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-
   Future update(id ) async {
     loginData = await SharedPreferences.getInstance();
 
