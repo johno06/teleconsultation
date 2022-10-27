@@ -105,7 +105,7 @@ class _MyAppointmentState extends State<MyAppointment> {
     final tz.TZDateTime scheduledAt = tz.TZDateTime.from(inputDate, tz.local);
 
     flutterLocalNotificationsPlugin.zonedSchedule(
-        01, "Teleconsultation", "Your booking will start in 7:55pm minutes.", scheduledAt, notificationDetails,
+        01, "Teleconsultation", "Your booking will start in 1 hour.", scheduledAt, notificationDetails,
         uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.wallClockTime,
         androidAllowWhileIdle: true,
@@ -141,7 +141,7 @@ class _MyAppointmentState extends State<MyAppointment> {
     final tz.TZDateTime scheduledAt = tz.TZDateTime.from(inputDate, tz.local);
 
     flutterLocalNotificationsPlugin.zonedSchedule(
-        02, "Teleconsultation", "Your booking will start in 7:57pm minutes.", scheduledAt, notificationDetails,
+        02, "Teleconsultation", "Your booking will start in 5 minutes.", scheduledAt, notificationDetails,
         uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.wallClockTime,
         androidAllowWhileIdle: true,
