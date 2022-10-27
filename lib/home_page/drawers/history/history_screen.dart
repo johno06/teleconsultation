@@ -27,6 +27,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   DoctorFetch appointmentVal = DoctorFetch(userId: '', doctorName: '', doctorLastName: '');
 
   SharedPreferences? appointmentData;
+  SharedPreferences? loginData;
   String? email, fName, lastName, contactNumber, user_id;
   DateTime _dateTime = DateTime.now();
   final todayFormat = DateFormat("EEEE");
@@ -41,6 +42,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   void initial() async{
+    loginData = await SharedPreferences.getInstance();
+    setState(() {
+      user_id = loginData?.getString('_id');
+      print("eto: $user_id");
+    });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchAppointments();
     });
@@ -63,68 +69,76 @@ class _HistoryScreenState extends State<HistoryScreen> {
             itemCount: appointments.length,
             itemBuilder: (BuildContext context, int index) {
               final appointment = appointments[index];
-              final doctorData = appointment['doctorInfo'];
-              final appointmentDate = appointment['date'];
-              final appointmentTime = appointment['time'];
-              appointmentVal = DoctorFetch.fromJson(doctorData);
-              final docName = appointmentVal.doctorName;
-              final docLname = appointmentVal.doctorLastName;
-              final parseDate = DateTime.parse(appointmentDate);
-              final String bookingToday = todayFormat.format(parseDate);
-              final String bookingMonth = monthFormat.format(parseDate);
-              final String bookingDay = dayFormat.format(parseDate);
-              return InkWell(
-                onTap: () {},
-                splashColor: primaryColor100,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage('assets/images/doctor1.png'
-                                    ''
-                                    ''))),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Doctor: $docName $docLname',
-                            style: normalTextStyle,
+              final userId = appointment['userId'];
+              print(userId);
+              if(userId == user_id){
+                final doctorData = appointment['doctorInfo'];
+                final appointmentDate = appointment['date'];
+                final appointmentTime = appointment['time'];
+                appointmentVal = DoctorFetch.fromJson(doctorData);
+                final docName = appointmentVal.doctorName;
+                final docLname = appointmentVal.doctorLastName;
+                final parseDate = DateTime.parse(appointmentDate);
+                final String bookingToday = todayFormat.format(parseDate);
+                final String bookingMonth = monthFormat.format(parseDate);
+                final String bookingDay = dayFormat.format(parseDate);
+                return InkWell(
+                  onTap: () {},
+                  splashColor: primaryColor100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage('assets/images/doctor1.png'
+                                      ''
+                                      ''))),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Doctor: $docName $docLname',
+                                style: normalTextStyle,
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text('Date: $appointmentDate ($bookingToday) \nTime: $appointmentTime',
+                                  style: normalTextStyle),
+                            ],
                           ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Text('Date: $appointmentDate ($bookingToday) \nTime: $appointmentTime',
-                              style: normalTextStyle),
-                        ],
-                      ),
-                      const Spacer(),
-                      Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.green)),
-                          child: Text(
-                            "Completed",
-                            style: normalTextStyle.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.green),
-                          ))
-                    ],
+                        ),
+                        // const Spacer(),
+                        Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.green)),
+                            child: Text(
+                              "Completed",
+                              style: normalTextStyle.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.green),
+                            ))
+                      ],
+                    ),
                   ),
-                ),
-              );
+                );
+              }else{
+                return const SizedBox(height: 0.0,);
+              }
             }));
   }
 

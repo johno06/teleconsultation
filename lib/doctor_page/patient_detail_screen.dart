@@ -342,7 +342,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                   );
                 }else{
                   // throw contactNumber;
-                  return SizedBox.shrink();
+                  return SizedBox(height: 0);
                 }
               },
               // separatorBuilder: (BuildContext context, int index) => const Divider(),

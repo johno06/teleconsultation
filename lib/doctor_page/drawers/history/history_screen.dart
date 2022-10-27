@@ -91,7 +91,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       Container(
                         width: 50,
                         height: 50,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             image: DecorationImage(
                                 fit: BoxFit.cover,
@@ -102,19 +102,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       const SizedBox(
                         width: 16,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Patient: $patientName $patientLname',
-                            style: normalTextStyle,
-                          ),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          Text('Date: $appointmentDate ($bookingToday) \nTime: $appointmentTime',
-                              style: normalTextStyle),
-                        ],
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Patient: $patientName $patientLname',
+                              style: normalTextStyle,
+                            ),
+                            const SizedBox(
+                              height: 4,
+                            ),
+                            Text('Date: $appointmentDate ($bookingToday) \nTime: $appointmentTime',
+                                style: normalTextStyle),
+                          ],
+                        ),
                       ),
                       const Spacer(),
                       Container(
