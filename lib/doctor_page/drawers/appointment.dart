@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../constant.dart';
+import '../../doctor.dart';
 import '../../user.dart';
 import '../components/patient_appointment.dart';
 import '../components/patient_approved_appointment.dart';
@@ -30,11 +31,14 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
   final timeFormat = DateFormat("hh:mm aaa");
 
   late SharedPreferences loginData;
-  String? email, fName, lastName, contactNumber;
+  SharedPreferences? deviceOfPatient;
+  String? email, fName, lastName, contactNumber,user_id;
 
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
       phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
       isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
+
+  DoctorFetch doctorVal = DoctorFetch(userId: '', doctorName: '', doctorLastName: '');
 
   @override
   void initState(){
@@ -49,6 +53,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
       fName = loginData.getString('name')!;
       lastName = loginData.getString('surname')!;
       contactNumber = loginData.getString('phone')!;
+      user_id = loginData.getString('_id')!;
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchAppointments();
@@ -153,6 +158,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
 
     // appointmentData = await SharedPreferences.getInstance();
     // clientData = await SharedPreferences.getInstance();
+    deviceOfPatient = await SharedPreferences.getInstance();
 
     print(json['data']);
     setState(() {
@@ -176,7 +182,10 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
                 final appointment = appointments[index];
                 final userData = appointment['userInfo'];
                 userval = UserFetch.fromJson(userData);
+                final doctorData = appointment['doctorInfo'];
+                doctorVal = DoctorFetch.fromJson(doctorData);
                 // if(patientId == userval.id){
+                if(user_id == doctorVal.userId){
                   final appointmentId = appointment['_id'];
                   final date = appointment['date'];
                   final time = appointment['time'];
@@ -190,18 +199,20 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
                   final patientSurname = userval.surname;
                   final patientEmail = userval.email;
                   final patientPhone = userval.phone;
-                  print(patientPhone);
+                  final patientDevice = userval.devices[0];
+                  // print("this is the patient: $patientDevice");
+                  deviceOfPatient?.setString('deviceToken', patientDevice);
                   return PatientAppointmentScheduleCard(
                     // 'Consultation',
                     patientName, patientSurname, patientPhone, patientEmail,
                     bookingToday, time,
-                    date, bookingDay, bookingMonth, appointmentId,
+                    date, bookingDay, bookingMonth, patientDevice ,appointmentId,
                     kBlueColor,
                   );
-                // }else{
-                //   // throw contactNumber;
-                //   return SizedBox.shrink();
-                // }
+                }else{
+                  // throw contactNumber;
+                  return Container();
+                }
               },
               separatorBuilder: (BuildContext context, int index) => const Divider(),
             ),

@@ -430,7 +430,6 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                   final patientGender = patient['gender'];
                   final patientAddress = patient['address'];
                   final patientDevice = patient['devices'][0];
-                  // print(patientDevice);
                   patientData?.setString('patientDevice', patientDevice);
                   patientData?.setString('patientId', patientId);
                   patientData?.setString('patientName', patientName);
@@ -517,12 +516,11 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                     final patientPhone = userval.phone;
                     final patientDevice = userval.devices[0];
                     deviceOfPatient?.setString('deviceOfPatient', patientDevice);
-                    print(patientDevice);
                     return PatientScheduleCard(
                       // 'Consultation',
                       patientName, patientSurname, patientPhone, patientEmail,
                       bookingToday, time,
-                      date, bookingDay, bookingMonth, appointmentId,
+                      date, bookingDay, bookingMonth, patientDevice,appointmentId,
                       kBlueColor,
                     );
                   }else{

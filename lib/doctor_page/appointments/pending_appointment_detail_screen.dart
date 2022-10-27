@@ -55,10 +55,10 @@ class PendingDetailScreen extends StatefulWidget {
   //   });
   // }
   dynamic patientName, patientSurname, patientPhone, patientEmail, bookingToday,
-      time, bookingDate, appointmentId;
+      time, bookingDate, appointmentId, patientDevice;
 
   PendingDetailScreen(this.patientName, this.patientSurname, this.patientPhone,
-      this.patientEmail, this.bookingToday, this.time, this.bookingDate, this.appointmentId,
+      this.patientEmail, this.bookingToday, this.time, this.bookingDate, this.appointmentId, this.patientDevice,
       {Key? key}) : super(key: key);
 
   @override
@@ -84,7 +84,7 @@ class _PendingDetailScreenState extends State<PendingDetailScreen> {
     deviceOfPatient = await SharedPreferences.getInstance();
     setState(() {
       deviceId = deviceOfPatient.getString('deviceOfPatient')!;
-      print(deviceId);
+      print("ETO BAGO: ${widget.patientDevice}");
     });
   }
 
@@ -416,7 +416,7 @@ class _PendingDetailScreenState extends State<PendingDetailScreen> {
                     if(update == "rejected"){
                       updateAppointment(context, widget.appointmentId);
                       print("this is the $deviceId");
-                      sendPushMessage('Dr: Marilyn Fuentes rejected your appointment', 'Teleconsultation', '$deviceId');
+                      sendPushMessage('Dr: Marilyn Fuentes rejected your appointment Date:${widget.bookingDate}(${widget.bookingToday}) Time: ${widget.time}', 'Teleconsultation', '${widget.patientDevice}');
                     }
 
                     // print(update);
@@ -435,8 +435,7 @@ class _PendingDetailScreenState extends State<PendingDetailScreen> {
                     update = "approved";
                     if(update == "approved"){
                       updateAppointment(context, widget.appointmentId);
-                      print("this is the $deviceId");
-                      sendPushMessage('Dr: Marilyn Fuentes approved your appointment', 'Teleconsultation', '$deviceId');
+                      sendPushMessage('Dr: Marilyn Fuentes approved your appointment Date:${widget.bookingDate}(${widget.bookingToday}) Time: ${widget.time}', 'Teleconsultation', '${widget.patientDevice}');
                     }
                     // print(update);
                   },

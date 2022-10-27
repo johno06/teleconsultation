@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -26,37 +29,192 @@ import '../../constant.dart';
 // }
 
 // class _PendingDetailScreenState extends State<PendingDetailScreen> {
-class ApprovedDetailScreen extends StatelessWidget {
-//   String? patientEmail, patientName, patientSurname, patientPhone, date, bookingDay, time;
-
-  // SharedPreferences? patientData;
-  //
-  // @override
-  // void initState(){
-  //   super.initState();
-  //   initial();
-  // }
-  //
-  // void initial() async{
-  //   patientData = await SharedPreferences.getInstance();
-  //   setState(() {
-  // patientEmail = patientData?.getString('patientEmail')!;
-  // patientName = patientData?.getString('patientName')!;
-  // patientSurname = patientData?.getString('patientSurname')!;
-  // patientPhone = patientData?.getString('patientPhone')!;
-  // date = patientData?.getString('bookingDate')!;
-  // bookingDay = patientData?.getString('bookingDay')!;
-  // time = patientData?.getString('bookingTime')!;
-  //   });
-  // }
+class ApprovedDetailScreen extends StatefulWidget {
   dynamic patientName, patientSurname, patientPhone, patientEmail, bookingToday,
-      time, bookingDate, appointmentId;
+      time, bookingDate, appointmentId, patientDevice;
 
   ApprovedDetailScreen(this.patientName, this.patientSurname, this.patientPhone,
-      this.patientEmail, this.bookingToday, this.time, this.bookingDate, this.appointmentId,
+      this.patientEmail, this.bookingToday, this.time, this.bookingDate, this.appointmentId, this.patientDevice,
       {Key? key}) : super(key: key);
 
+  @override
+  State<ApprovedDetailScreen> createState() => _ApprovedDetailScreenState();
+}
+
+class _ApprovedDetailScreenState extends State<ApprovedDetailScreen> {
   String update = "";
+
+  late SharedPreferences deviceOfPatient;
+  late String deviceId;
+
+  @override
+  void initState(){
+    super.initState();
+    initial();
+    requestPermission();
+    loadFCM();
+    listenFCM();
+  }
+
+  void initial() async{
+    deviceOfPatient = await SharedPreferences.getInstance();
+    setState(() {
+      deviceId = deviceOfPatient.getString('deviceToken')!;
+      print(widget.patientDevice);
+    });
+  }
+
+  var channel = const AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    importance: Importance.high,
+    enableVibration: true,
+  );
+
+  var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('User granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('User granted provisional permission');
+    } else {
+      print('User declined or has not accepted permission');
+    }
+  }
+
+  void loadFCM() async {
+    if (!kIsWeb) {
+      var channel = const AndroidNotificationChannel(
+        'high_importance_channel', // id
+        'High Importance Notifications', // title
+        importance: Importance.high,
+        enableVibration: true,
+      );
+
+      var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+      /// Create an Android Notification Channel.
+      ///
+      /// We use this channel in the `AndroidManifest.xml` file to override the
+      /// default FCM channel to enable heads up notifications.
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+
+      /// Update the iOS foreground notification presentation options to allow
+      /// heads up notifications.
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    }
+  }
+
+  void listenFCM() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+      if (notification != null && android != null && !kIsWeb) {
+        flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              // TODO add a proper drawable resource to android, for now using
+              //      one that already exists in example app.
+              icon: 'launch_background',
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  Future sendPushMessage(String body, String title, String token) async {
+    try {
+      const postUrl = 'https://fcm.googleapis.com/fcm/send';
+      final data = {
+        "to": token,
+        "notification": {
+          "title": title,
+          "body": body,
+          "sound" : "default"
+        },
+        "data": {
+          "type": '0rder',
+          "id": '28',
+          "click_action": 'FLUTTER_NOTIFICATION_CLICK',
+        },
+      };
+
+      final headers = {
+        'content-type': 'application/json',
+        'Authorization':
+        'key=AAAAIwPjrWE:APA91bEEQEXPtx7sNQzuR7mMer8ypL8v7w-JKtMuiAKt9S2xovbiuvKLyv40oUcmG3jHzTSb0vEfJpFZUBdv3s6pVsXf1CCLr4REjuvvP_YeE9aH4NRkVj5V_Uzfe5BssluGiy0zixiE'};
+
+
+      final response = await http.post(Uri.parse(postUrl),
+          body: json.encode(data),
+          encoding: Encoding.getByName('utf-8'),
+          headers: headers);
+      if (response.statusCode == 200) {
+        // on success do sth
+        print('test ok push CFM');
+      } else {
+        print(' CFM error');
+        // on failure do sth
+      }
+      //
+      //
+      // await http.post(
+      //   Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      //   headers: <String, String>{
+      //     'Content-Type': 'application/json',
+      //     'Authorization':
+      //     'key=AAAAIwPjrWE:APA91bEEQEXPtx7sNQzuR7mMer8ypL8v7w-JKtMuiAKt9S2xovbiuvKLyv40oUcmG3jHzTSb0vEfJpFZUBdv3s6pVsXf1CCLr4REjuvvP_YeE9aH4NRkVj5V_Uzfe5BssluGiy0zixiE',
+      //   },
+      //   body: jsonEncode(
+      //     <String, dynamic>{
+      //       'notification': <String, dynamic>{
+      //         'body': body,
+      //         'title': title,
+      //       },
+      //       'priority': 'high',
+      //       'data': <String, dynamic>{
+      //         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      //         'id': '1',
+      //         'status': 'done'
+      //       },
+      //       "to": token,
+      //     },
+      //   ),
+      // );
+      // print('done');
+    } catch (e) {
+      print("error push notification");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +245,7 @@ class ApprovedDetailScreen extends StatelessWidget {
                     ),
                     Flexible(
                       child: Text(
-                        "$patientName $patientSurname",
+                        "${widget.patientName} ${widget.patientSurname}",
                         overflow: TextOverflow.visible,
                         style: addressTextStyle,
                       ),
@@ -116,7 +274,7 @@ class ApprovedDetailScreen extends StatelessWidget {
                     ),
                     Flexible(
                       child: Text(
-                        "$patientPhone",
+                        "${widget.patientPhone}",
                         overflow: TextOverflow.visible,
                         style: addressTextStyle,
                       ),
@@ -138,7 +296,7 @@ class ApprovedDetailScreen extends StatelessWidget {
                     ),
                     Flexible(
                       child: Text(
-                        "$patientEmail",
+                        "${widget.patientEmail}",
                         overflow: TextOverflow.visible,
                         style: addressTextStyle,
                       ),
@@ -170,7 +328,7 @@ class ApprovedDetailScreen extends StatelessWidget {
                       width: 16.0,
                     ),
                     Text(
-                      "$bookingDate ($bookingToday)",
+                      "${widget.bookingDate} (${widget.bookingToday})",
                       style: descTextStyle,
                     ),
                   ],
@@ -188,7 +346,7 @@ class ApprovedDetailScreen extends StatelessWidget {
                       width: 16.0,
                     ),
                     Text(
-                      "$time",
+                      "${widget.time}",
                       style: descTextStyle,
                     ),
                   ],
@@ -241,8 +399,8 @@ class ApprovedDetailScreen extends StatelessWidget {
                   onPressed: () {
                     update = "completed";
                     if(update == "completed"){
-                      updateAppointment(context, appointmentId);
-
+                      sendPushMessage('Dr: Marilyn Fuentes completed your appointment', 'Teleconsultation', '${widget.patientDevice}');
+                      updateAppointment(context, widget.appointmentId);
                     }
                     // print(update);
                   },
@@ -309,7 +467,6 @@ class ApprovedDetailScreen extends StatelessWidget {
     );
   }
 
-
   Future updateAppointment(BuildContext context, id) async {
     Map data = {
       "status": update,
@@ -344,5 +501,4 @@ class ApprovedDetailScreen extends StatelessWidget {
               fontSize: 16.0));
     }
   }
-
 }

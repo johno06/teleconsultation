@@ -8,10 +8,10 @@ class PatientScheduleCard extends StatelessWidget {
   dynamic _bgColor;
   dynamic bookingDay, bookingMonth, appointmentId;
 
-  dynamic patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date;
+  dynamic patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, patientDevice;
 
   PatientScheduleCard(this.patientName, this.patientSurname, this.patientPhone, this.patientEmail, this.bookingToday, this.bookingTime, this.date,
-      this.bookingDay, this.bookingMonth, this.appointmentId, this._bgColor, {Key? key}) : super(key: key);
+      this.bookingDay, this.bookingMonth, this.patientDevice,this.appointmentId, this._bgColor, {Key? key}) : super(key: key);
 
 //   @override
 //   State<PatientScheduleCard> createState() => _PatientScheduleCardState();
@@ -27,7 +27,7 @@ class PatientScheduleCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) =>
                 // PendingDetailScreen(),
-              PendingDetailScreen(patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, appointmentId),
+              PendingDetailScreen(patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, appointmentId, patientDevice),
           ),
         );
       },
