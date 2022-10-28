@@ -3,11 +3,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:teleconsultation/doctor_page/drawer.dart';
+import 'package:teleconsultation/services/updateDoctor.dart';
 import '../../services/updateservices.dart';
 
 // void main(){
@@ -39,14 +41,40 @@ bool isObscurePassword = true;
 
 class _DoctorEditProfileState extends State<DoctorEditProfile> {
   late SharedPreferences loginData;
-  String? id, email, fName, lastName, contactNumber, birthday, homeAddress;
+  String? id, email, fName, lastName, contactNumber, birthday, homeAddress, doctorId, openTime, closeTime, experience, specialization;
+  int? fee;
 
+  int firstTime = 0;
+  int secondTime = 0;
   Color shrinePink400 = const Color(0xFFEAA4A4);
 
 
-  UpdateUser updateUser = UpdateUser('','','','','','','','');
+  UpdateUser updateDoctor = UpdateUser('','','','','','','','');
+  UpdateDoctor updateUser = UpdateDoctor('', '', '', '', '', '', '', '', '');
   // ignore: prefer_typing_uninitialized_variables
   // var fname, lname, email, contactno, password, cpassword, birthday, homeAddress,token;
+
+  var value;
+  List<String> timeList = [
+    "06:00",
+    "07:00",
+    "08:00",
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+    "21:00",
+    "22:00",
+    "23:00"
+  ];
 
 
   @override
@@ -59,21 +87,33 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
     loginData = await SharedPreferences.getInstance();
     setState(() {
       id = loginData.getString('_id');
+      doctorId = loginData.getString('doctorId');
       email = loginData.getString('email')!;
       fName = loginData.getString('name')!;
       lastName = loginData.getString('surname')!;
       contactNumber = loginData.getString('phone')!;
-      birthday = loginData.getString('birthdate')!;
       homeAddress = loginData.getString('address')!;
+      openTime = loginData.getString('openTime');
+      closeTime = loginData.getString('lastTime');
+      experience = loginData.getString('experience');
+      specialization = loginData.getString('specialization');
+      fee = loginData.getInt('fee');
+    });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      for(int i = 0; i<timeList.length; i++){
+        if(openTime == timeList[i]){
+          firstTime = i;
+        }
+        if(closeTime == timeList[i]){
+          secondTime = i;
+        }
+      }
     });
   }
 
   Future update(id) async {
     loginData = await SharedPreferences.getInstance();
 
-    if(updateUser.email == ""){
-      updateUser.email = "$email";
-    }
     if(updateUser.fName == ""){
       updateUser.fName = "$fName";
     }
@@ -86,18 +126,29 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
     if(updateUser.homeAddress == ""){
       updateUser.homeAddress = "$homeAddress";
     }
-    if(updateUser.birthday == ""){
-      updateUser.birthday = "$birthday";
+    if(updateUser.openTime == ""){
+      updateUser.openTime = "$openTime";
+    }
+    if(updateUser.closeTime == ""){
+      updateUser.closeTime = "$closeTime";
+    }
+    if(updateUser.experience == ""){
+      updateUser.experience = "$experience";
+    }
+    if(updateUser.specialization == ""){
+      updateUser.specialization = "$specialization";
     }
 
-
     Map data = {
-      "email": updateUser.email,
-      "name": updateUser.fName,
-      "surname": updateUser.lName,
-      "phone": updateUser.contactNo,
+      "firstName": updateUser.fName,
+      "lastName": updateUser.lName,
+      "phoneNumber": updateUser.contactNo,
       "address": updateUser.homeAddress,
-      "birthdate": updateUser.birthday,
+      "specialization": updateUser.specialization,
+      "experience": updateUser.experience,
+      "fee": '650',
+      "timings": [updateUser.openTime, updateUser.closeTime],
+
     };
 
     // else{
@@ -112,7 +163,7 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
 
     String bodyDoc = json.encode(data);
     http.Response responseDoc = await http.patch(
-      Uri.parse('https://newserverobgyn.herokuapp.com/api/user/updateProfile/$id'),
+      Uri.parse('https://newserverobgyn.herokuapp.com/api/doctor/updateDoctorProfile/$doctorId'),
       headers: {"Content-Type": "application/json"},
       body: bodyDoc,
     );
@@ -124,12 +175,15 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 16.0);
-      loginData.setString('email', updateUser.email);
+      // loginData.setString('email', updateUser.email);
       loginData.setString('name', updateUser.fName);
       loginData.setString('surname', updateUser.lName);
       loginData.setString('phone', updateUser.contactNo);
-      loginData.setString('birthdate', updateUser.birthday);
       loginData.setString('address', updateUser.homeAddress);
+      loginData.setString('specialization', updateUser.specialization);
+      loginData.setString('experience', updateUser.experience);
+      loginData.setString('openTime', updateUser.openTime);
+      loginData.setString('lastTime', updateUser.closeTime);
       Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const DoctorPage()));
@@ -248,53 +302,63 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
                 //       },
                 //     )
                 // ),
-                Padding(
-                    padding: const EdgeInsets.only(bottom: 30),
-                    child: TextFormField(
-                      // controller: fName_controller,
-                      controller: TextEditingController(
-                          text: fName
+
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: TextFormField(
+                            // controller: fName_controller,
+                            controller: TextEditingController(
+                                text: fName
+                            ),
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                                labelText:"First Name",
+                                hintText: fName
+                            ),
+                            validator: (String ? value){
+                              if(value != null && value.isEmpty)
+                              {
+                                return 'Please Enter Your First Name';
+                              }
+                              return null;
+                            },
+                            onChanged:(value){
+                              updateUser.fName = value;
+                            },
+                          )
                       ),
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                          labelText:"First Name",
-                          hintText: fName
+                    ),
+                    const SizedBox(width: 16,),
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: TextFormField(
+                            // controller: lastName_controller,
+                            controller: TextEditingController(
+                                text: lastName
+                            ),
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                                labelText:"Last Name",
+                                hintText: lastName
+                            ),
+                            validator: (String ? value){
+                              if(value != null && value.isEmpty)
+                              {
+                                return 'Please Enter Your Last Name';
+                              }
+                              return null;
+                            },
+                            onChanged:(value){
+                              updateUser.lName = value;
+                            },
+                          )
                       ),
-                      validator: (String ? value){
-                        if(value != null && value.isEmpty)
-                        {
-                          return 'Please Enter Your First Name';
-                        }
-                        return null;
-                      },
-                      onChanged:(value){
-                        updateUser.fName = value;
-                      },
-                    )
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(bottom: 30),
-                    child: TextFormField(
-                      // controller: lastName_controller,
-                      controller: TextEditingController(
-                          text: lastName
-                      ),
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                          labelText:"Last Name",
-                          hintText: lastName
-                      ),
-                      validator: (String ? value){
-                        if(value != null && value.isEmpty)
-                        {
-                          return 'Please Enter Your Last Name';
-                        }
-                        return null;
-                      },
-                      onChanged:(value){
-                        updateUser.lName = value;
-                      },
-                    )
+                    ),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 30),
@@ -303,7 +367,8 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
                     controller: TextEditingController(
                         text: contactNumber
                     ),
-                    keyboardType: TextInputType.text,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         labelText:"Phone #",
                         hintText: contactNumber
@@ -329,13 +394,13 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
                       ),
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                          labelText:"City",
+                          labelText:"Address",
                           hintText: homeAddress
                       ),
                       validator: (String ? value){
                         if(value!.isEmpty)
                         {
-                          return 'Please Enter Your City';
+                          return 'Please Enter Your Address';
                         }
                         return null;
                       },
@@ -344,67 +409,172 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
                       },
                     )
                 ),
-                Padding(
-                    padding: const EdgeInsets.only(bottom: 30),
-                    // child: TextFormField(
-                    //   // controller: birthday_controller,
-                    //   controller: TextEditingController(
-                    //       text: birthday
-                    //   ),
-                    //   keyboardType: TextInputType.text,
-                    //   decoration: InputDecoration(
-                    //       labelText:"Birthday",
-                    //       hintText: birthday
-                    //   ),
-                    //   validator: (String ? value){
-                    //     if(value != null && value.isEmpty)
-                    //     {
-                    //       return 'Please Enter Your Birthday';
-                    //     }
-                    //     return null;
-                    //   },
-                    //   onChanged:(value){
-                    //     updateUser.birthday = value;
-                    //   },
-                    // )
-                    child:Center(
-                        child:TextFormField(
-                          controller: TextEditingController(
-                              text: birthday
-                          ), //editing controller of this TextField
-                          decoration: const InputDecoration(
-                            // icon: Icon(Icons.calendar_today), //icon of text field
-                              labelText: "Birthday" //label text of field
-                          ),
-                          validator: (String ? value){
-                            if(value != null && value.isEmpty){
-                              return 'Please enter your birthday ';
-                            }
+
+                Row(
+                  children: <Widget>[
+                    Flexible(
+                      child: DropdownButton(
+                        isExpanded: true,
+                          hint: Text("Select starting time: "),
+                          value: openTime,
+                          onChanged: (newValue){
+                            setState(() {
+                              openTime = newValue as String?;
+                              updateUser.openTime = openTime!;
+
+                              for(int i = 0; i<timeList.length; i++){
+                                  if(openTime == timeList[i]){
+                                    firstTime = i;
+                                    print(i);
+                                  }
+                              }
+                              // print(value);
+                              // String vl = "21:00 - 22:00";
+                              // var inputFormat = DateFormat('HH:mm - HH:mm');
+                              // var inputDate = inputFormat.parse(vl);
+                              // var outputDate = outputFormat.format(inputDate);
+                              // print(outputDate);
+                            });
                           },
-                          readOnly: true,  //set it true, so that user will not able to edit text
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                                context: context, initialDate: DateTime.now(),
-                                firstDate: DateTime(1950), //DateTime.now() - not to allow to choose before today.
-                                lastDate: DateTime(2101)
+                          items: timeList.map((valueItem){
+                            return DropdownMenuItem(value: valueItem,
+                              child: Text(valueItem),
                             );
-
-                            if(pickedDate == null){
-                              // return 'Please enter your birthday ';
-                            }else{
-                              //print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
-                              String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                              //print(formattedDate); //formatted date output using intl package =>  2021-03-16
-                              //you can implement different kind of Date Format here according to your requirement
-
-                              setState(() {
-                                //newUser.birthday = formattedDate;
-                                birthday = formattedDate; //set output date to TextField value.
-                              });
+                          }).toList(),
+                        ),
+                      // child: Padding(
+                      //     padding: const EdgeInsets.only(bottom: 30),
+                      //     child: TextFormField(
+                      //       // controller: homeAddress_controller,
+                      //       controller: TextEditingController(
+                      //           text: openTime
+                      //       ),
+                      //       keyboardType: TextInputType.text,
+                      //       decoration: InputDecoration(
+                      //           labelText:"Open Time",
+                      //           hintText: openTime
+                      //       ),
+                      //       validator: (String ? value){
+                      //         if(value!.isEmpty)
+                      //         {
+                      //           return 'Please Enter The Open Time';
+                      //         }
+                      //         return null;
+                      //       },
+                      //       onChanged:(value){
+                      //         updateUser.openTime = value;
+                      //       },
+                      //     )
+                      // ),
+                    ),
+                    const SizedBox(width: 16,),
+                    Flexible(
+                      child: DropdownButton(
+                        isExpanded: true,
+                        hint: Text("Select closing time: "),
+                        value: closeTime,
+                        onChanged: (newValue){
+                          setState(() {
+                            closeTime = newValue as String?;
+                            updateUser.closeTime = closeTime!;
+                            for(int i = 0; i<timeList.length; i++){
+                              if(closeTime == timeList[i]){
+                                secondTime = i;
+                                print(i);
+                              }
                             }
-                          },
-                        )
-                    )
+                          });
+                        },
+                        items: timeList.map((valueItem){
+                          return DropdownMenuItem(value: valueItem,
+                            child: Text(valueItem),
+                          );
+                        }).toList(),
+                      ),
+                      // child: Padding(
+                      //     padding: const EdgeInsets.only(bottom: 30),
+                      //     child: TextFormField(
+                      //       // controller: homeAddress_controller,
+                      //       controller: TextEditingController(
+                      //           text: openTime
+                      //       ),
+                      //       keyboardType: TextInputType.text,
+                      //       decoration: InputDecoration(
+                      //           labelText:"Open Time",
+                      //           hintText: openTime
+                      //       ),
+                      //       validator: (String ? value){
+                      //         if(value!.isEmpty)
+                      //         {
+                      //           return 'Please Enter The Open Time';
+                      //         }
+                      //         return null;
+                      //       },
+                      //       onChanged:(value){
+                      //         updateUser.openTime = value;
+                      //       },
+                      //     )
+                      // ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: TextFormField(
+                            // controller: homeAddress_controller,
+                            controller: TextEditingController(
+                                text: experience
+                            ),
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                labelText:"Experience(Years)",
+                                hintText: experience
+                            ),
+                            validator: (String ? value){
+                              if(value!.isEmpty)
+                              {
+                                return 'Please Enter Your Experience';
+                              }
+                              return null;
+                            },
+                            onChanged:(value){
+                              updateUser.experience = value;
+                            },
+                          )
+                      ),
+                    ),
+                    const SizedBox(width: 16,),
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: TextFormField(
+                            // controller: homeAddress_controller,
+                            controller: TextEditingController(
+                                text: specialization
+                            ),
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                                labelText:"Specialization",
+                                hintText: specialization
+                            ),
+                            validator: (String ? value){
+                              if(value!.isEmpty)
+                              {
+                                return 'Please Enter Your Specialization';
+                              }
+                              return null;
+                            },
+                            onChanged:(value){
+                              updateUser.specialization = value;
+                            },
+                          )
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 30),
                 Row(
@@ -426,10 +596,21 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        updateUser.id = "$id";
-                        update(
-                          updateUser.id,
-                        );
+                        if(firstTime < secondTime) {
+                          updateUser.id = "$id";
+                          update(
+                            updateUser.id,
+                          );
+                        }else{
+                          Fluttertoast.showToast(
+                              msg: "The opening time should be earlier than closing time!",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.redAccent,
+                              textColor: Colors.white,
+                              fontSize: 16.0
+                          );
+                        }
                       },
                       child: const Text("SAVE",
                           style: TextStyle(

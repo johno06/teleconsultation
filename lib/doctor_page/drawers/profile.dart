@@ -1,19 +1,23 @@
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teleconsultation/doctor_page/drawers/change_password_doctor.dart';
+import 'package:teleconsultation/doctor_page/drawers/doctor_editprofile.dart';
 
-import 'change_password_doctor.dart';
-import 'doctor_editprofile.dart';
+import '../../constant.dart';
 
-class DoctorProfile extends StatefulWidget {
-  const DoctorProfile({Key? key}) : super(key: key);
+class Profile extends StatefulWidget {
+  const Profile({Key? key}) : super(key: key);
 
 //  static const routeName = "/profile";
 
   @override
-  _DoctorProfileState createState() => _DoctorProfileState();
+  _ProfileState createState() => _ProfileState();
 }
 
-class _DoctorProfileState extends State<DoctorProfile> {
+class _ProfileState extends State<Profile> {
   // ProfileModel model = ProfileModel();
 
 
@@ -142,7 +146,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                   height: 0.6,
                   color: Colors.black87,
                 ),
-                 ListTile(
+                ListTile(
                   leading: const Icon(Icons.location_on),
                   title: Text(homeAddress??""),
                 )
@@ -155,7 +159,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
           child: Card(
             elevation: 4,
             child: Column(
-              children:  [
+              children: [
                 //row for each deatails
                 ListTile(
                   leading: const Icon(Icons.date_range_rounded),
@@ -166,8 +170,8 @@ class _DoctorProfileState extends State<DoctorProfile> {
                   color: Colors.black87,
                 ),
                 const ListTile(
-                 leading: Icon(Icons.settings),
-                  title:  Text("Settings"),
+                  leading: Icon(Icons.settings),
+                  title: Text("Settings"),
                 ),
                 const Divider(
                   height: 0.6,
@@ -175,21 +179,22 @@ class _DoctorProfileState extends State<DoctorProfile> {
                 ),
                 ListTile(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) =>  const ChangePasswordDoctor()));
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) =>  const ChangePassword()));
                   },
-                 leading: const Icon(Icons.edit),
+                  leading: const Icon(Icons.edit),
                   title: const Text("Change Password"),
                 )
               ],
             ),
           ),
-        ),InkWell(
+        ),
+        InkWell(
           onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const DoctorEditProfile()));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(builder: (context) =>  const EditProfile()));
           },
           child: Container(
               color: shrinePink400,
@@ -204,7 +209,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                     ),
                     SizedBox(width: 10),
                     Text(
-                      "Edit",
+                      "Edit Profile",
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     )
                   ],
@@ -329,5 +334,504 @@ class _DoctorProfileState extends State<DoctorProfile> {
             ),
           )),
     );
+  }
+}
+
+
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
+
+//  static const routeName = "/profile";
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+
+
+  late SharedPreferences loginData;
+  String? email, fName, lastName, contactNumber, birthday, homeAddress, openTime, lastTime;
+  int? fee;
+  Color shrinePink400 = const Color(0xFFEAA4A4);
+
+  @override
+  void initState(){
+    super.initState();
+    initial();
+  }
+  // loginData.setString('name', doctorNew.firstName);
+  // loginData.setString('surname', doctorNew.lastName);
+  // loginData.setString('phone', doctorNew.phoneNumber);
+  // loginData.setString('website', doctorNew.website);
+  // loginData.setString('specialization', doctorNew.specialization);
+  // loginData.setString('address', doctorNew.address);
+  // loginData.setInt('fee', doctorNew.fee);
+  // loginData.setString('openTime', doctorNew.timings[0]);
+  // loginData.setString('lastTime', doctorNew.timings[1]);
+  // loginData.setString('docDevice', mtoken!);
+
+  void initial() async{
+    loginData = await SharedPreferences.getInstance();
+    setState(() {
+      email = loginData.getString('email')!;
+      fName = loginData.getString('name')!;
+      lastName = loginData.getString('surname')!;
+      contactNumber = loginData.getString('phone')!;
+      homeAddress = loginData.getString('address')!;
+      fee = loginData.getInt('fee');
+      openTime = loginData.getString('openTime');
+      lastTime = loginData.getString('lastTime');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: backgroundColor,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Account",
+                  style: subTitleTextStyle.copyWith(color: primaryColor500),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                InkWell(
+                  onTap: (){},
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 75,
+                          height: 75,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: AssetImage("assets/images/user_profile_example.png"),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "$fName $lastName",
+                              style: subTitleTextStyle,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                    color: primaryColor100.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(color: primaryColor500)),
+                                child: Text(
+                                  "Doctor",
+                                  style: descTextStyle.copyWith(
+                                      color: primaryColor500),
+                                ))
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 32,
+                ),
+                Text(
+                  "Profile Information",
+                  style: subTitleTextStyle.copyWith(color: primaryColor500),
+                ),
+                InkWell(
+                  onTap: () {},
+                  splashColor: primaryColor100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: colorWhite),
+                          child: const Icon(
+                            Icons.email,
+                            size: 24,
+                            color: darkBlue300,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "$email",
+                                overflow: TextOverflow.visible,
+                                style: normalTextStyle,
+                              ),
+
+                              // const SizedBox(
+                              //   height: 8,
+                              // ),
+                              // Text(
+                              //   "Not Set",
+                              //   style: descTextStyle,
+                              // ),
+
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                // const SizedBox(
+                //   height: 16,
+                // ),
+                // Text(
+                //   "Other",
+                //   style: subTitleTextStyle.copyWith(color: primaryColor500),
+                // ),
+                InkWell(
+                  onTap: () {},
+                  splashColor: primaryColor100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: colorWhite),
+                          child: const Icon(
+                            Icons.phone,
+                            size: 24,
+                            color: darkBlue300,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "$contactNumber",
+                              style: normalTextStyle,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {},
+                  splashColor: primaryColor100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: colorWhite),
+                          child: const Icon(
+                            Icons.location_on,
+                            size: 24,
+                            color: darkBlue300,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "$homeAddress",
+                              style: normalTextStyle,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {},
+                  splashColor: primaryColor100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: colorWhite),
+                          child: const Icon(
+                            Icons.access_time_outlined,
+                            size: 24,
+                            color: darkBlue300,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Time: $openTime - $lastTime",
+                              style: normalTextStyle,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  const ChangePasswordDoctor()));
+                  },
+                  splashColor: primaryColor100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: colorWhite),
+                          child: const Icon(
+                            Icons.password,
+                            size: 24,
+                            color: darkBlue300,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Change Password",
+                              style: normalTextStyle,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  const DoctorEditProfile()));
+                  },
+                  splashColor: primaryColor100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: colorWhite),
+                          child: const Icon(
+                            Icons.edit,
+                            size: 24,
+                            color: darkBlue300,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Edit Profile Information",
+                              style: normalTextStyle,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  "About App",
+                  style: subTitleTextStyle.copyWith(color: primaryColor500),
+                ),
+                InkWell(
+                  onTap: () {
+                    _showSnackBar(context, "Newest Version");
+                  },
+                  splashColor: primaryColor100,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle, color: colorWhite),
+                          child: const Icon(
+                            CupertinoIcons.info_circle_fill,
+                            size: 24,
+                            color: darkBlue300,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        Flexible(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "TeleObGyn Booking App",
+                                style: normalTextStyle,
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Text(
+                                "Version 1.0.0",
+                                style: descTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // InkWell(
+                //   // onTap: () => launch("https://github.com/mikirinkode"),
+                //   splashColor: primaryColor100,
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(16.0),
+                //     child: Row(
+                //       children: [
+                //         Container(
+                //           width: 50,
+                //           height: 50,
+                //           padding: const EdgeInsets.all(12.0),
+                //           decoration: const BoxDecoration(
+                //               shape: BoxShape.circle, color: colorWhite),
+                //           // child: Image.asset(
+                //           //   "assets/icons/github.png",
+                //           //   color: darkBlue300,
+                //           // ),
+                //         ),
+                //         const SizedBox(
+                //           width: 16,
+                //         ),
+                //         Flexible(
+                //           child: Column(
+                //             crossAxisAlignment: CrossAxisAlignment.start,
+                //             children: [
+                //               Text(
+                //                 "Github",
+                //                 style: normalTextStyle,
+                //               ),
+                //               const SizedBox(
+                //                 height: 8,
+                //               ),
+                //               Text(
+                //                 "github.com/mikirinkode",
+                //                 style: descTextStyle,
+                //               ),
+                //             ],
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(
+                //   height: 16,
+                // ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     Text(
+                //       "Created with ",
+                //       style: normalTextStyle,
+                //     ),
+                //     const SizedBox(
+                //       width: 4,
+                //     ),
+                //     Text(
+                //       "{code}",
+                //       style: subTitleTextStyle.copyWith(color: primaryColor500),
+                //     ),
+                //     const SizedBox(
+                //       width: 4,
+                //     ),
+                //     Text(
+                //       "and",
+                //       style: normalTextStyle,
+                //     ),
+                //     const SizedBox(
+                //       width: 4,
+                //     ),
+                //     const Icon(
+                //       Icons.favorite_rounded,
+                //       color: Colors.red,
+                //     )
+                //   ],
+                // ),
+              ],
+            ),
+          ),
+        ));
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(SnackBar(
+      content: Text(message),
+      margin: const EdgeInsets.all(16),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 2),
+      // margin: EdgeInsets.all(16),
+    ));
   }
 }

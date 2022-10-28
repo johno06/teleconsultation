@@ -15,8 +15,8 @@ class _MyHeaderDrawerState extends State<MyHeaderDrawer> {
   // User1 userval = User1(lName: '', fName: '', id: '', contactNo: '', email: '', cPassword: '', password: '');
 
 
-  late SharedPreferences loginData;
-  String? email, name, surname, phone;
+  SharedPreferences? loginData;
+  String? email, name, lastName, phone;
 
 
   @override
@@ -28,11 +28,11 @@ class _MyHeaderDrawerState extends State<MyHeaderDrawer> {
   void initial() async{
     loginData = await SharedPreferences.getInstance();
     setState(() {
-      email = loginData.getString('email')!;
+      email = loginData?.getString('email');
       // print(email);
-      name = loginData.getString('name')!;
-      surname = loginData.getString('surname')!;
-      phone = loginData.getString('phone')!;
+      name = loginData?.getString('name');
+      lastName = loginData?.getString('surname');
+      phone = loginData?.getString('phone');
     });
   }
 
@@ -57,7 +57,7 @@ class _MyHeaderDrawerState extends State<MyHeaderDrawer> {
             ),
           ),
           Text(
-            name??"",
+            "$name $lastName",
             style: const TextStyle(color: Colors.black, fontSize: 20),
           ),
           Text(

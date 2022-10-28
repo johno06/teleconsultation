@@ -13,6 +13,7 @@ import 'package:teleconsultation/user.dart';
 import '../app.dart';
 import '../components/background.dart';
 import '../doctor_page/drawer.dart';
+import '../doctornew.dart';
 import '../home_page/drawer.dart';
 import '../services/doctor.dart';
 import '../services/loginservices.dart';
@@ -35,6 +36,11 @@ class _LoginScreenState extends State<LoginScreen> {
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
       phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
     isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
+
+  DoctorNewFetch doctorNew = DoctorNewFetch(id: '', userId: '', firstName: '', lastName: '', phoneNumber: '',
+      website: '', address: '', specialization: '', experience: '', fee: 650, timings: [], status: '',
+      createdAt: '', updatedAt: '', devices:[]);
+
   DoctorFetch doctorrval = DoctorFetch(lName: '', fName: '', id: '', birthday: '', homeAddress: '', contactNo: '', email: '', cPassword: '', password: '');
 
   late SharedPreferences loginData;
@@ -52,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  Future update(id ) async {
+  Future update(id) async {
     loginData = await SharedPreferences.getInstance();
 
     Map data = {
@@ -76,6 +82,70 @@ class _LoginScreenState extends State<LoginScreen> {
     // }
 
   }
+
+
+
+  Future doctorupdate(id) async {
+    loginData = await SharedPreferences.getInstance();
+
+    Map data = {
+      "devices": ["$mtoken"],
+    };
+    String body = json.encode(data);
+    http.Response response = await http.patch(
+      Uri.parse('https://newserverobgyn.herokuapp.com/api/doctor/checkDevice/$id'),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    //print(response.body);
+    // if(response.statusCode != 200){
+    //   Fluttertoast.showToast(
+    //       msg: "Update Failed try other email",
+    //       toastLength: Toast.LENGTH_SHORT,
+    //       gravity: ToastGravity.BOTTOM,
+    //       backgroundColor: Colors.redAccent,
+    //       textColor: Colors.white,
+    //       fontSize: 16.0);
+    // }
+
+  }
+
+  // List<dynamic> clients = [];
+  // void fetchDoctorCollection(id) async {
+  //   const url = 'https://newserverobgyn.herokuapp.com/api/doctor/get-doctor-info-by-its-id';
+  //   Map data2 = {
+  //     'userId': id
+  //   };
+  //   var body2 = json.encode(data2);
+  //   var res = await http.post(Uri.parse("https://newserverobgyn.herokuapp.com/api/doctor/get-doctor-info-by-its-id"),
+  //       headers: {"Content-Type": "application/json"},
+  //       body: body2);
+  //
+  //   final data = json.decode(res.body);
+  //   doctorNew = DoctorNewFetch.fromJson(data['data']);
+  //   loginData.setString('doctorId', doctorNew.id);
+  //   doctorupdate(doctorNew.id);
+  //   // firstName = doctorNew.firstName;
+  //   // lastName = doctorNew.lastName;
+  //   // phoneNumber = doctorNew.phoneNumber;
+  //   // website = doctorNew.website;
+  //   // specialization = doctorNew.specialization;
+  //   // docAddress = doctorNew.address;
+  //   // fee = doctorNew.fee;
+  //   // openTime = doctorNew.timings[0];
+  //   // lastTime = doctorNew.timings[1];
+  //   loginData.setString('name', doctorNew.firstName);
+  //   print(doctorNew.firstName);
+  //   loginData.setString('surname', doctorNew.lastName);
+  //   loginData.setString('phone', doctorNew.phoneNumber);
+  //   loginData.setString('website', doctorNew.website);
+  //   loginData.setString('specialization', doctorNew.specialization);
+  //   loginData.setString('address', doctorNew.address);
+  //   loginData.setInt('fee', doctorNew.fee);
+  //   loginData.setString('openTime', doctorNew.timings[0]);
+  //   loginData.setString('lastTime', doctorNew.timings[1]);
+  //   loginData.setString('docDevice', mtoken!);
+  // }
 
   List<String> deviceList = [];
 
@@ -196,18 +266,48 @@ class _LoginScreenState extends State<LoginScreen> {
       }else if(userval.isDoctor == true){
         loginData.setBool('login' ,true);
         loginData.setString('_id',userval.id);
+        // fetchDoctorCollection(userval.id);
+        //
+        const url = 'https://newserverobgyn.herokuapp.com/api/doctor/get-doctor-info-by-its-id';
+        Map data2 = {
+          'userId': userval.id
+        };
+        var body2 = json.encode(data2);
+        var res = await http.post(Uri.parse("https://newserverobgyn.herokuapp.com/api/doctor/get-doctor-info-by-its-id"),
+            headers: {"Content-Type": "application/json"},
+            body: body2);
+
+        final data = json.decode(res.body);
+        doctorNew = DoctorNewFetch.fromJson(data['data']);
+        loginData.setString('doctorId', doctorNew.id);
+        doctorupdate(doctorNew.id);
+        // firstName = doctorNew.firstName;
+        // lastName = doctorNew.lastName;
+        // phoneNumber = doctorNew.phoneNumber;
+        // website = doctorNew.website;
+        // specialization = doctorNew.specialization;
+        // docAddress = doctorNew.address;
+        // fee = doctorNew.fee;
+        // openTime = doctorNew.timings[0];
+        // lastTime = doctorNew.timings[1];
+        loginData.setString('name', doctorNew.firstName);
+        loginData.setString('surname', doctorNew.lastName);
+        loginData.setString('phone', doctorNew.phoneNumber);
+        loginData.setString('website', doctorNew.website);
+        loginData.setString('specialization', doctorNew.specialization);
+        loginData.setString('experience', doctorNew.experience);
+        loginData.setString('address', doctorNew.address);
+        loginData.setInt('fee', doctorNew.fee);
+        loginData.setString('openTime', doctorNew.timings[0]);
+        loginData.setString('lastTime', doctorNew.timings[1]);
+        loginData.setString('docDevice', mtoken!);
+        //
+        loginData.setString('docDevice', mtoken!);
         loginData.setString('email', userval.email);
-        loginData.setString('name', userval.name);
-        loginData.setString('surname', userval.surname);
-        loginData.setString('phone', userval.phone);
-        loginData.setString('birthdate', userval.birthdate);
-        loginData.setString('address', userval.address);
-        loginData.setString('gender', userval.gender);
-        loginData.setString('password', userval.password);
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (BuildContext context){
-              return const DoctorPage();
+              return  const DoctorPage();
             },
             ), (router) => false);
 

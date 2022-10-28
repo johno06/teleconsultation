@@ -66,7 +66,7 @@ class _DoctorPageState extends State<DoctorPage> {
     if (currentPage == DrawerSections.dashboard) {
       container = const DoctorHomeScreen();
     } else if (currentPage == DrawerSections.contacts) {
-      container = const DoctorProfile();
+      container = const ProfileScreen();
     } else if (currentPage == DrawerSections.events) {
       container = const DoctorMyAppointment();
     } else if (currentPage == DrawerSections.notes) {

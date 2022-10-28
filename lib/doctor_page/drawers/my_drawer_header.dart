@@ -57,7 +57,7 @@ class _DoctorMyHeaderDrawerState extends State<DoctorMyHeaderDrawer> {
             ),
           ),
           Text(
-            fName??"",
+            "$fName $lastName",
             style: const TextStyle(color: Colors.black, fontSize: 20),
           ),
           Text(

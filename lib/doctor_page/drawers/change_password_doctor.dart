@@ -44,8 +44,6 @@ class _ChangePasswordDoctorState extends State<ChangePasswordDoctor> {
 
 
   UpdateUser updateUser = UpdateUser('','','','','','','','');
-  // ignore: prefer_typing_uninitialized_variables
-  // var fname, lname, email, contactno, password, cpassword, birthday, homeAddress,token;
 
 
   @override
@@ -58,13 +56,6 @@ class _ChangePasswordDoctorState extends State<ChangePasswordDoctor> {
     loginData = await SharedPreferences.getInstance();
     setState(() {
       id = loginData.getString('_id');
-      email = loginData.getString('email')!;
-      fName = loginData.getString('name')!;
-      lastName = loginData.getString('surname')!;
-      contactNumber = loginData.getString('phone')!;
-      birthday = loginData.getString('birthdate')!;
-      homeAddress = loginData.getString('address')!;
-      password = loginData.getString('password')!;
     });
   }
 
