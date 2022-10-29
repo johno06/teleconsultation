@@ -28,8 +28,11 @@ class _MyFormState extends State<MyForm> {
   late TextEditingController _medicineQtyController;
   static List<String> medicineType = [''];
   static List<String> medicineList = [''];
+  static List<String> medicineInstruction = [''];
+
   var tableData = [
     [
+      '',
       '',
       '',
     ],
@@ -50,6 +53,7 @@ class _MyFormState extends State<MyForm> {
     final tableHeaders = [
       'Medicine',
       'Quantity',
+      'Instruction',
     ];
 
 
@@ -393,31 +397,35 @@ class _MyFormState extends State<MyForm> {
 
               Container(
                 child: Row(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        chooseImage(ImageSource.gallery);
-                      },
-                      child: const Text("Gallery"),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: shrinePink400,
-                          padding: const EdgeInsets.symmetric(horizontal: 50),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20))),
+                  children: <Widget>[
+                    Flexible(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          chooseImage(ImageSource.gallery);
+                        },
+                        child: const Text("Gallery"),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: shrinePink400,
+                            padding: const EdgeInsets.symmetric(horizontal: 50),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20))),
+                      ),
                     ),
-                    SizedBox(width: size.width * 0.020),
-                    ElevatedButton(
-                      onPressed: () async {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SignaturePage()));
-                      },
-                      child: const Text("E-Signature"),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: shrinePink400,
-                          padding: const EdgeInsets.symmetric(horizontal: 50),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20))),
+                    const SizedBox(width: 32,),
+                    Flexible(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => SignaturePage()));
+                        },
+                        child: const Text("E-Signature"),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: shrinePink400,
+                            padding: const EdgeInsets.symmetric(horizontal: 50),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20))),
+                      ),
                     ),
                   ],
                 ),
@@ -489,7 +497,7 @@ class _MyFormState extends State<MyForm> {
                   if(_formKey.currentState!.validate()){
                     _formKey.currentState!.save();
                     for(var i= 0; i<medicineList.length && i<medicineType.length; i++){
-                      tableData.add([medicineType[i], medicineList[i]]);
+                      tableData.add([medicineType[i], medicineList[i], medicineInstruction[i]]);
                       // print("Name: $name Address: $address Age: $age ");
                       // print("Type: "+medicineType[i]+" Pcs: "+medicineList[i]);
                     }
@@ -500,6 +508,7 @@ class _MyFormState extends State<MyForm> {
                     tableData.clear();
                     medicineList.clear();
                     medicineType.clear();
+                    medicineInstruction.clear();
                   }
                 },
                 child: const Text('Submit'),
@@ -521,38 +530,51 @@ class _MyFormState extends State<MyForm> {
 
   List<Widget> _getMedicines(){
     List<Widget> medicineTextFields = [];
-    for(int i=0; i<medicineList.length && i<medicineType.length; i++){
+    for(int i=0; i<medicineList.length && i<medicineType.length && i<medicineInstruction.length; i++){
       medicineTextFields.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: Row(
-              children: [
-                Expanded(child: MedicineTextFields(i)),
-                const SizedBox(width: 16,),
-                Expanded(child: MedicineQuantity(i)),
-                const SizedBox(width: 16,),
-                // we need add button at last friends row
-                _addRemoveButton(i == medicineList.length-1, i == medicineType.length-1,i),
-              ],
-            ),
-          )
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Row(
+                  children: [
+                    Expanded(child: MedicineTextFields(i)),
+                      const SizedBox(width: 16,),
+                    Expanded(child: MedicineQuantity(i)),
+                    const SizedBox(width: 16,),
+                    // Column(
+                    //   children: <Widget>[
+                    //   ],
+                    // ),
+                    // we need add button at last friends row
+                    _addRemoveButton(i == medicineList.length-1, i == medicineType.length-1, i==medicineInstruction.length-1 ,i),
+                  ],
+                ),
+              ),
+              Container(child: MedicineInstruction(i),
+              ),
+              // const SizedBox(width: 16,),
+            ],
+          ),
       );
     }
     return medicineTextFields;
   }
 
   /// add / remove button
-  Widget _addRemoveButton(bool add, bool add1,int index){
+  Widget _addRemoveButton(bool add, bool add1, bool add2,int index){
     return InkWell(
       onTap: (){
-        if(add && add1){
+        if(add && add1 && add2){
           // add new text-fields at the top of all friends textfields
           medicineList.insert(0, '');
           medicineType.insert(0, '');
+          medicineInstruction.insert(0, '');
         }
         else {
           medicineList.removeAt(index);
           medicineType.removeAt(index);
+          medicineInstruction.removeAt(index);
         }
         setState((){});
       },
@@ -655,6 +677,49 @@ class _MedicineQuantityState extends State<MedicineQuantity> {
       ),
       validator: (v){
         if(v!.trim().isEmpty) return 'Please enter quantity';
+        return null;
+      },
+    );
+  }
+}
+
+class MedicineInstruction extends StatefulWidget {
+  final int index;
+  MedicineInstruction(this.index);
+  @override
+  _MedicineInstructionState createState() => _MedicineInstructionState();
+}
+
+class _MedicineInstructionState extends State<MedicineInstruction> {
+  late TextEditingController _medicineInstructionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _medicineInstructionController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _medicineInstructionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _medicineInstructionController.text = _MyFormState.medicineInstruction[widget.index] ?? '';
+    });
+
+    return TextFormField(
+      controller: _medicineInstructionController,
+      onChanged: (v) => _MyFormState.medicineInstruction[widget.index] = v,
+      decoration: const InputDecoration(
+          hintText: 'Enter Instruction'
+      ),
+      validator: (v){
+        if(v!.trim().isEmpty) return 'Please enter instruction';
         return null;
       },
     );

@@ -232,7 +232,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchPatients();
-      fetchAppointments();
+      // fetchAppointments();
     });
   }
 
@@ -281,24 +281,24 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                   height: 20,
                 ),
                 buildPatients(),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Text(
-                    'Pending Appointments',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: kTitleTextColor,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                buildPendingAppointmentList(),
+                // const SizedBox(
+                //   height: 20,
+                // ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 30),
+                //   child: Text(
+                //     'Pending Appointments',
+                //     style: TextStyle(
+                //       fontWeight: FontWeight.bold,
+                //       color: kTitleTextColor,
+                //       fontSize: 18,
+                //     ),
+                //   ),
+                // ),
+                // const SizedBox(
+                //   height: 20,
+                // ),
+                // buildPendingAppointmentList(),
               ],
             ),
           ),
@@ -387,24 +387,24 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
   // }
 
 
-  List<dynamic> appointments = [];
-  void fetchAppointments() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-pending-appointments';
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    final body = response.body;
-    final json = jsonDecode(body);
-
-    appointmentData = await SharedPreferences.getInstance();
-    deviceOfPatient = await SharedPreferences.getInstance();
-    // clientData = await SharedPreferences.getInstance();
-
-    print(json['data']);
-    setState(() {
-      appointments = json['data'];
-    });
-    print('fetchclients completed');
-  }
+  // List<dynamic> appointments = [];
+  // void fetchAppointments() async {
+  //   const url = 'https://newserverobgyn.herokuapp.com/api/user/get-pending-appointments';
+  //   final uri = Uri.parse(url);
+  //   final response = await http.get(uri);
+  //   final body = response.body;
+  //   final json = jsonDecode(body);
+  //
+  //   appointmentData = await SharedPreferences.getInstance();
+  //   deviceOfPatient = await SharedPreferences.getInstance();
+  //   // clientData = await SharedPreferences.getInstance();
+  //
+  //   print(json['data']);
+  //   setState(() {
+  //     appointments = json['data'];
+  //   });
+  //   print('fetchclients completed');
+  // }
 
   buildPatients() {
     return Padding(
@@ -483,67 +483,67 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
     print('fetch patients completed');
   }
 
-  buildPendingAppointmentList() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 30,
-      ),
-      child: Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: appointments.length,
-                itemBuilder: (context, index) {
-                  final appointment = appointments[index];
-                  final doctorData = appointment['doctorInfo'];
-                  doctorVal = DoctorFetch.fromJson(doctorData);
-                  if(user_id == doctorVal.userId){
-                    final appointmentId = appointment['_id'];
-                    final userData = appointment['userInfo'];
-                    userval = UserFetch.fromJson(userData);
-                    final date = appointment['date'];
-                    final time = appointment['time'];
-                    final parseDate = DateTime.parse(date);
-                    // final parseTime = DateTime.parse(time);
-                    final String bookingToday = todayFormat.format(parseDate);
-                    final String bookingMonth = monthFormat.format(parseDate);
-                    final String bookingDay = dayFormat.format(parseDate);
-
-                    final patientName = userval.name;
-                    final patientSurname = userval.surname;
-                    final patientEmail = userval.email;
-                    final patientPhone = userval.phone;
-                    final patientDevice = userval.devices[0];
-                    deviceOfPatient?.setString('deviceOfPatient', patientDevice);
-                    return PatientScheduleCard(
-                      // 'Consultation',
-                      patientName, patientSurname, patientPhone, patientEmail,
-                      bookingToday, time,
-                      date, bookingDay, bookingMonth, patientDevice,appointmentId,
-                      kBlueColor,
-                    );
-                  }else{
-                    return Container();
-                  }
-                },
-              separatorBuilder: (BuildContext context, int index) => const Divider(),
-            ),
-          ),
-          // ScheduleCard(
-          //   'Consultation',
-          //   'Sunday . 9am - 11am',
-          //   '12',
-          //   'Jan',
-          //   kBlueColor,
-          // ),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
-      ),
-    );
-  }
+  // buildPendingAppointmentList() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(
+  //       horizontal: 30,
+  //     ),
+  //     child: Column(
+  //       children: <Widget>[
+  //         Scrollbar(
+  //           child: ListView.separated(
+  //               shrinkWrap: true,
+  //               itemCount: appointments.length,
+  //               itemBuilder: (context, index) {
+  //                 final appointment = appointments[index];
+  //                 final doctorData = appointment['doctorInfo'];
+  //                 doctorVal = DoctorFetch.fromJson(doctorData);
+  //                 if(user_id == doctorVal.userId){
+  //                   final appointmentId = appointment['_id'];
+  //                   final userData = appointment['userInfo'];
+  //                   userval = UserFetch.fromJson(userData);
+  //                   final date = appointment['date'];
+  //                   final time = appointment['time'];
+  //                   final parseDate = DateTime.parse(date);
+  //                   // final parseTime = DateTime.parse(time);
+  //                   final String bookingToday = todayFormat.format(parseDate);
+  //                   final String bookingMonth = monthFormat.format(parseDate);
+  //                   final String bookingDay = dayFormat.format(parseDate);
+  //
+  //                   final patientName = userval.name;
+  //                   final patientSurname = userval.surname;
+  //                   final patientEmail = userval.email;
+  //                   final patientPhone = userval.phone;
+  //                   final patientDevice = userval.devices[0];
+  //                   deviceOfPatient?.setString('deviceOfPatient', patientDevice);
+  //                   return PatientScheduleCard(
+  //                     // 'Consultation',
+  //                     patientName, patientSurname, patientPhone, patientEmail,
+  //                     bookingToday, time,
+  //                     date, bookingDay, bookingMonth, patientDevice,appointmentId,
+  //                     kBlueColor,
+  //                   );
+  //                 }else{
+  //                   return Container();
+  //                 }
+  //               },
+  //             separatorBuilder: (BuildContext context, int index) => const Divider(),
+  //           ),
+  //         ),
+  //         // ScheduleCard(
+  //         //   'Consultation',
+  //         //   'Sunday . 9am - 11am',
+  //         //   '12',
+  //         //   'Jan',
+  //         //   kBlueColor,
+  //         // ),
+  //         const SizedBox(
+  //           height: 20,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget header(context) {
     return Container(

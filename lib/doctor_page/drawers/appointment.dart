@@ -30,6 +30,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
   final dayFormat = DateFormat("d");
   final timeFormat = DateFormat("hh:mm aaa");
 
+  SharedPreferences? appointmentData;
   late SharedPreferences loginData;
   SharedPreferences? deviceOfPatient;
   String? email, fName, lastName, contactNumber,user_id;
@@ -57,6 +58,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchAppointments();
+      fetchPendingAppointments();
     });
   }
 
@@ -78,6 +80,8 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
     print('fetchclients completed');
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,21 +92,21 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              //   child: Text(
-              //     'Patient',
-              //     style: TextStyle(
-              //       fontWeight: FontWeight.bold,
-              //       color: kTitleTextColor,
-              //       fontSize: 21,
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              // buildDoctor(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                child: Text(
+                  'Pending Appointments',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: kTitleTextColor,
+                    fontSize: 21,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              buildPendingAppointmentList(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: Text(
@@ -147,6 +151,93 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
       ),
     );
   }
+
+  List<dynamic> pendingAppointments = [];
+  void fetchPendingAppointments() async {
+    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-pending-appointments';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+
+    appointmentData = await SharedPreferences.getInstance();
+    deviceOfPatient = await SharedPreferences.getInstance();
+    // clientData = await SharedPreferences.getInstance();
+
+    print(json['data']);
+    setState(() {
+      pendingAppointments = json['data'];
+    });
+    print('fetchclients completed');
+  }
+
+  buildPendingAppointmentList() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30,
+      ),
+      child: Column(
+        children: <Widget>[
+          Scrollbar(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: pendingAppointments.length,
+              itemBuilder: (context, index) {
+                final appointment = pendingAppointments[index];
+                final doctorData = appointment['doctorInfo'];
+                doctorVal = DoctorFetch.fromJson(doctorData);
+                if(user_id == doctorVal.userId){
+                  final appointmentId = appointment['_id'];
+                  final userData = appointment['userInfo'];
+                  userval = UserFetch.fromJson(userData);
+                  final date = appointment['date'];
+                  final time = appointment['time'];
+                  final parseDate = DateTime.parse(date);
+                  // final parseTime = DateTime.parse(time);
+                  final String bookingToday = todayFormat.format(parseDate);
+                  final String bookingMonth = monthFormat.format(parseDate);
+                  final String bookingDay = dayFormat.format(parseDate);
+
+                  final patientName = userval.name;
+                  final patientSurname = userval.surname;
+                  final patientEmail = userval.email;
+                  final patientPhone = userval.phone;
+                  final patientDevice = userval.devices[0];
+                  deviceOfPatient?.setString('deviceOfPatient', patientDevice);
+                  return PatientScheduleCard(
+                    // 'Consultation',
+                    patientName, patientSurname, patientPhone, patientEmail,
+                    bookingToday, time,
+                    date, bookingDay, bookingMonth, patientDevice,appointmentId,
+                    kBlueColor,
+                  );
+                }else{
+                  return Container();
+                }
+              },
+              separatorBuilder: (BuildContext context, int index) => const Divider(),
+            ),
+          ),
+          // ScheduleCard(
+          //   'Consultation',
+          //   'Sunday . 9am - 11am',
+          //   '12',
+          //   'Jan',
+          //   kBlueColor,
+          // ),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
+
+
+
 
   List<dynamic> appointments = [];
   void fetchAppointments() async {

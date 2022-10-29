@@ -160,6 +160,7 @@ class _MyAppointmentState extends State<MyAppointment> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchClients();
       fetchAppointments();
+      fetchPendingAppointments();
     });
   }
 
@@ -184,92 +185,28 @@ class _MyAppointmentState extends State<MyAppointment> {
                   ),
                 ),
               ),
-              // TextField(
-              //   controller: _date,
-              //   decoration: InputDecoration(
-              //       border: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(12.0),
-              //       ),
-              //       suffixIcon: InkWell(
-              //         child: Icon(Icons.date_range),
-              //         onTap: () async {
-              //           final DateTime? newlySelectedDate =
-              //           await showDatePicker(
-              //             context: context,
-              //             initialDate: dateTime,
-              //             firstDate: DateTime.now(),
-              //             lastDate: DateTime(2095),
-              //           );
-              //
-              //           if (newlySelectedDate == null) {
-              //             return;
-              //           }
-              //
-              //           setState(() {
-              //             dateTime = newlySelectedDate;
-              //             _date.text =
-              //                 "${dateTime.year}/${dateTime.month}/${dateTime.day}";
-              //           });
-              //         },
-              //       ),
-              //       label: Text("Date")),
-              // ),
-              // TextField(
-              //   controller: _time,
-              //   decoration: InputDecoration(
-              //       border: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(12.0),
-              //       ),
-              //       suffixIcon: InkWell(
-              //         child: const Icon(
-              //           Icons.timer_outlined,
-              //         ),
-              //         onTap: () async {
-              //           final TimeOfDay? slectedTime = await showTimePicker(
-              //               context: context, initialTime: TimeOfDay.now());
-              //
-              //           if (slectedTime == null) {
-              //             return;
-              //           }
-              //
-              //           _time.text =
-              //           "${slectedTime.hour}:${slectedTime.minute}:${slectedTime.period.toString()}";
-              //
-              //           DateTime newDT = DateTime(
-              //             dateTime.year,
-              //             dateTime.month,
-              //             dateTime.day,
-              //             slectedTime.hour,
-              //             slectedTime.minute,
-              //           );
-              //           setState(() {
-              //             dateTime = newDT;
-              //           });
-              //         },
-              //       ),
-              //       label: Text("Time")),
-              // ),
-              // ElevatedButton(
-              //   onPressed: () async {
-              //     service.showScheduledNotification(
-              //       id: 0,
-              //       title: 'Notification Title',
-              //       body: 'Some body',
-              //       seconds: dateTime,
-              //     );
-              //   },
-              //   child: const Text('Show Scheduled Notification'),
-              // ),
-              // ElevatedButton(
-              //     style: ElevatedButton.styleFrom(
-              //       minimumSize: Size(double.infinity, 55),
-              //     ),
-              //     onPressed: showNotification,
-              //     child: Text("Show Notification")),
               const SizedBox(
                 height: 5,
               ),
               buildDoctor(),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 30),
+              //   child: Text(
+              //     'Pending Appointments',
+              //     style: TextStyle(
+              //       fontWeight: FontWeight.bold,
+              //       color: kTitleTextColor,
+              //       fontSize: 21,
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(
+              //   height: 15,
+              // ),
+              // buildAppointmentList(),
+              const SizedBox(
+                height: 5,
+              ),
               Row(
                 children: <Widget>[
                   Padding(
@@ -284,7 +221,6 @@ class _MyAppointmentState extends State<MyAppointment> {
                     ),
                   ),
                   Flexible(
-
                     // child: Padding(
                     //   padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: ElevatedButton(
@@ -353,6 +289,23 @@ class _MyAppointmentState extends State<MyAppointment> {
     // print(json['data']);
     setState(() {
       appointments = json['data'];
+    });
+    // print('fetchclients completed');
+  }
+  List<dynamic> pendingAppointments = [];
+  void fetchPendingAppointments() async {
+    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-pending-appointments';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+
+    appointmentData = await SharedPreferences.getInstance();
+    // clientData = await SharedPreferences.getInstance();
+
+    // print(json['data']);
+    setState(() {
+      pendingAppointments = json['data'];
     });
     // print('fetchclients completed');
   }
@@ -429,6 +382,107 @@ class _MyAppointmentState extends State<MyAppointment> {
           const SizedBox(
             height: 20,
           ),
+        ],
+      ),
+    );
+  }
+
+  buildPendingAppointmentList() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30,
+      ),
+      child: Column(
+        children: <Widget>[
+          Scrollbar(
+            child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: pendingAppointments.length,
+                separatorBuilder: (_ , __ ) => Divider(height: 0.6,
+                  color: Colors.black87,),
+                itemBuilder: (context, index) {
+                  final appointment = pendingAppointments[index];
+                  final userid = appointment['userId'];
+                  if(user_id == userid){
+                    final date = appointment['date'];
+                    final time = appointment['time'];
+
+                    final userName = appointment['userInfo'];
+                    userval = UserFetch.fromJson(userName);
+
+                    final parseDate = DateTime.parse(date);
+                    // final parseTime = DateTime.parse(time);
+                    final String bookingToday = todayFormat.format(parseDate);
+                    final String bookingMonth = monthFormat.format(parseDate);
+                    final String bookingDay = dayFormat.format(parseDate);
+
+                    if(time == "08:00 - 09:00"){
+                      time1 = "07:00";
+                      time05 = "07:55";
+                    }else if(time == "09:00 - 10:00"){
+                      time1 = "08:00";
+                      time05 = "08:55";
+                    }
+                    else if(time == "10:00 - 11:00"){
+                      time1 = "09:00";
+                      time05 = "09:55";
+                    }
+                    else if(time == "11:00 - 12:00"){
+                      time1 = "10:00";
+                      time05 = "10:55";
+                    }
+                    else if(time == "12:00 - 13:00"){
+                      time1 = "11:00";
+                      time05 = "11:55";
+                    }
+                    else if(time == "13:00 - 14:00"){
+                      time1 = "12:00";
+                      time05 = "12:55";
+                    }
+                    else if(time == "14:00 - 15:00"){
+                      time1 = "13:00";
+                      time05 = "13:55";
+                    }
+                    else if(time == "15:00 - 16:00"){
+                      time1 = "14:00";
+                      time05 = "14:55";
+                    }
+                    else if(time == "16:00 - 17:00"){
+                      time1 = "15:00";
+                      time05 = "15:55";
+                    }
+                    date1 = date;
+                    // time1 = "19:55";
+                    // time05 = "19:57";
+
+                    // final String bookingTime = dayFormat.format(parseTime);
+                    //
+                    // final email = appointment['email'];
+                    // final lastname = appointment['lastName'];
+                    // final verified = client['verified'];
+                    return ScheduleCard(
+                      'Consultation',
+                      '$bookingToday . $time',
+                      '$bookingDay',
+                      bookingMonth,
+                      kBlueColor,
+                    );
+                  }else{
+                    return Container();
+                  }
+                }
+            ),
+          ),
+          // ScheduleCard(
+          //   'Consultation',
+          //   'Sunday . 9am - 11am',
+          //   '12',
+          //   'Jan',
+          //   kBlueColor,
+          // ),
+          // const SizedBox(
+          //   height: 20,
+          // ),
         ],
       ),
     );
