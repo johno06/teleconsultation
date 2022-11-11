@@ -8,10 +8,10 @@ class PatientScheduleCard extends StatelessWidget {
   dynamic _bgColor;
   dynamic bookingDay, bookingMonth, appointmentId;
 
-  dynamic patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, patientDevice;
+  dynamic patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, patientDevice, consultationType;
 
   PatientScheduleCard(this.patientName, this.patientSurname, this.patientPhone, this.patientEmail, this.bookingToday, this.bookingTime, this.date,
-      this.bookingDay, this.bookingMonth, this.patientDevice,this.appointmentId, this._bgColor, {Key? key}) : super(key: key);
+      this.bookingDay, this.bookingMonth, this.patientDevice,this.appointmentId, this.consultationType, this._bgColor, {Key? key}) : super(key: key);
 
 //   @override
 //   State<PatientScheduleCard> createState() => _PatientScheduleCardState();
@@ -27,7 +27,7 @@ class PatientScheduleCard extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) =>
                 // PendingDetailScreen(),
-              PendingDetailScreen(patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, appointmentId, patientDevice),
+              PendingDetailScreen(patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, appointmentId, consultationType, patientDevice),
           ),
         );
       },
@@ -77,7 +77,7 @@ class PatientScheduleCard extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              'Pending: $patientName $patientSurname \n$bookingToday . $bookingTime',
+              'Pending: $patientName $patientSurname\nConsultation Type: $consultationType \n$bookingToday . $bookingTime',
               style: TextStyle(
                 color: kTitleTextColor.withOpacity(0.7),
               ),

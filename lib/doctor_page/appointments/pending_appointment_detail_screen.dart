@@ -55,10 +55,10 @@ class PendingDetailScreen extends StatefulWidget {
   //   });
   // }
   dynamic patientName, patientSurname, patientPhone, patientEmail, bookingToday,
-      time, bookingDate, appointmentId, patientDevice;
+      time, bookingDate, appointmentId, patientDevice, consultation;
 
   PendingDetailScreen(this.patientName, this.patientSurname, this.patientPhone,
-      this.patientEmail, this.bookingToday, this.time, this.bookingDate, this.appointmentId, this.patientDevice,
+      this.patientEmail, this.bookingToday, this.time, this.bookingDate, this.appointmentId, this.consultation, this.patientDevice,
       {Key? key}) : super(key: key);
 
   @override
@@ -381,7 +381,7 @@ class _PendingDetailScreenState extends State<PendingDetailScreen> {
                       width: 16.0,
                     ),
                     Text(
-                      "${widget.time}",
+                      "${widget.time} (${widget.consultation} Consultation)",
                       style: descTextStyle,
                     ),
                   ],

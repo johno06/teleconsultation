@@ -210,7 +210,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     // "07:00",
   ];
 
-  String? value, date;
+  var consultationType = [
+    "Online",
+    "Clinic"
+  ];
+
+  String? value, date, consultValue;
   int _totalBill = 0;
   bool _enableCreateOrderBtn = false;
   List<String> timeList = [
@@ -333,6 +338,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         "doctorId": newAppointment.doctorId,
         "time": newAppointment.time,
         "date": newAppointment.date,
+        "consultationType": consultValue,
         "doctorInfo": {
           "_id": doctorId,
           "userId": docUserId,
@@ -561,32 +567,50 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ],
                         ),
                       ),
-                      // Text(
-                      //   "Pick the Time",
-                      //   style: subTitleTextStyle,
-                      // ),
-                      // const SizedBox(
-                      //   height: 8,
-                      // ),
-                      // DropdownButton(
-                      //     hint: Text("Select Items: "),
-                      // value: value,
-                      // onChanged: (newValue){
-                      //       setState(() {
-                      //         value = newValue as String?;
-                      //       });
-                      // },
-                      // items: timeList.map((valueItem){
-                      //   return DropdownMenuItem(value: valueItem,
-                      //   child: Text(valueItem),
-                      //     );
-                      // }).toList(),
-                      // )
-                      // DropdownButton<String>(
-                      //     items: availableBookTime.map(buildMenuItem).toList(),
-                      //     onChanged: (value) => setState(() => this.value = value),
-                      // ),
-                      // ...availableBookTime.map(buildSingleCheckBox).toList(),
+                      Text(
+                        "Consultation Type",
+                        style: subTitleTextStyle,
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: primaryColor100, width: 2),
+                            color: lightBlue100,
+                            borderRadius:
+                            BorderRadius.circular(borderRadiusSize)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            DropdownButton(
+                              hint: Text("Select Time of appointment: "),
+                              value: consultValue,
+                              onChanged: (newValue){
+                                setState(() {
+                                  consultValue = newValue as String?;
+                                  _enableCreateOrderBtn = true;
+                                  // print(value);
+                                  // String vl = "21:00 - 22:00";
+                                  // var inputFormat = DateFormat('HH:mm - HH:mm');
+                                  // var inputDate = inputFormat.parse(vl);
+                                  // var outputDate = outputFormat.format(inputDate);
+                                  // print(outputDate);
+                                });
+                              },
+                              items: consultationType.map((valueItem){
+                                return DropdownMenuItem(value: valueItem,
+                                  child: Text(valueItem),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ])),

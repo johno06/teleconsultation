@@ -185,6 +185,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
               itemBuilder: (context, index) {
                 final appointment = pendingAppointments[index];
                 final doctorData = appointment['doctorInfo'];
+                final consultationType = appointment['consultationType'];
                 doctorVal = DoctorFetch.fromJson(doctorData);
                 if(user_id == doctorVal.userId){
                   final appointmentId = appointment['_id'];
@@ -208,7 +209,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
                     // 'Consultation',
                     patientName, patientSurname, patientPhone, patientEmail,
                     bookingToday, time,
-                    date, bookingDay, bookingMonth, patientDevice,appointmentId,
+                    date, bookingDay, bookingMonth, patientDevice,appointmentId, consultationType,
                     kBlueColor,
                   );
                 }else{
@@ -274,6 +275,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
                 final userData = appointment['userInfo'];
                 userval = UserFetch.fromJson(userData);
                 final doctorData = appointment['doctorInfo'];
+                final consultationType = appointment['consultationType'];
                 doctorVal = DoctorFetch.fromJson(doctorData);
                 // if(patientId == userval.id){
                 if(user_id == doctorVal.userId){
@@ -297,7 +299,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
                     // 'Consultation',
                     patientName, patientSurname, patientPhone, patientEmail,
                     bookingToday, time,
-                    date, bookingDay, bookingMonth, patientDevice ,appointmentId,
+                    date, bookingDay, bookingMonth, patientDevice ,appointmentId, consultationType,
                     kBlueColor,
                   );
                 }else{

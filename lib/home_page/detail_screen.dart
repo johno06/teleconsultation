@@ -163,7 +163,7 @@ class DetailScreen extends StatelessWidget {
                         height: 50,
                       ),
                       Text(
-                        'About Patient'
+                        'About Doctor'
                             ''
                             '',
                         style: TextStyle(
@@ -184,6 +184,14 @@ class DetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(
                         height: 20,
+                      ),
+                      Text(
+                        'Appointment Record',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: kTitleTextColor,
+                        ),
                       ),
                       // Text(
                       //   'Upcoming Schedules',

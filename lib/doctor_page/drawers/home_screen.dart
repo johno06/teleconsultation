@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:teleconsultation/doctor.dart';
 import 'package:teleconsultation/doctor_page/components/patient_schedule_card.dart';
+import '../../app.dart';
 import '../../constant.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,8 +28,9 @@ class DoctorHomeScreen extends StatefulWidget {
 class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
 
   // ProfileModel model = ProfileModel();
-
-
+  final client = StreamChatClient(streamKey
+    // logLevel: Level.INFO,
+  );
   late SharedPreferences loginData;
   String? email, fName, lastName, contactNumber,user_id, address;
   SharedPreferences? appointmentData;

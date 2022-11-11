@@ -31,10 +31,10 @@ import '../../constant.dart';
 // class _PendingDetailScreenState extends State<PendingDetailScreen> {
 class ApprovedDetailScreen extends StatefulWidget {
   dynamic patientName, patientSurname, patientPhone, patientEmail, bookingToday,
-      time, bookingDate, appointmentId, patientDevice;
+      time, bookingDate, appointmentId, patientDevice, consultationType;
 
   ApprovedDetailScreen(this.patientName, this.patientSurname, this.patientPhone,
-      this.patientEmail, this.bookingToday, this.time, this.bookingDate, this.appointmentId, this.patientDevice,
+      this.patientEmail, this.bookingToday, this.time, this.bookingDate, this.appointmentId, this.consultationType, this.patientDevice,
       {Key? key}) : super(key: key);
 
   @override
@@ -346,7 +346,7 @@ class _ApprovedDetailScreenState extends State<ApprovedDetailScreen> {
                       width: 16.0,
                     ),
                     Text(
-                      "${widget.time}",
+                      "${widget.time} (${widget.consultationType} Consultation)",
                       style: descTextStyle,
                     ),
                   ],

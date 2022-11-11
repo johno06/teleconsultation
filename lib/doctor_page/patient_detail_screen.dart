@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teleconsultation/doctor_page/add_appointment_record.dart';
+import 'package:teleconsultation/doctor_page/components/patient_appointment_record.dart';
 import 'package:teleconsultation/doctor_page/components/patient_card.dart';
 import '../constant.dart';
 import 'package:http/http.dart' as http;
@@ -41,6 +43,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   String? patientDevice;
   late SharedPreferences loginData;
   String? email, fName, lastName, contactNumber,user_id;
+  String? patient_id;
   SharedPreferences? appointmentData;
 
   final todayFormat = DateFormat("EEEE");
@@ -63,10 +66,14 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     patientData = await SharedPreferences.getInstance();
     setState(() {
       patientDevice = patientData?.getString('patientDevice')!;
+      patient_id = patientData?.getString('patientId')!;
+      patientData?.setString('patientName', patientFullName);
       print(patientDevice);
+      print("patientId: $patientId");
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchAppointments();
+      fetchRecord();
     });
   }
 
@@ -216,28 +223,27 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                       ),
               ),
                       const SizedBox(
-                        height: 50,
-                      ),
-                      Text(
-                        'About Patient'
-                            ''
-                            '',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: kTitleTextColor,
-                        ),
-                      ),
-                      const SizedBox(
                         height: 10,
                       ),
                       Text(
-                        'Dr. Stella is the top most heart surgeon in Flower\nHospital. She has done over 100 successful sugeries\nwithin past 3 years. She has achieved several\nawards for her wonderful contribution in her own\nfield. She’s available for private consultation for\ngiven schedules.',
-                        style: TextStyle(
-                          height: 1.6,
-                          color: kTitleTextColor.withOpacity(0.7),
+                          'Appointment Record',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: kTitleTextColor,
+                            fontSize: 18,
+                          ),
                         ),
+                      buildRecordList(),
+                      const SizedBox(
+                        height: 20,
                       ),
+                      ElevatedButton(
+                          onPressed: () {
+                            patientData!.setString('patientName', patientFullName);
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => AddAppointmentRecord()));
+                          },
+                          child: Text("Add Record")),
                       const SizedBox(
                         height: 20,
                       ),
@@ -282,6 +288,81 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       //       child: const Text("Book Now")),
       // ),
     );
+  }
+
+
+  List<dynamic> appointmentRecord = [];
+  void fetchRecord() async {
+    String url = 'https://newserverobgyn.herokuapp.com/api/user/getByIdPatient/$patientId';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+
+    // appointmentData = await SharedPreferences.getInstance();
+    // clientData = await SharedPreferences.getInstance();
+    setState(() {
+        appointmentRecord = json['phr'];
+      // print(appointmentRecord.length);
+    });
+    print('fetchclients completed');
+  }
+
+  buildRecordList() {
+    return Column(
+        children: <Widget>[
+          Scrollbar(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: appointmentRecord!.length,
+              itemBuilder: (context, index) {
+                final appointment = appointmentRecord[index];
+                if(appointment.isNotEmpty) {
+                  final title = appointmentRecord[index][0];
+                  final about = appointmentRecord[index][1];
+                  final bookingDate = appointmentRecord[index][2];
+                  final bookingTime = appointmentRecord[index][3];
+                  String weeks = "N/A";
+                  String deliveryDate = "N/A";
+
+                  if(appointmentRecord[index].length == 6) {
+                     weeks = appointmentRecord[index][4];
+                     deliveryDate = appointmentRecord[index][5];
+                  }
+                  // final appointmentId = appointment['_id'];
+                  // final date = appointment['date'];
+                  // final time = appointment['time'];
+                  final parseDate = DateTime.parse(bookingDate);
+                  // // final parseTime = DateTime.parse(time);
+                  final String bookingToday = todayFormat.format(parseDate);
+                  final String bookingMonth = monthFormat.format(parseDate);
+                  final String bookingDay = dayFormat.format(parseDate);
+                  return PatientAppointmentRecord(
+                    // 'Consultation',
+                    title,
+                    weeks,
+                    deliveryDate,
+                    bookingToday,
+                    bookingTime,
+                    bookingDate,
+                    bookingDay,
+                    bookingMonth,
+                    about,
+                    kBlueColor,
+                  );
+
+                }else{
+                  return SizedBox(height: 0,);
+                }
+              },
+              separatorBuilder: (BuildContext context, int index) => const Divider(),
+            ),
+          ),
+          // const SizedBox(
+          //   height: 20,
+          // ),
+        ],
+      );
   }
 
 
