@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:teleconsultation/home_page/drawers/chat/widgets/icon_buttons.dart';
 
+import '../videocall/pages/index.dart';
+
 
 class ChannelPage extends StatelessWidget {
 
@@ -14,10 +16,13 @@ class ChannelPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: Center(
-              child: IconBorder(
-                icon: CupertinoIcons.video_camera_solid,
-                onTap: () {
-
+              child: IconButton(
+                icon: const Icon(Icons.video_call, color: Colors.redAccent,),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => IndexPage()),
+                  );
                 },
               ),
             ),
