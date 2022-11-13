@@ -27,14 +27,13 @@ class PatientDetailScreen extends StatefulWidget {
 
   PatientDetailScreen(this.patientFullName, this.patientContact, this.patientEmail, this.patientId ,this._imageUrl, {Key? key}) : super(key: key);
 
-
   @override
-  _PatientDetailScreenState createState() => _PatientDetailScreenState(patientFullName, patientContact, patientEmail, patientId, _imageUrl);
+  State<PatientDetailScreen> createState() => _PatientDetailScreenState();
 }
 
 class _PatientDetailScreenState extends State<PatientDetailScreen> {
-  dynamic patientFullName, patientContact, patientEmail, patientId, _imageUrl;
-  _PatientDetailScreenState(this.patientFullName, this.patientContact, this.patientEmail, this.patientId ,this._imageUrl);
+  // dynamic patientFullName, patientContact, patientEmail, patientId, _imageUrl;
+  // _PatientDetailScreenState(this.patientFullName, this.patientContact, this.patientEmail, this.patientId ,this._imageUrl);
 
 
 // class PatientDetailScreen extends StatelessWidget {
@@ -67,9 +66,9 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     setState(() {
       patientDevice = patientData?.getString('patientDevice')!;
       patient_id = patientData?.getString('patientId')!;
-      patientData?.setString('patientName', patientFullName);
+      patientData?.setString('patientName', widget.patientFullName);
       print(patientDevice);
-      print("patientId: $patientId");
+      print("patientId: ${widget.patientId}");
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       fetchAppointments();
@@ -139,7 +138,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                       child: Row(
                         children: <Widget>[
                           Image.asset(
-                            _imageUrl,
+                            widget._imageUrl,
                             height: 120,
                           ),
                           const SizedBox(
@@ -149,7 +148,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                "$patientFullName",
+                                "${widget.patientFullName}",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
@@ -160,7 +159,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                                 height: 10,
                               ),
                               Text(
-                                "Contact: $patientEmail",
+                                "Contact: ${widget.patientEmail}",
                                 style: TextStyle(
                                   color: kTitleTextColor.withOpacity(0.7),
                                 ),
@@ -169,7 +168,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                                 height: 10,
                               ),
                               Text(
-                                "Email: $patientContact",
+                                "Email: ${widget.patientContact}",
                                 style: TextStyle(
                                   color: kTitleTextColor.withOpacity(0.7),
                                 ),
@@ -239,7 +238,8 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            patientData!.setString('patientName', patientFullName);
+                            patientData!.setString('patientName', widget.patientFullName);
+                            patientData!.setString('patientID', widget.patientId);
                             Navigator.push(context, MaterialPageRoute(
                                 builder: (context) => AddAppointmentRecord()));
                           },
@@ -293,7 +293,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   List<dynamic> appointmentRecord = [];
   void fetchRecord() async {
-    String url = 'https://newserverobgyn.herokuapp.com/api/user/getByIdPatient/$patientId';
+    String url = 'https://newserverobgyn.herokuapp.com/api/user/getByIdPatient/${widget.patientId}';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
@@ -322,6 +322,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                   final about = appointmentRecord[index][1];
                   final bookingDate = appointmentRecord[index][2];
                   final bookingTime = appointmentRecord[index][3];
+                  String fullName = widget.patientFullName;
                   String weeks = "N/A";
                   String deliveryDate = "N/A";
 
@@ -348,6 +349,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                     bookingDay,
                     bookingMonth,
                     about,
+                    fullName,
                     kBlueColor,
                   );
 
@@ -399,7 +401,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                 final appointment = appointments[index];
                 final userData = appointment['userInfo'];
                 userval = UserFetch.fromJson(userData);
-                if(patientId == userval.id){
+                if(widget.patientId == userval.id){
                   final appointmentId = appointment['_id'];
                   final date = appointment['date'];
                   final time = appointment['time'];

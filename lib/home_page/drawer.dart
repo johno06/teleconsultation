@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';import 'package:fluttertoast/fluttertoast
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
+import 'package:teleconsultation/calcu.dart';
 import 'package:teleconsultation/home_page/drawers/appointment.dart';
 import 'package:teleconsultation/home_page/drawers/history/history_screen.dart';
 
@@ -146,6 +147,7 @@ class _HomePageState extends State<HomePage> {
     if (currentPage == DrawerSections.dashboard) {
      container = const HomeScreen();
     } else if (currentPage == DrawerSections.contacts) {
+     // container = calculator();
      container = ProfileScreen();
     } else if (currentPage == DrawerSections.events) {
      container = const MyAppointment();

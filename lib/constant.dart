@@ -65,6 +65,15 @@ const Color shrineBackgroundWhite = Colors.white;
 const double borderRadiusSize = 16.0;
 const Color lightBlue300 = Color(0xffD2DFF0);
 
+TextStyle valueTextStyle=TextStyle(
+  fontWeight: FontWeight.bold,
+  fontSize: 20,
+);
+TextStyle textTextStyle=TextStyle(
+
+  fontSize: 16,
+);
+
 const kSpacingUnit = 10;
 
 const kDarkPrimaryColor = Color(0xFF212121);
@@ -150,7 +159,7 @@ TextStyle descTextStyle = GoogleFonts.poppins(
     fontSize: 14, fontWeight: FontWeight.w400, color: darkBlue300);
 
 TextStyle addressTextStyle = GoogleFonts.poppins(
-    fontSize: 14, fontWeight: FontWeight.w400, color: darkBlue300);
+    fontSize: 16, fontWeight: FontWeight.w400, color: darkBlue300);
 
 TextStyle facilityTextStyle = GoogleFonts.poppins(
     fontSize: 13, fontWeight: FontWeight.w500, color: darkBlue300);

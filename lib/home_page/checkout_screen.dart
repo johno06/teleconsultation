@@ -703,6 +703,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),
         lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 6))
+        // selectableDayPredicate: (DateTime val) => val.weekday == 1 || val.weekday == 2 || val.weekday == 4 || val.weekday == 6 || val.weekday == 7 ? false : true)
         .then((value) {
       setState(() {
         _dateTime = value!;

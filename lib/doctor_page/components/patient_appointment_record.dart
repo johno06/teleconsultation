@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:teleconsultation/doctor_page/appointments/record_detail_screen.dart';
 
 import '../../constant.dart';
 import '../appointments/pending_appointment_detail_screen.dart';
@@ -8,10 +9,10 @@ class PatientAppointmentRecord extends StatelessWidget {
   dynamic _bgColor;
   dynamic bookingDay, bookingMonth, appointmentId, about;
 
-  dynamic title, weeks, deliveryDate, bookingToday, bookingTime, date;
+  dynamic title, weeks, deliveryDate, bookingToday, bookingTime, date, fullName;
 
   PatientAppointmentRecord(this.title, this.weeks, this.deliveryDate, this.bookingToday, this.bookingTime, this.date,
-      this.bookingDay, this.bookingMonth, this.about, this._bgColor, {Key? key}) : super(key: key);
+      this.bookingDay, this.bookingMonth, this.about, this.fullName, this._bgColor, {Key? key}) : super(key: key);
 
 //   @override
 //   State<PatientScheduleCard> createState() => _PatientScheduleCardState();
@@ -22,14 +23,13 @@ class PatientAppointmentRecord extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) =>
-        //     // PendingDetailScreen(),
-        //     PendingDetailScreen(patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, appointmentId),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+            RecordDetailScreen(title, weeks, deliveryDate, bookingTime, bookingToday, bookingDay, date, bookingMonth, fullName, about),
+          ),
+        );
       },
       child: Container(
         // height: 190,
@@ -79,7 +79,7 @@ class PatientAppointmentRecord extends StatelessWidget {
                 ),
               ),
               subtitle: Text(
-                'About: $about\n$bookingToday . $bookingTime\nWeeks: $weeks\nEDD: $deliveryDate',
+                'Diagnosis: $about\n$bookingToday . $bookingTime\nAOG: $weeks\nEDD: $deliveryDate',
                 style: TextStyle(
                   color: kTitleTextColor.withOpacity(0.7),
                 ),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -41,6 +42,8 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
   SharedPreferences? loginData;
   SharedPreferences? patientData;
 
+  String? weeksCount = "", estimatedDate = "";
+
   var availableBookTime = [
     CheckBoxState(title: ""),
   ];
@@ -75,8 +78,7 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
     if(titleController.text != "" && aboutController.text != "" && df.format(_dateTime) != "" && value != "") {
       Map data = {
       };
-      if (weeksController.text == "" ||
-          df.format(_dateTime1) == df.format(_dateTime2)) {
+      if (weeksCount == "" || estimatedDate == "") {
         data = {
           "phr": [
             titleController.text,
@@ -92,8 +94,8 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
             aboutController.text,
             df.format(_dateTime),
             value,
-            weeksController.text,
-            df.format(_dateTime1)
+            weeksCount,
+            estimatedDate
           ]
         };
       }
@@ -144,7 +146,7 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
     patientData = await SharedPreferences.getInstance();
     setState(() {
       patientFullName = patientData!.getString('patientName');
-      patientId = patientData!.getString('patientId');
+      patientId = patientData!.getString('patientID');
       });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
 
@@ -154,6 +156,7 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
   TextEditingController titleController = TextEditingController();
   TextEditingController aboutController = TextEditingController();
   TextEditingController weeksController = TextEditingController();
+  TextEditingController eddController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +309,7 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
                         height: 8,
                       ),
                       Text(
-                        "Title:",
+                        "Chief Complaint:",
                         style: subTitleTextStyle,
                       ),
                       const SizedBox(
@@ -323,7 +326,7 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
                           controller: titleController,
                           decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
-                            labelText: 'Please Input Title',
+                            labelText: 'Please Input Chief Complaint',
                           ),
                           validator: (value){
                             if (value!.isEmpty) {
@@ -337,7 +340,7 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
                         height: 8,
                       ),
                       Text(
-                        "Consultation About",
+                        "Diagnosis",
                         style: subTitleTextStyle,
                       ),
                       const SizedBox(
@@ -354,7 +357,7 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
                           controller: aboutController,
                           decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
-                            labelText: 'About',
+                            labelText: 'Please Input Diagnosis',
                           ),
                           validator: (value){
                             if (value!.isEmpty) {
@@ -369,44 +372,17 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
                         "For Pregnant Patient:",
                         style: subTitleTextStyle,
                       ),
-                      Text(
-                        "Weeks",
-                        style: subTitleTextStyle,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: primaryColor100, width: 2),
-                            color: lightBlue100,
-                            borderRadius:
-                            BorderRadius.circular(borderRadiusSize)),
-                        child: TextFormField(
-                          controller: weeksController,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: 'Input Weeks of Pregnant',
-                          ),
-                          validator: (value){
-                            if (value!.isEmpty) {
-                              return 'Enter Weeks of being pregnant';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
                       const SizedBox(height: 10,),
                       Text(
-                        "Estimated Due Date",
+                        "Last Menstrual Period",
                         style: subTitleTextStyle,
                       ),
-                      const SizedBox(
-                        height: 8,
-                      ),
                       InkWell(
-                        onTap: () {
-                          _selectDueDate();
+                        onTap: () async{
+                          DateTime birthDate = await selectDate(context, DateTime.now(),
+                              lastDate: DateTime.now());
+                          final df = new DateFormat('yyyy-MM-dd');
+                          _selectLastPeriod(birthDate);
                           // pickings();
                         },
                         child: Container(
@@ -436,33 +412,43 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
                           ),
                         ),
                       ),
-                      // Text(
-                      //   "Pick the Time",
-                      //   style: subTitleTextStyle,
-                      // ),
-                      // const SizedBox(
-                      //   height: 8,
-                      // ),
-                      // DropdownButton(
-                      //     hint: Text("Select Items: "),
-                      // value: value,
-                      // onChanged: (newValue){
-                      //       setState(() {
-                      //         value = newValue as String?;
-                      //       });
-                      // },
-                      // items: timeList.map((valueItem){
-                      //   return DropdownMenuItem(value: valueItem,
-                      //   child: Text(valueItem),
-                      //     );
-                      // }).toList(),
-                      // )
-                      // DropdownButton<String>(
-                      //     items: availableBookTime.map(buildMenuItem).toList(),
-                      //     onChanged: (value) => setState(() => this.value = value),
-                      // ),
-                      // ...availableBookTime.map(buildSingleCheckBox).toList(),
-                    ],
+                      SizedBox(height: 10,),
+                      Text(
+                        "Weeks",
+                        style: subTitleTextStyle,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: primaryColor100, width: 2),
+                            color: lightBlue100,
+                            borderRadius:
+                            BorderRadius.circular(borderRadiusSize)),
+                        child: Row(
+                        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[Text("Weeks: ",style: subTitleTextStyle,), Text("  $weeksCount",style: subTitleTextStyle,)],
+                      ),
+                      ),
+                      SizedBox(height: 10,),
+                      Text(
+                        "EDD (Estimated Date of Delivery)",
+                        style: subTitleTextStyle,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: primaryColor100, width: 2),
+                            color: lightBlue100,
+                            borderRadius:
+                            BorderRadius.circular(borderRadiusSize)),
+                        child: Row(
+                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[Text("EDD: ",style: subTitleTextStyle,), Text("  $estimatedDate",style: subTitleTextStyle,)],
+                        ),
+                      ),
+                      ],
                   ),
                 ])),
           )
@@ -535,17 +521,132 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
     });
   }
 
-  void _selectDueDate() async {
-    await showDatePicker(
+  selectDate(BuildContext context, DateTime initialDateTime,
+      {required DateTime lastDate}) async {
+    Completer completer = Completer();
+    String _selectedDateInString;
+    showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 330))
-        .then((value) {
-      setState(() {
-        _dateTime1 = value!;
-      });
+        initialDate: initialDateTime,
+        firstDate: DateTime(1970),
+        lastDate: lastDate == null
+            ? DateTime(initialDateTime.year + 10)
+            : lastDate)
+        .then((temp) {
+      if (temp == null) return null;
+      completer.complete(temp);
+      setState(() {});
     });
+    return completer.future;
+  }
+
+  void _selectLastPeriod(DateTime birthDate) async {
+    DateTime currentDate = DateTime.now();
+    final df = new DateFormat('yyyy-MM-dd');
+    DateTime calweeks = DateTime(birthDate.year, birthDate.month, birthDate.day);
+
+    final diff = currentDate.difference(calweeks).inDays;
+    int weeks = 0;
+    int daysCount = 0;
+    int tilSeven = 0;
+    while(daysCount < diff){
+      tilSeven++;
+      daysCount++;
+      if(tilSeven == 7){
+        weeks++;
+        tilSeven =0;
+      }
+    }
+    if(tilSeven == 1 || tilSeven == 0 || weeks == 0 || weeks == 1) {
+      weeksCount = "$weeks week and $tilSeven day";
+    }else{
+      weeksCount = "$weeks weeks and $tilSeven days";
+    }
+    int month4 = birthDate.month -2;
+    int month3 = birthDate.month -3;
+    int year = birthDate.year +1;
+    if(month3 == -1){
+      year = birthDate.year;
+      month3 = 11;
+    }else if(month3 == -2){
+      year = birthDate.year;
+      month3 = 10;
+    }else if(month3 == -2){
+      year = birthDate.year;
+      month3 = 9;
+    }else if(month3 == -3){
+      year = birthDate.year;
+      month3 = 8;
+    }else if(month3 == -4){
+      year = birthDate.year;
+      month3 = 7;
+    }else if(month3 == -5){
+      year = birthDate.year;
+      month3 = 6;
+    }else if(month3 == -6){
+      year = birthDate.year;
+      month3 = 5;
+    }else if(month3 == -7){
+      year = birthDate.year;
+      month3 = 4;
+    }else if(month3 == -8){
+      year = birthDate.year;
+      month3 = 3;
+    }else if(month3 == -9){
+      year = birthDate.year;
+      month3 = 2;
+    }else if(month3 == -10){
+      year = birthDate.year;
+      month3 = 1;
+    }else if(month3 == -11){
+      year = birthDate.year;
+      month3 = 0;
+    }
+    print("$month4 $month3");
+    int day = birthDate.day;
+    int day1 = 1;
+    int week = 0;
+    int days = 0;
+    var date = new DateTime(year, month3, 0);
+    for(int i = 0; i<7; i++){
+      if(day < date.day) {
+        day ++;
+        days++;
+      }else{
+        day = day1;
+        day1++;
+        days++;
+      }
+    }
+    print(days);
+    for(int i = 0; i<7; i++){
+
+    }
+    // print("Last Date: ${date.day}");
+    var ed = DateTime(year,month3,day);
+    estimatedDate = df.format(ed);
+    // estimatedDate = "$year-$month3-$day";
+    int age = currentDate.year - birthDate.year;
+    int month1 = currentDate.month;
+    int month2 = birthDate.month;
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = birthDate.day;
+      if (day2 > day1) {
+        age--;
+      }
+    }
+    // await showDatePicker(
+    //     context: context,
+    //     initialDate: DateTime.now(),
+    //     firstDate: DateTime(1970),
+    //     lastDate: DateTime.now()).then((value) {
+      setState(() {
+        _dateTime1 = birthDate!;
+      });
+    // });
   }
 
   DropdownMenuItem<String> buildMenuItem(String item) => DropdownMenuItem(

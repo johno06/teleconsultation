@@ -26,7 +26,6 @@ class PatientScheduleCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                // PendingDetailScreen(),
               PendingDetailScreen(patientName, patientSurname, patientPhone, patientEmail, bookingToday, bookingTime, date, appointmentId, consultationType, patientDevice),
           ),
         );
