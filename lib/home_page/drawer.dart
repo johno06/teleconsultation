@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_chat_flutter/stream_chat_flutter.dart';
 import 'package:teleconsultation/calcu.dart';
 import 'package:teleconsultation/home_page/drawers/appointment.dart';
+import 'package:teleconsultation/home_page/drawers/history/appointment_history.dart';
 import 'package:teleconsultation/home_page/drawers/history/history_screen.dart';
 
 import '../app.dart';
@@ -154,7 +155,7 @@ class _HomePageState extends State<HomePage> {
     } else if (currentPage == DrawerSections.notes) {
       container = SelectUserScreen();
     } else if (currentPage == DrawerSections.settings) {
-     container = const HistoryScreen();
+     container = TransactionHistoryScreen();
     } else if (currentPage == DrawerSections.notifications) {
 //      container = NotificationsPage();
     } else if (currentPage == DrawerSections.privacy_policy) {
