@@ -367,25 +367,25 @@ class _ApprovedDetailScreenState extends State<ApprovedDetailScreen> {
         ]),
         child: Row(
           children: [
-            // Expanded(
-            //   child: ElevatedButton(
-            //       style: ElevatedButton.styleFrom(
-            //           minimumSize: const Size(100, 45),
-            //           shape: RoundedRectangleBorder(
-            //               borderRadius: BorderRadius.circular(
-            //                   borderRadiusSize)),
-            //           backgroundColor: Colors.redAccent
-            //       ),
-            //       onPressed: () {
-            //         update = "rejected";
-            //         if(update == "rejected"){
-            //           updateAppointment(context, appointmentId);
-            //         }
-            //
-            //         // print(update);
-            //       },
-            //       child: const Text("Reject")),
-            // ),
+            Expanded(
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(100, 45),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              borderRadiusSize)),
+                      backgroundColor: Colors.redAccent
+                  ),
+                  onPressed: () {
+                    update = "absent";
+                    if(update == "absent"){
+                      updateAppointment1(context, widget.appointmentId);
+                    }
+
+                    // print(update);
+                  },
+                  child: const Text("ABSENT")),
+            ),
             SizedBox(width: size.width * 0.025),
             Expanded(
               child: ElevatedButton(
@@ -468,6 +468,41 @@ class _ApprovedDetailScreenState extends State<ApprovedDetailScreen> {
   }
 
   Future updateAppointment(BuildContext context, id) async {
+    Map data = {
+      "status": update,
+    };
+    String body = json.encode(data);
+    http.Response response = await http.patch(
+      Uri.parse(
+          'https://newserverobgyn.herokuapp.com/api/user/updateAppointments/$id'),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    // print(response.body);
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: "Appointment Updated Successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>  const DoctorPage()));
+    } else {
+      return (
+          Fluttertoast.showToast(
+              msg: "Appointment Updated Failed",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              backgroundColor: Colors.redAccent,
+              textColor: Colors.white,
+              fontSize: 16.0));
+    }
+  }
+
+  Future updateAppointment1(BuildContext context, id) async {
     Map data = {
       "status": update,
     };

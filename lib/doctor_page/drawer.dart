@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:teleconsultation/doctor_page/drawers/chat/screens/select_user_screen.dart';
+import 'package:teleconsultation/doctor_page/drawers/history/appointment_history.dart';
 import 'package:teleconsultation/doctor_page/drawers/history/history_screen.dart';
 
 import '../starting_page/login.dart';
@@ -72,7 +73,7 @@ class _DoctorPageState extends State<DoctorPage> {
     } else if (currentPage == DrawerSections.notes) {
       container = const SelectUserScreen();
     } else if (currentPage == DrawerSections.settings) {
-      container = const HistoryScreen();
+      container = TransactionHistoryScreen();
     } else if (currentPage == DrawerSections.notifications) {
      container = MyForm();
     } else if (currentPage == DrawerSections.privacy_policy) {
