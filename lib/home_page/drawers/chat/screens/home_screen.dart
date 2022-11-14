@@ -29,12 +29,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
   final pages = const [
     MessagesPage(),
-    ContactsPage(),
+    // ContactsPage(),
   ];
 
   final pageTitles = const [
     'Messages',
-    'Contacts',
+    // 'Contacts',
   ];
 
   void _onNavigationItemSelected(index) {
@@ -186,13 +186,13 @@ class __BottomNavigationBarState extends State<_BottomNavigationBar> {
               //   isSelected: (selectedIndex == 2),
               //   onTap: handleItemSelected,
               // ),
-              _NavigationBarItem(
-                index: 1,
-                lable: 'Contacts',
-                icon: CupertinoIcons.person_2_fill,
-                isSelected: (selectedIndex == 1),
-                onTap: handleItemSelected,
-              ),
+              // _NavigationBarItem(
+              //   index: 1,
+              //   lable: 'Contacts',
+              //   icon: CupertinoIcons.person_2_fill,
+              //   isSelected: (selectedIndex == 1),
+              //   onTap: handleItemSelected,
+              // ),
             ],
           ),
         ),

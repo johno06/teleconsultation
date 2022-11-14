@@ -20,9 +20,9 @@ class UserFetch {
    String surname;
    String phone;
    String birthdate;
-   String gender;
+   // String gender;
    String address;
-   String emailVerificationToken;
+   // String emailVerificationToken;
    bool verified;
    bool isAdmin;
    String password;
@@ -48,9 +48,9 @@ class UserFetch {
     required this.birthdate,
     required this.address,
     required this.phone,
-    required this.gender,
+    // required this.gender,
     required this.isDoctor,
-    required this.emailVerificationToken,
+    // required this.emailVerificationToken,
     required this.verified,
     required this.isAdmin,
     required this.createdAt,
@@ -77,10 +77,10 @@ class UserFetch {
     surname: json["surname"] ?? "",
     birthdate: json["birthdate"] ?? "",
     address: json["address"] ?? "",
-    phone: json["phone"] ?? "",
-    gender: json["gender"] ?? "",
+    phone: json["phoneNumber"] ?? "",
+    // gender: json["gender"] ?? "",
     isDoctor: json["isDoctor"] ?? "",
-    emailVerificationToken: json["emailVerificationToken"] ?? "",
+    // emailVerificationToken: json["emailVerificationToken"] ?? "",
     verified: json["verified"] ?? "",
     isAdmin: json["isAdmin"] ?? "",
     createdAt: json["createdAt"] ?? "",
@@ -105,8 +105,8 @@ class UserFetch {
     "surname": surname,
     "birthdate": birthdate,
     "address": address,
-    "phone": phone,
-    "gender": gender,
+    "phoneNumber": phone,
+    // "gender": gender,
     "isDoctor": isDoctor,
     "password": password,
     "devices": devices

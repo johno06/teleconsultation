@@ -51,7 +51,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   final timeFormat = DateFormat("hh:mm aaa");
 
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
-      phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
+      phone: '', email: '', password: '', isDoctor: false, verified: false,
       isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
 
   @override

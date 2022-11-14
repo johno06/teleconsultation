@@ -28,8 +28,8 @@ class _AbsentAppointmentState extends State<AbsentAppointment> {
   DoctorFetch appointmentVal = DoctorFetch(userId: '', doctorName: '',
       doctorLastName: '');
   UserFetch userFetch = UserFetch(id: '', email: '', name: '', surname: '',
-      birthdate: '', address: '', phone: '', gender: '', isDoctor: false,
-      emailVerificationToken: '', verified: true, isAdmin: false, createdAt: '',
+      birthdate: '', address: '', phone: '', isDoctor: false,
+      verified: true, isAdmin: false, createdAt: '',
       updatedAt: '', password: '', devices:['']);
 
   SharedPreferences? appointmentData;

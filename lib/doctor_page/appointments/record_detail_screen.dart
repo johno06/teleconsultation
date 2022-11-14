@@ -204,14 +204,17 @@ class _RecordDetailScreenState extends State<RecordDetailScreen> {
                   ],
                 ),
                 const SizedBox(height: 20,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "EDD and Age of Gestation: (for pregnant)",
-                      style: subTitleTextStyle,
-                    ),
-                  ],
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "EDD and Age of Gestation: (for pregnant)",
+                        style: subTitleTextStyle,
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(
                   height: 4,

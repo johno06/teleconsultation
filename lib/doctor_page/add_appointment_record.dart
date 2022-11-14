@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,6 +52,7 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
   var availTime = [
     "06:00 - 07:00",
     "07:00 - 08:00",
+    "08:00 - 09:00",
     "09:00 - 10:00",
     "10:00 - 11:00",
     "11:00 - 12:00",
@@ -431,9 +433,14 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
                       ),
                       ),
                       SizedBox(height: 10,),
-                      Text(
-                        "EDD (Estimated Date of Delivery)",
-                        style: subTitleTextStyle,
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [Text(
+                            "EDD (Estimated Date of Delivery)",
+                            style: subTitleTextStyle,
+                          ),]
+                       ),
                       ),
                       Container(
                         padding: const EdgeInsets.all(16),

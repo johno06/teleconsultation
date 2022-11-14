@@ -534,34 +534,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 InkWell(
                   onTap: () {},
                   splashColor: primaryColor100,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle, color: colorWhite),
-                          child: const Icon(
-                            Icons.location_on,
-                            size: 24,
-                            color: darkBlue300,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "$homeAddress",
-                              style: normalTextStyle,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: colorWhite),
+                            child: const Icon(
+                              Icons.location_on,
+                              size: 24,
+                              color: darkBlue300,
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "$homeAddress",
+                                style: normalTextStyle,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

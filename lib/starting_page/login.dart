@@ -34,11 +34,11 @@ class _LoginScreenState extends State<LoginScreen> {
   ProfileModel model = ProfileModel(lName: '', fName: '', id: '', contactNo: '', email: '');
 
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
-      phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
+      phone: '', email: '', password: '', isDoctor: false, verified: false,
     isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
 
   DoctorNewFetch doctorNew = DoctorNewFetch(id: '', userId: '', firstName: '', lastName: '', phoneNumber: '',
-      website: '', address: '', specialization: '', experience: '', fee: 650, timings: [], status: '',
+      address: '', specialization: '', experience: '', timings: [], status: '',
       createdAt: '', updatedAt: '', devices:[]);
 
   DoctorFetch doctorrval = DoctorFetch(lName: '', fName: '', id: '', birthday: '', homeAddress: '', contactNo: '', email: '', cPassword: '', password: '');
@@ -205,14 +205,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (data['success'] == false) {
       // print(res.body);
       // print("error");
-      // Fluttertoast.showToast(
-      //     msg: "Log in failed",
-      //     toastLength: Toast.LENGTH_SHORT,
-      //     gravity: ToastGravity.BOTTOM,
-      //     backgroundColor: Colors.redAccent,
-      //     textColor: Colors.white,
-      //     fontSize: 16.0
-      // );
+      Fluttertoast.showToast(
+          msg: "Log in failed",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
     }else {
       // print(data);
       userval = UserFetch.fromJson(data['data']);
@@ -229,8 +229,8 @@ class _LoginScreenState extends State<LoginScreen> {
         loginData.setString('phone', userval.phone);
         loginData.setString('birthdate', userval.birthdate);
         loginData.setString('address', userval.address);
-        loginData.setString('gender', userval.gender);
-        loginData.setString('emailVerificationToken', userval.emailVerificationToken);
+        // loginData.setString('gender', userval.gender);
+        // loginData.setString('emailVerificationToken', userval.emailVerificationToken);
         loginData.setBool('isDoctor', userval.isDoctor);
         loginData.setBool('verified', userval.verified);
         loginData.setBool('isAdmin', userval.isAdmin);
@@ -293,11 +293,9 @@ class _LoginScreenState extends State<LoginScreen> {
         loginData.setString('name', doctorNew.firstName);
         loginData.setString('surname', doctorNew.lastName);
         loginData.setString('phone', doctorNew.phoneNumber);
-        loginData.setString('website', doctorNew.website);
         loginData.setString('specialization', doctorNew.specialization);
         loginData.setString('experience', doctorNew.experience);
         loginData.setString('address', doctorNew.address);
-        loginData.setInt('fee', doctorNew.fee);
         loginData.setString('openTime', doctorNew.timings[0]);
         loginData.setString('lastTime', doctorNew.timings[1]);
         loginData.setString('docDevice', mtoken!);
@@ -323,65 +321,6 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 16.0
         );
       }
-    }
-
-    var resdoc = await http.post(Uri.parse("https://flutter-auth-server.herokuapp.com/docsignin"),
-        headers: <String, String>{
-          'Context-Type': 'application/json;charSet=UTF-8'
-        },
-        body: <String, String>{
-          'email': doctorrval.email,
-          'password': doctorrval.password
-        });
-
-    final datadoc = json.decode(resdoc.body);
-    //DoctorFetch df = DoctorFetch.fromJson(datadoc);
-    if(datadoc['success'] == true){
-      //print(datadoc);
-      doctorrval = DoctorFetch.fromJson(datadoc['token']);
-      circular = false;
-      checkLogin();
-      loginData.setBool('login' ,true);
-      loginData.setString('id',doctorrval.id);
-      loginData.setString('email', doctorrval.email);
-      loginData.setString('fName', doctorrval.fName);
-      loginData.setString('lName', doctorrval.lName);
-      loginData.setString('contactNo', doctorrval.contactNo);
-      loginData.setString('birthday', doctorrval.birthday);
-      loginData.setString('homeAddress', doctorrval.homeAddress);
-      loginData.setString('password', doctorrval.password);
-      //print(doctorrval.id);
-
-
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (BuildContext context){
-            return const DoctorPage();
-          },
-          ), (router) => false);
-
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => const DoctorPage()));
-      Fluttertoast.showToast(
-          msg: "Doctors Log in successfully",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
-    }
-
-    if(data['success'] == false && datadoc['success'] == false){
-      Fluttertoast.showToast(
-          msg: "Log in failed",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.redAccent,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
     }
   }
 

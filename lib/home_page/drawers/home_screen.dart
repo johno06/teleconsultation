@@ -242,7 +242,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Dr. $name $lastname',
                       'Contact: $phone',
                       'Specialization: $specialization',
-                      'Fee: $fee',
                       'Time available: $openTime - $closeTime',
                       'Experience: $exp Years',
                       'assets/images/doctor1.png',

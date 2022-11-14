@@ -353,7 +353,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   late SharedPreferences loginData;
   String? email, fName, lastName, contactNumber, birthday, homeAddress, openTime, lastTime;
-  int? fee;
   Color shrinePink400 = const Color(0xFFEAA4A4);
 
   @override
@@ -364,10 +363,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // loginData.setString('name', doctorNew.firstName);
   // loginData.setString('surname', doctorNew.lastName);
   // loginData.setString('phone', doctorNew.phoneNumber);
-  // loginData.setString('website', doctorNew.website);
   // loginData.setString('specialization', doctorNew.specialization);
   // loginData.setString('address', doctorNew.address);
-  // loginData.setInt('fee', doctorNew.fee);
   // loginData.setString('openTime', doctorNew.timings[0]);
   // loginData.setString('lastTime', doctorNew.timings[1]);
   // loginData.setString('docDevice', mtoken!);
@@ -380,7 +377,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       lastName = loginData.getString('surname')!;
       contactNumber = loginData.getString('phone')!;
       homeAddress = loginData.getString('address')!;
-      fee = loginData.getInt('fee');
       openTime = loginData.getString('openTime');
       lastTime = loginData.getString('lastTime');
     });
@@ -548,34 +544,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 InkWell(
                   onTap: () {},
                   splashColor: primaryColor100,
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle, color: colorWhite),
-                          child: const Icon(
-                            Icons.location_on,
-                            size: 24,
-                            color: darkBlue300,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "$homeAddress",
-                              style: normalTextStyle,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: colorWhite),
+                            child: const Icon(
+                              Icons.location_on,
+                              size: 24,
+                              color: darkBlue300,
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "$homeAddress",
+                                style: normalTextStyle,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

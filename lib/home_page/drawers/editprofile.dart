@@ -42,7 +42,7 @@ bool isObscurePassword = true;
 
 class _EditProfileState extends State<EditProfile> {
   late SharedPreferences loginData;
-  String? id, email, fName, lastName, contactNumber, birthday, homeAddress, password, gender;
+  String? id, email, fName, lastName, contactNumber, birthday, homeAddress, password;
 
   Color shrinePink400 = const Color(0xFFEAA4A4);
 
@@ -86,7 +86,6 @@ class _EditProfileState extends State<EditProfile> {
       birthday = loginData.getString('birthdate')!;
       homeAddress = loginData.getString('address')!;
       password = loginData.getString('password')!;
-      gender = loginData.getString('gender')!;
     });
   }
 
@@ -117,7 +116,7 @@ class _EditProfileState extends State<EditProfile> {
       "email": updateUser.email,
       "name": updateUser.fName,
       "surname": updateUser.lName,
-      "phone": updateUser.contactNo,
+      "phoneNumber": updateUser.contactNo,
       "address": updateUser.homeAddress,
       "birthdate": updateUser.birthday,
     };

@@ -42,7 +42,6 @@ bool isObscurePassword = true;
 class _DoctorEditProfileState extends State<DoctorEditProfile> {
   late SharedPreferences loginData;
   String? id, email, fName, lastName, contactNumber, birthday, homeAddress, doctorId, openTime, closeTime, experience, specialization;
-  int? fee;
 
   int firstTime = 0;
   int secondTime = 0;
@@ -97,7 +96,6 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
       closeTime = loginData.getString('lastTime');
       experience = loginData.getString('experience');
       specialization = loginData.getString('specialization');
-      fee = loginData.getInt('fee');
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       for(int i = 0; i<timeList.length; i++){
@@ -146,7 +144,6 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
       "address": updateUser.homeAddress,
       "specialization": updateUser.specialization,
       "experience": updateUser.experience,
-      "fee": '650',
       "timings": [updateUser.openTime, updateUser.closeTime],
 
     };

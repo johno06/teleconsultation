@@ -246,9 +246,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       docUserId, website, docaddress, status, doccreatedAt, docupdateAt, docphone, exp, specialization,doctorDevice;
 
   bool? isDoctor, isAdmin, verified;
-  String ? userId, emailVerificationToken, createdAt, updatedAt,
-      email, name, surname, phone, birthdate, address, gender,patientDevice;
-  late int doctorFee;
+  String ? userId, createdAt, updatedAt,
+      email, name, surname, phone, birthdate, address,patientDevice;
 
   void initial() async{
     doctorData = await SharedPreferences.getInstance();
@@ -256,17 +255,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     setState(() {
       doctorName = doctorData!.getString('docName');
       doctorLname = doctorData!.getString('docLname');
-      doctorFee = doctorData!.getInt('fee')!;
       doctorOpenTime = doctorData!.getString('openTime');
       doctorCloseTime = doctorData!.getString('closeTime');
       doctorId = doctorData!.getString('doctorId');
       docUserId = doctorData?.getString('docUserId');
-      website = doctorData?.getString('website');
-      docaddress = doctorData?.getString('address');
+      docaddress = doctorData?.getString('address1');
       status = doctorData?.getString('status');
       doccreatedAt = doctorData?.getString('createdAt');
       docupdateAt = doctorData?.getString('updatedAt');
-      docphone = doctorData?.getString('phone');
+      docphone = doctorData?.getString('phone1');
       exp = doctorData?.getString('exp');
       specialization = doctorData?.getString('specialization');
       doctorDevice = doctorData?.getString('doctorDevice');
@@ -279,8 +276,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       phone = loginData!.getString('phone');
       birthdate = loginData!.getString('birthdate');
       address = loginData!.getString('address');
-      gender = loginData!.getString('gender');
-      emailVerificationToken = loginData!.getString('emailVerificationToken');
       isDoctor = loginData!.getBool('isDoctor');
       verified = loginData!.getBool('verified');
       isAdmin = loginData!.getBool('isAdmin');
@@ -345,11 +340,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           "firstName": doctorName,
           "lastName": doctorLname,
           "phoneNumber": docphone,
-          "website": website,
           "address": docaddress,
           "specialization": specialization,
           "experience": exp,
-          "fee": doctorFee,
           "timings": [
             doctorOpenTime,
             doctorCloseTime
@@ -366,9 +359,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           "_id": userId,
           "name": name,
           "surname": surname,
-          "phone": phone,
+          "phoneNumber": phone,
           "email": email,
-          "emailVerificationToken": emailVerificationToken,
           "verified": verified,
           "isDoctor": isDoctor,
           "isAdmin": isAdmin,

@@ -38,7 +38,7 @@ class _MyAppointmentState extends State<MyAppointment> {
   late String date1, time1, time05;
 
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
-      phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
+      phone: '', email: '', password: '', isDoctor: false, verified: false,
       isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
 
   late final LocalNotificationService service;
@@ -207,6 +207,20 @@ class _MyAppointmentState extends State<MyAppointment> {
               const SizedBox(
                 height: 5,
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Text(
+                  'Pending Appointments',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: kTitleTextColor,
+                    fontSize: 21,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15,),
+              buildPendingAppointmentList(),
+              const SizedBox(height: 15,),
               Row(
                 children: <Widget>[
                   Padding(
@@ -331,7 +345,6 @@ class _MyAppointmentState extends State<MyAppointment> {
                     // if(stylist_id == id){
                     final id = client['_id'];
                     final userId = client['userId'];
-                    final website = client['website'];
                     final address = client['address'];
                     final status = client['status'];
                     final createdAt = client['createdAt'];
@@ -340,7 +353,6 @@ class _MyAppointmentState extends State<MyAppointment> {
                     final email = client['email'];
                     final lastname = client['lastName'];
                     final phone = client['phoneNumber'];
-                    final fee = client['fee'];
                     final openTime = client['timings'][0];
                     final closeTime = client['timings'][1];
                     final specialization = client['specialization'];
@@ -349,18 +361,16 @@ class _MyAppointmentState extends State<MyAppointment> {
 
                     doctorData?.setString('docName', name);
                     doctorData?.setString('docLname', lastname);
-                    doctorData?.setInt('fee', fee);
                     doctorData?.setString('openTime', openTime);
                     doctorData?.setString('closeTime', closeTime);
 
                     doctorData?.setString('doctorId', id);
                     doctorData?.setString('docUserId', userId);
-                    doctorData?.setString('website', website);
-                    doctorData?.setString('address', address);
+                    doctorData?.setString('address1', address);
                     doctorData?.setString('status', status);
                     doctorData?.setString('createdAt', createdAt);
                     doctorData?.setString('updatedAt', updatedAt);
-                    doctorData?.setString('phone', phone);
+                    doctorData?.setString('phone1', phone);
                     doctorData?.setString('exp', exp);
                     doctorData?.setString('specialization', specialization);
                     doctorData?.setString('doctorDevice', doctorDevice);
@@ -369,7 +379,6 @@ class _MyAppointmentState extends State<MyAppointment> {
                       'Dr. $name $lastname',
                       'Contact: $phone',
                       'Specialization: $specialization',
-                      'Fee: $fee',
                       'Time available: $openTime - $closeTime',
                       'Experience: $exp Years',
                       'assets/images/doctor1.png',

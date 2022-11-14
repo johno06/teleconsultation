@@ -11,11 +11,10 @@ class DoctorCard extends StatelessWidget {
   dynamic _imageUrl;
   dynamic _bgColor;
   dynamic _pemail;
-  dynamic _fee;
   dynamic _timings;
   dynamic _exp;
 
-  DoctorCard(this._name, this._pemail, this._description, this._fee, this._timings, this._exp, this._imageUrl, this._bgColor, {
+  DoctorCard(this._name, this._pemail, this._description, this._timings, this._exp, this._imageUrl, this._bgColor, {
     Key? key}) : super(key: key);
 
   @override
@@ -52,7 +51,7 @@ class DoctorCard extends StatelessWidget {
                 ),
               ),
               subtitle: Text(
-                _pemail+"\n"+_description+"\n"+_timings+"\n"+_fee+"\n"+_exp,
+                _pemail+"\n"+_description+"\n"+_timings+"\n"+_exp,
                 style: TextStyle(
                   fontSize: 16,
                   color: kTitleTextColor.withOpacity(0.7),

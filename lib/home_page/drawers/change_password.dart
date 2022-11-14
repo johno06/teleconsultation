@@ -38,7 +38,7 @@ bool isObscurePassword = true;
 
 class _ChangePasswordState extends State<ChangePassword> {
   late SharedPreferences loginData;
-  String? id, email, fName, lastName, contactNumber, birthday, homeAddress, password, gender, confirmPassword;
+  String? id, email, fName, lastName, contactNumber, birthday, homeAddress, password, confirmPassword;
 
   Color shrinePink400 = const Color(0xFFEAA4A4);
 
@@ -65,7 +65,6 @@ class _ChangePasswordState extends State<ChangePassword> {
       birthday = loginData.getString('birthdate')!;
       homeAddress = loginData.getString('address')!;
       password = loginData.getString('password')!;
-      gender = loginData.getString('gender')!;
     });
   }
 

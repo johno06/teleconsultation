@@ -36,7 +36,7 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
   String? email, fName, lastName, contactNumber,user_id;
 
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
-      phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
+      phone: '', email: '', password: '', isDoctor: false, verified: false,
       isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
 
   DoctorFetch doctorVal = DoctorFetch(userId: '', doctorName: '', doctorLastName: '');

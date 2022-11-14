@@ -43,7 +43,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
 
   DoctorFetch doctorVal = DoctorFetch(userId: '', doctorName: '', doctorLastName: '');
   UserFetch userval = UserFetch(name: '', surname: '', id: '', birthdate: '', address: '',
-      phone: '', email: '', password: '', gender: '', isDoctor: false, emailVerificationToken: '', verified: false,
+      phone: '', email: '', password: '', isDoctor: false, verified: false,
       isAdmin: false, createdAt: '', updatedAt: '', devices:['']);
   SharedPreferences? deviceOfPatient;
   //
@@ -430,9 +430,9 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                     final patientName = patient['name'];
                     final patientSurname = patient['surname'];
                     final patientEmail = patient['email'];
-                    final patientPhone = patient['phone'];
+                    final patientPhone = patient['phoneNumber'];
                     final patientBirthdate = patient['birthdate'];
-                    final patientGender = patient['gender'];
+                    final patientGender = "Female";
                     final patientAddress = patient['address'];
                     final patientDevice = patient['devices'][0];
                     patientData?.setString('patientDevice', patientDevice);
