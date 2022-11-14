@@ -113,7 +113,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               channel.name,
               // TODO add a proper drawable resource to android, for now using
               //      one that already exists in example app.
-              icon: 'launch_background',
+              icon: '@mipmap/ic_launcher',
             ),
           ),
         );
@@ -545,7 +545,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               onChanged: (newValue){
                                 setState(() {
                                   consultValue = newValue as String?;
-                                  _enableCreateOrderBtn = true;
                                   // print(value);
                                   // String vl = "21:00 - 22:00";
                                   // var inputFormat = DateFormat('HH:mm - HH:mm');
