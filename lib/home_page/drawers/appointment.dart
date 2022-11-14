@@ -315,74 +315,77 @@ class _MyAppointmentState extends State<MyAppointment> {
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
       ),
-      child: Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: clients.length,
-                separatorBuilder: (_ , __ ) => Divider(height: 0.6,
-                  color: Colors.black87,),
-                itemBuilder: (context, index) {
-                  final client = clients[index];
-                  // final stylist_id = client['stylist_id'];
-                  // if(stylist_id == id){
-                  final id = client['_id'];
-                  final userId = client['userId'];
-                  final website = client['website'];
-                  final address = client['address'];
-                  final status = client['status'];
-                  final createdAt = client['createdAt'];
-                  final updatedAt = client['updatedAt'];
-                  final name = client['firstName'];
-                  final email = client['email'];
-                  final lastname = client['lastName'];
-                  final phone = client['phoneNumber'];
-                  final fee = client['fee'];
-                  final openTime = client['timings'][0];
-                  final closeTime = client['timings'][1];
-                  final specialization = client['specialization'];
-                  final exp = client['experience'];
-                  final doctorDevice = client['devices'][0];
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  itemCount: clients.length,
+                  separatorBuilder: (_ , __ ) => Divider(height: 0.6,
+                    color: Colors.black87,),
+                  itemBuilder: (context, index) {
+                    final client = clients[index];
+                    // final stylist_id = client['stylist_id'];
+                    // if(stylist_id == id){
+                    final id = client['_id'];
+                    final userId = client['userId'];
+                    final website = client['website'];
+                    final address = client['address'];
+                    final status = client['status'];
+                    final createdAt = client['createdAt'];
+                    final updatedAt = client['updatedAt'];
+                    final name = client['firstName'];
+                    final email = client['email'];
+                    final lastname = client['lastName'];
+                    final phone = client['phoneNumber'];
+                    final fee = client['fee'];
+                    final openTime = client['timings'][0];
+                    final closeTime = client['timings'][1];
+                    final specialization = client['specialization'];
+                    final exp = client['experience'];
+                    final doctorDevice = client['devices'][0];
 
-                  doctorData?.setString('docName', name);
-                  doctorData?.setString('docLname', lastname);
-                  doctorData?.setInt('fee', fee);
-                  doctorData?.setString('openTime', openTime);
-                  doctorData?.setString('closeTime', closeTime);
+                    doctorData?.setString('docName', name);
+                    doctorData?.setString('docLname', lastname);
+                    doctorData?.setInt('fee', fee);
+                    doctorData?.setString('openTime', openTime);
+                    doctorData?.setString('closeTime', closeTime);
 
-                  doctorData?.setString('doctorId', id);
-                  doctorData?.setString('docUserId', userId);
-                  doctorData?.setString('website', website);
-                  doctorData?.setString('address', address);
-                  doctorData?.setString('status', status);
-                  doctorData?.setString('createdAt', createdAt);
-                  doctorData?.setString('updatedAt', updatedAt);
-                  doctorData?.setString('phone', phone);
-                  doctorData?.setString('exp', exp);
-                  doctorData?.setString('specialization', specialization);
-                  doctorData?.setString('doctorDevice', doctorDevice);
-                  // final verified = client['verified'];
-                  return DoctorCard(
-                    'Dr. $name $lastname',
-                    'Contact: $phone',
-                    'Specialization: $specialization',
-                    'Fee: $fee',
-                    'Time available: $openTime - $closeTime',
-                    'Experience: $exp Years',
-                    'assets/images/doctor1.png',
-                    kBlueColor,
-                  );
-                  // }else{
-                  //   return Container();
-                  // }
-                }
+                    doctorData?.setString('doctorId', id);
+                    doctorData?.setString('docUserId', userId);
+                    doctorData?.setString('website', website);
+                    doctorData?.setString('address', address);
+                    doctorData?.setString('status', status);
+                    doctorData?.setString('createdAt', createdAt);
+                    doctorData?.setString('updatedAt', updatedAt);
+                    doctorData?.setString('phone', phone);
+                    doctorData?.setString('exp', exp);
+                    doctorData?.setString('specialization', specialization);
+                    doctorData?.setString('doctorDevice', doctorDevice);
+                    // final verified = client['verified'];
+                    return DoctorCard(
+                      'Dr. $name $lastname',
+                      'Contact: $phone',
+                      'Specialization: $specialization',
+                      'Fee: $fee',
+                      'Time available: $openTime - $closeTime',
+                      'Experience: $exp Years',
+                      'assets/images/doctor1.png',
+                      kBlueColor,
+                    );
+                    // }else{
+                    //   return Container();
+                    // }
+                  }
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -392,98 +395,101 @@ class _MyAppointmentState extends State<MyAppointment> {
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
       ),
-      child: Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: pendingAppointments.length,
-                separatorBuilder: (_ , __ ) => Divider(height: 0.6,
-                  color: Colors.black87,),
-                itemBuilder: (context, index) {
-                  final appointment = pendingAppointments[index];
-                  final userid = appointment['userId'];
-                  if(user_id == userid){
-                    final date = appointment['date'];
-                    final time = appointment['time'];
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  itemCount: pendingAppointments.length,
+                  separatorBuilder: (_ , __ ) => Divider(height: 0.6,
+                    color: Colors.black87,),
+                  itemBuilder: (context, index) {
+                    final appointment = pendingAppointments[index];
+                    final userid = appointment['userId'];
+                    if(user_id == userid){
+                      final date = appointment['date'];
+                      final time = appointment['time'];
 
-                    final userName = appointment['userInfo'];
-                    userval = UserFetch.fromJson(userName);
+                      final userName = appointment['userInfo'];
+                      userval = UserFetch.fromJson(userName);
 
-                    final parseDate = DateTime.parse(date);
-                    // final parseTime = DateTime.parse(time);
-                    final String bookingToday = todayFormat.format(parseDate);
-                    final String bookingMonth = monthFormat.format(parseDate);
-                    final String bookingDay = dayFormat.format(parseDate);
+                      final parseDate = DateTime.parse(date);
+                      // final parseTime = DateTime.parse(time);
+                      final String bookingToday = todayFormat.format(parseDate);
+                      final String bookingMonth = monthFormat.format(parseDate);
+                      final String bookingDay = dayFormat.format(parseDate);
 
-                    if(time == "08:00 - 09:00"){
-                      time1 = "07:00";
-                      time05 = "07:55";
-                    }else if(time == "09:00 - 10:00"){
-                      time1 = "08:00";
-                      time05 = "08:55";
-                    }
-                    else if(time == "10:00 - 11:00"){
-                      time1 = "09:00";
-                      time05 = "09:55";
-                    }
-                    else if(time == "11:00 - 12:00"){
-                      time1 = "10:00";
-                      time05 = "10:55";
-                    }
-                    else if(time == "12:00 - 13:00"){
-                      time1 = "11:00";
-                      time05 = "11:55";
-                    }
-                    else if(time == "13:00 - 14:00"){
-                      time1 = "12:00";
-                      time05 = "12:55";
-                    }
-                    else if(time == "14:00 - 15:00"){
-                      time1 = "13:00";
-                      time05 = "13:55";
-                    }
-                    else if(time == "15:00 - 16:00"){
-                      time1 = "14:00";
-                      time05 = "14:55";
-                    }
-                    else if(time == "16:00 - 17:00"){
-                      time1 = "15:00";
-                      time05 = "15:55";
-                    }
-                    date1 = date;
-                    // time1 = "19:55";
-                    // time05 = "19:57";
+                      if(time == "08:00 - 09:00"){
+                        time1 = "07:00";
+                        time05 = "07:55";
+                      }else if(time == "09:00 - 10:00"){
+                        time1 = "08:00";
+                        time05 = "08:55";
+                      }
+                      else if(time == "10:00 - 11:00"){
+                        time1 = "09:00";
+                        time05 = "09:55";
+                      }
+                      else if(time == "11:00 - 12:00"){
+                        time1 = "10:00";
+                        time05 = "10:55";
+                      }
+                      else if(time == "12:00 - 13:00"){
+                        time1 = "11:00";
+                        time05 = "11:55";
+                      }
+                      else if(time == "13:00 - 14:00"){
+                        time1 = "12:00";
+                        time05 = "12:55";
+                      }
+                      else if(time == "14:00 - 15:00"){
+                        time1 = "13:00";
+                        time05 = "13:55";
+                      }
+                      else if(time == "15:00 - 16:00"){
+                        time1 = "14:00";
+                        time05 = "14:55";
+                      }
+                      else if(time == "16:00 - 17:00"){
+                        time1 = "15:00";
+                        time05 = "15:55";
+                      }
+                      date1 = date;
+                      // time1 = "19:55";
+                      // time05 = "19:57";
 
-                    // final String bookingTime = dayFormat.format(parseTime);
-                    //
-                    // final email = appointment['email'];
-                    // final lastname = appointment['lastName'];
-                    // final verified = client['verified'];
-                    return ScheduleCard(
-                      'Consultation',
-                      '$bookingToday . $time',
-                      '$bookingDay',
-                      bookingMonth,
-                      kBlueColor,
-                    );
-                  }else{
-                    return Container();
+                      // final String bookingTime = dayFormat.format(parseTime);
+                      //
+                      // final email = appointment['email'];
+                      // final lastname = appointment['lastName'];
+                      // final verified = client['verified'];
+                      return ScheduleCard(
+                        'Consultation',
+                        '$bookingToday . $time',
+                        '$bookingDay',
+                        bookingMonth,
+                        kBlueColor,
+                      );
+                    }else{
+                      return Container();
+                    }
                   }
-                }
+              ),
             ),
-          ),
-          // ScheduleCard(
-          //   'Consultation',
-          //   'Sunday . 9am - 11am',
-          //   '12',
-          //   'Jan',
-          //   kBlueColor,
-          // ),
-          // const SizedBox(
-          //   height: 20,
-          // ),
-        ],
+            // ScheduleCard(
+            //   'Consultation',
+            //   'Sunday . 9am - 11am',
+            //   '12',
+            //   'Jan',
+            //   kBlueColor,
+            // ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
+          ],
+        ),
       ),
     );
   }

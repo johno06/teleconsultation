@@ -414,56 +414,59 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
       ),
-      child: Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: patients.length,
-                itemBuilder: (context, index) {
-                  final patient = patients[index];
-                  // final stylist_id = client['stylist_id'];
-                  // if(stylist_id == id){
-                  final patientId = patient['_id'];
-                  final patientName = patient['name'];
-                  final patientSurname = patient['surname'];
-                  final patientEmail = patient['email'];
-                  final patientPhone = patient['phone'];
-                  final patientBirthdate = patient['birthdate'];
-                  final patientGender = patient['gender'];
-                  final patientAddress = patient['address'];
-                  final patientDevice = patient['devices'][0];
-                  patientData?.setString('patientDevice', patientDevice);
-                  patientData?.setString('patientId', patientId);
-                  patientData?.setString('patientName', patientName);
-                  patientData?.setString('patientSurname', patientSurname);
-                  patientData?.setString('patientEmail', patientEmail);
-                  patientData?.setString('patientPhone', patientPhone);
-                  patientData?.setString('patientBirthdate', patientBirthdate);
-                  patientData?.setString('patientGender', patientGender);
-                  patientData?.setString('patientAddress', patientAddress);
-                  return PatientCard(
-                    "$patientName $patientSurname",
-                     patientPhone,
-                     patientEmail,
-                     patientBirthdate,
-                     patientGender,
-                     patientAddress,
-                    patientId,
-                    'assets/images/profile.png',
-                    kBlueColor,
-                  );
-                  // }else{
-                  //   return Container();
-                  // }
-                },
-          separatorBuilder: (BuildContext context, int index) => const Divider(),
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  itemCount: patients.length,
+                  itemBuilder: (context, index) {
+                    final patient = patients[index];
+                    // final stylist_id = client['stylist_id'];
+                    // if(stylist_id == id){
+                    final patientId = patient['_id'];
+                    final patientName = patient['name'];
+                    final patientSurname = patient['surname'];
+                    final patientEmail = patient['email'];
+                    final patientPhone = patient['phone'];
+                    final patientBirthdate = patient['birthdate'];
+                    final patientGender = patient['gender'];
+                    final patientAddress = patient['address'];
+                    final patientDevice = patient['devices'][0];
+                    patientData?.setString('patientDevice', patientDevice);
+                    patientData?.setString('patientId', patientId);
+                    patientData?.setString('patientName', patientName);
+                    patientData?.setString('patientSurname', patientSurname);
+                    patientData?.setString('patientEmail', patientEmail);
+                    patientData?.setString('patientPhone', patientPhone);
+                    patientData?.setString('patientBirthdate', patientBirthdate);
+                    patientData?.setString('patientGender', patientGender);
+                    patientData?.setString('patientAddress', patientAddress);
+                    return PatientCard(
+                      "$patientName $patientSurname",
+                       patientPhone,
+                       patientEmail,
+                       patientBirthdate,
+                       patientGender,
+                       patientAddress,
+                      patientId,
+                      'assets/images/profile.png',
+                      kBlueColor,
+                    );
+                    // }else{
+                    //   return Container();
+                    // }
+                  },
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+              ),
             ),
-          ),
-          // const SizedBox(
-          //   height: 20,
-          // ),
-        ],
+            // const SizedBox(
+            //   height: 20,
+            // ),
+          ],
+        ),
       ),
     );
   }
@@ -568,7 +571,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                     image: DecorationImage(
                       fit: BoxFit.fill,
                       image: AssetImage(
-                          "assets/images/user_profile_example.png"),
+                          "assets/images/doctor1.png"),
                     ),
                   ),
                 ),

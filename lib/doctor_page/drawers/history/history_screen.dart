@@ -118,7 +118,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           ],
                         ),
                       ),
-                      const Spacer(),
+                      // const Spacer(),
                       Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(

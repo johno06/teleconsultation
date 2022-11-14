@@ -520,6 +520,51 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         height: 32,
                       ),
                       Text(
+                        "Consultation Type",
+                        style: subTitleTextStyle,
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: primaryColor100, width: 2),
+                            color: lightBlue100,
+                            borderRadius:
+                            BorderRadius.circular(borderRadiusSize)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            DropdownButton(
+                              hint: Text("Select Type of appointment: "),
+                              value: consultValue,
+                              onChanged: (newValue){
+                                setState(() {
+                                  consultValue = newValue as String?;
+                                  _enableCreateOrderBtn = true;
+                                  // print(value);
+                                  // String vl = "21:00 - 22:00";
+                                  // var inputFormat = DateFormat('HH:mm - HH:mm');
+                                  // var inputDate = inputFormat.parse(vl);
+                                  // var outputDate = outputFormat.format(inputDate);
+                                  // print(outputDate);
+                                });
+                              },
+                              items: consultationType.map((valueItem){
+                                return DropdownMenuItem(value: valueItem,
+                                  child: Text(valueItem),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10,),
+                      Text(
                         "Pick the time",
                         style: subTitleTextStyle,
                       ),
@@ -541,7 +586,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               color: primaryColor500,
                             ),
                             const SizedBox(
-                              width: 8,
+                              width: 12,
                             ),
                             DropdownButton(
                               hint: Text("Select Time of appointment: "),
@@ -559,50 +604,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 });
                               },
                               items: availTime.map((valueItem){
-                                return DropdownMenuItem(value: valueItem,
-                                  child: Text(valueItem),
-                                );
-                              }).toList(),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        "Consultation Type",
-                        style: subTitleTextStyle,
-                      ),
-                      const SizedBox(
-                        height: 8,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: primaryColor100, width: 2),
-                            color: lightBlue100,
-                            borderRadius:
-                            BorderRadius.circular(borderRadiusSize)),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            DropdownButton(
-                              hint: Text("Select Time of appointment: "),
-                              value: consultValue,
-                              onChanged: (newValue){
-                                setState(() {
-                                  consultValue = newValue as String?;
-                                  _enableCreateOrderBtn = true;
-                                  // print(value);
-                                  // String vl = "21:00 - 22:00";
-                                  // var inputFormat = DateFormat('HH:mm - HH:mm');
-                                  // var inputDate = inputFormat.parse(vl);
-                                  // var outputDate = outputFormat.format(inputDate);
-                                  // print(outputDate);
-                                });
-                              },
-                              items: consultationType.map((valueItem){
                                 return DropdownMenuItem(value: valueItem,
                                   child: Text(valueItem),
                                 );
@@ -632,14 +633,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  "Total:",
-                  style: descTextStyle,
-                ),
-                Text(
-                  "650",
-                  style: priceTextStyle,
-                ),
+                // Text(
+                //   "Total:",
+                //   style: descTextStyle,
+                // ),
+                // Text(
+                //   "650",
+                //   style: priceTextStyle,
+                // ),
               ],
             ),
             const SizedBox(

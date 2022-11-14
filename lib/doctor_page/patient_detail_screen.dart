@@ -309,62 +309,65 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
   }
 
   buildRecordList() {
-    return Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: appointmentRecord!.length,
-              itemBuilder: (context, index) {
-                final appointment = appointmentRecord[index];
-                if(appointment.isNotEmpty) {
-                  final title = appointmentRecord[index][0];
-                  final about = appointmentRecord[index][1];
-                  final bookingDate = appointmentRecord[index][2];
-                  final bookingTime = appointmentRecord[index][3];
-                  String fullName = widget.patientFullName;
-                  String weeks = "N/A";
-                  String deliveryDate = "N/A";
+    return SingleChildScrollView(
+      child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                itemCount: appointmentRecord!.length,
+                itemBuilder: (context, index) {
+                  final appointment = appointmentRecord[index];
+                  if(appointment.isNotEmpty) {
+                    final title = appointmentRecord[index][0];
+                    final about = appointmentRecord[index][1];
+                    final bookingDate = appointmentRecord[index][2];
+                    final bookingTime = appointmentRecord[index][3];
+                    String fullName = widget.patientFullName;
+                    String weeks = "N/A";
+                    String deliveryDate = "N/A";
 
-                  if(appointmentRecord[index].length == 6) {
-                     weeks = appointmentRecord[index][4];
-                     deliveryDate = appointmentRecord[index][5];
+                    if(appointmentRecord[index].length == 6) {
+                       weeks = appointmentRecord[index][4];
+                       deliveryDate = appointmentRecord[index][5];
+                    }
+                    // final appointmentId = appointment['_id'];
+                    // final date = appointment['date'];
+                    // final time = appointment['time'];
+                    final parseDate = DateTime.parse(bookingDate);
+                    // // final parseTime = DateTime.parse(time);
+                    final String bookingToday = todayFormat.format(parseDate);
+                    final String bookingMonth = monthFormat.format(parseDate);
+                    final String bookingDay = dayFormat.format(parseDate);
+                    return PatientAppointmentRecord(
+                      // 'Consultation',
+                      title,
+                      weeks,
+                      deliveryDate,
+                      bookingToday,
+                      bookingTime,
+                      bookingDate,
+                      bookingDay,
+                      bookingMonth,
+                      about,
+                      fullName,
+                      kBlueColor,
+                    );
+
+                  }else{
+                    return SizedBox(height: 0,);
                   }
-                  // final appointmentId = appointment['_id'];
-                  // final date = appointment['date'];
-                  // final time = appointment['time'];
-                  final parseDate = DateTime.parse(bookingDate);
-                  // // final parseTime = DateTime.parse(time);
-                  final String bookingToday = todayFormat.format(parseDate);
-                  final String bookingMonth = monthFormat.format(parseDate);
-                  final String bookingDay = dayFormat.format(parseDate);
-                  return PatientAppointmentRecord(
-                    // 'Consultation',
-                    title,
-                    weeks,
-                    deliveryDate,
-                    bookingToday,
-                    bookingTime,
-                    bookingDate,
-                    bookingDay,
-                    bookingMonth,
-                    about,
-                    fullName,
-                    kBlueColor,
-                  );
-
-                }else{
-                  return SizedBox(height: 0,);
-                }
-              },
-              separatorBuilder: (BuildContext context, int index) => const Divider(),
+                },
+                separatorBuilder: (BuildContext context, int index) => const Divider(),
+              ),
             ),
-          ),
-          // const SizedBox(
-          //   height: 20,
-          // ),
-        ],
-      );
+            // const SizedBox(
+            //   height: 20,
+            // ),
+          ],
+        ),
+    );
   }
 
 
@@ -391,57 +394,60 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
       padding: const EdgeInsets.symmetric(
         // horizontal: 30,
       ),
-      child: Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: appointments.length,
-              itemBuilder: (context, index) {
-                final appointment = appointments[index];
-                final userData = appointment['userInfo'];
-                userval = UserFetch.fromJson(userData);
-                if(widget.patientId == userval.id){
-                  final appointmentId = appointment['_id'];
-                  final date = appointment['date'];
-                  final time = appointment['time'];
-                  final parseDate = DateTime.parse(date);
-                  // final parseTime = DateTime.parse(time);
-                  final String bookingToday = todayFormat.format(parseDate);
-                  final String bookingMonth = monthFormat.format(parseDate);
-                  final String bookingDay = dayFormat.format(parseDate);
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                itemCount: appointments.length,
+                itemBuilder: (context, index) {
+                  final appointment = appointments[index];
+                  final userData = appointment['userInfo'];
+                  userval = UserFetch.fromJson(userData);
+                  if(widget.patientId == userval.id){
+                    final appointmentId = appointment['_id'];
+                    final date = appointment['date'];
+                    final time = appointment['time'];
+                    final parseDate = DateTime.parse(date);
+                    // final parseTime = DateTime.parse(time);
+                    final String bookingToday = todayFormat.format(parseDate);
+                    final String bookingMonth = monthFormat.format(parseDate);
+                    final String bookingDay = dayFormat.format(parseDate);
 
-                  final patientName = userval.name;
-                  final patientSurname = userval.surname;
-                  final patientEmail = userval.email;
-                  final patientPhone = userval.phone;
-                  print(patientPhone);
-                  return PatientApprovedScheduleCard(
-                    // 'Consultation',
-                    patientName, patientSurname, patientPhone, patientEmail,
-                    bookingToday, time,
-                    date, bookingDay, bookingMonth, appointmentId,
-                    kBlueColor,
-                  );
-                }else{
-                  // throw contactNumber;
-                  return SizedBox(height: 0);
-                }
-              },
-              // separatorBuilder: (BuildContext context, int index) => const Divider(),
+                    final patientName = userval.name;
+                    final patientSurname = userval.surname;
+                    final patientEmail = userval.email;
+                    final patientPhone = userval.phone;
+                    print(patientPhone);
+                    return PatientApprovedScheduleCard(
+                      // 'Consultation',
+                      patientName, patientSurname, patientPhone, patientEmail,
+                      bookingToday, time,
+                      date, bookingDay, bookingMonth, appointmentId,
+                      kBlueColor,
+                    );
+                  }else{
+                    // throw contactNumber;
+                    return SizedBox(height: 0);
+                  }
+                },
+                // separatorBuilder: (BuildContext context, int index) => const Divider(),
+              ),
             ),
-          ),
-          // ScheduleCard(
-          //   'Consultation',
-          //   'Sunday . 9am - 11am',
-          //   '12',
-          //   'Jan',
-          //   kBlueColor,
-          // ),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
+            // ScheduleCard(
+            //   'Consultation',
+            //   'Sunday . 9am - 11am',
+            //   '12',
+            //   'Jan',
+            //   kBlueColor,
+            // ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }

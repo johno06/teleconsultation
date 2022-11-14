@@ -35,11 +35,11 @@ class Background extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 50,
-            right: 30,
+            top: 60,
+            right: 23,
             child: Image.asset(
-                "assets/images/TeleIcon.png",
-                width: size.width * 0.35
+                "assets/images/TeleIcon1.png",
+                width: size.width * 0.30
             ),
           ),
           Positioned(

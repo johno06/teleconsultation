@@ -206,56 +206,59 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
       ),
-      child: Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: clients.length,
-                separatorBuilder: (_ , __ ) => Divider(height: 0.6,
-                  color: Colors.black87,),
-                itemBuilder: (context, index) {
-                  final client = clients[index];
-                  // final stylist_id = client['stylist_id'];
-                  // if(stylist_id == id){
-                  final id = client['_id'];
-                  final name = client['firstName'];
-                  final email = client['email'];
-                  final lastname = client['lastName'];
-                  final phone = client['phoneNumber'];
-                  final fee = client['fee'];
-                  final openTime = client['timings'][0];
-                  final closeTime = client['timings'][1];
-                  final specialization = client['specialization'];
-                  final exp = client['experience'];
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  itemCount: clients.length,
+                  separatorBuilder: (_ , __ ) => Divider(height: 0.6,
+                    color: Colors.black87,),
+                  itemBuilder: (context, index) {
+                    final client = clients[index];
+                    // final stylist_id = client['stylist_id'];
+                    // if(stylist_id == id){
+                    final id = client['_id'];
+                    final name = client['firstName'];
+                    final email = client['email'];
+                    final lastname = client['lastName'];
+                    final phone = client['phoneNumber'];
+                    final fee = client['fee'];
+                    final openTime = client['timings'][0];
+                    final closeTime = client['timings'][1];
+                    final specialization = client['specialization'];
+                    final exp = client['experience'];
 
-                  doctorData?.setString('docName', name);
-                  doctorData?.setString('docLname', lastname);
-                  doctorData?.setInt('fee', fee);
-                  doctorData?.setString('openTime', openTime);
-                  doctorData?.setString('closeTime', closeTime);
-                  doctorData?.setString('doctorId', id);
-                  // final verified = client['verified'];
-                  return DoctorCard(
-                    'Dr. $name $lastname',
-                    'Contact: $phone',
-                    'Specialization: $specialization',
-                    'Fee: $fee',
-                    'Time available: $openTime - $closeTime',
-                    'Experience: $exp Years',
-                    'assets/images/doctor1.png',
-                    kBlueColor,
-                  );
-                  // }else{
-                  //   return Container();
-                  // }
-                }
+                    doctorData?.setString('docName', name);
+                    doctorData?.setString('docLname', lastname);
+                    doctorData?.setInt('fee', fee);
+                    doctorData?.setString('openTime', openTime);
+                    doctorData?.setString('closeTime', closeTime);
+                    doctorData?.setString('doctorId', id);
+                    // final verified = client['verified'];
+                    return DoctorCard(
+                      'Dr. $name $lastname',
+                      'Contact: $phone',
+                      'Specialization: $specialization',
+                      'Fee: $fee',
+                      'Time available: $openTime - $closeTime',
+                      'Experience: $exp Years',
+                      'assets/images/doctor1.png',
+                      kBlueColor,
+                    );
+                    // }else{
+                    //   return Container();
+                    // }
+                  }
+              ),
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -264,54 +267,57 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
       ),
-      child: Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: appointments.length,
-                separatorBuilder: (_ , __ ) => Divider(height: 0.6,
-                  color: Colors.black87,),
-                itemBuilder: (context, index) {
-                  final appointment = appointments[index];
-                  final userid = appointment['userId'];
-                  if(user_id == userid){
-                  final date = appointment['date'];
-                  final time = appointment['time'];
-                  final parseDate = DateTime.parse(date);
-                  // final parseTime = DateTime.parse(time);
-                  final String bookingToday = todayFormat.format(parseDate);
-                  final String bookingMonth = monthFormat.format(parseDate);
-                  final String bookingDay = dayFormat.format(parseDate);
-                  // final String bookingTime = dayFormat.format(parseTime);
-                  //
-                  // final email = appointment['email'];
-                  // final lastname = appointment['lastName'];
-                  // final verified = client['verified'];
-                  return ScheduleCard(
-                    'Consultation',
-                    '$bookingToday . $time',
-                    '$bookingDay',
-                    bookingMonth,
-                    kBlueColor,
-                  );
-                  }else{
-                    return Container();
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                  shrinkWrap: true,
+                  physics: ScrollPhysics(),
+                  itemCount: appointments.length,
+                  separatorBuilder: (_ , __ ) => Divider(height: 0.6,
+                    color: Colors.black87,),
+                  itemBuilder: (context, index) {
+                    final appointment = appointments[index];
+                    final userid = appointment['userId'];
+                    if(user_id == userid){
+                    final date = appointment['date'];
+                    final time = appointment['time'];
+                    final parseDate = DateTime.parse(date);
+                    // final parseTime = DateTime.parse(time);
+                    final String bookingToday = todayFormat.format(parseDate);
+                    final String bookingMonth = monthFormat.format(parseDate);
+                    final String bookingDay = dayFormat.format(parseDate);
+                    // final String bookingTime = dayFormat.format(parseTime);
+                    //
+                    // final email = appointment['email'];
+                    // final lastname = appointment['lastName'];
+                    // final verified = client['verified'];
+                    return ScheduleCard(
+                      'Consultation',
+                      '$bookingToday . $time',
+                      '$bookingDay',
+                      bookingMonth,
+                      kBlueColor,
+                    );
+                    }else{
+                      return Container();
+                    }
                   }
-                }
+              ),
             ),
-          ),
-          // ScheduleCard(
-          //   'Consultation',
-          //   'Sunday . 9am - 11am',
-          //   '12',
-          //   'Jan',
-          //   kBlueColor,
-          // ),
-          // const SizedBox(
-          //   height: 20,
-          // ),
-        ],
+            // ScheduleCard(
+            //   'Consultation',
+            //   'Sunday . 9am - 11am',
+            //   '12',
+            //   'Jan',
+            //   kBlueColor,
+            // ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
+          ],
+        ),
       ),
     );
   }
@@ -336,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     image: DecorationImage(
                       fit: BoxFit.fill,
                       image: AssetImage(
-                          "assets/images/user_profile_example.png"),
+                          "assets/images/profile.png"),
                     ),
                   ),
                 ),

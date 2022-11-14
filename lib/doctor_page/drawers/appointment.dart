@@ -176,60 +176,63 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
       ),
-      child: Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: pendingAppointments.length,
-              itemBuilder: (context, index) {
-                final appointment = pendingAppointments[index];
-                final doctorData = appointment['doctorInfo'];
-                final consultationType = appointment['consultationType'];
-                doctorVal = DoctorFetch.fromJson(doctorData);
-                if(user_id == doctorVal.userId){
-                  final appointmentId = appointment['_id'];
-                  final userData = appointment['userInfo'];
-                  userval = UserFetch.fromJson(userData);
-                  final date = appointment['date'];
-                  final time = appointment['time'];
-                  final parseDate = DateTime.parse(date);
-                  // final parseTime = DateTime.parse(time);
-                  final String bookingToday = todayFormat.format(parseDate);
-                  final String bookingMonth = monthFormat.format(parseDate);
-                  final String bookingDay = dayFormat.format(parseDate);
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: pendingAppointments.length,
+                itemBuilder: (context, index) {
+                  final appointment = pendingAppointments[index];
+                  final doctorData = appointment['doctorInfo'];
+                  final consultationType = appointment['consultationType'];
+                  doctorVal = DoctorFetch.fromJson(doctorData);
+                  if(user_id == doctorVal.userId){
+                    final appointmentId = appointment['_id'];
+                    final userData = appointment['userInfo'];
+                    userval = UserFetch.fromJson(userData);
+                    final date = appointment['date'];
+                    final time = appointment['time'];
+                    final parseDate = DateTime.parse(date);
+                    // final parseTime = DateTime.parse(time);
+                    final String bookingToday = todayFormat.format(parseDate);
+                    final String bookingMonth = monthFormat.format(parseDate);
+                    final String bookingDay = dayFormat.format(parseDate);
 
-                  final patientName = userval.name;
-                  final patientSurname = userval.surname;
-                  final patientEmail = userval.email;
-                  final patientPhone = userval.phone;
-                  final patientDevice = userval.devices[0];
-                  deviceOfPatient?.setString('deviceOfPatient', patientDevice);
-                  return PatientScheduleCard(
-                    // 'Consultation',
-                    patientName, patientSurname, patientPhone, patientEmail,
-                    bookingToday, time,
-                    date, bookingDay, bookingMonth, patientDevice,appointmentId, consultationType,
-                    kBlueColor,
-                  );
-                }else{
-                  return Container();
-                }
-              },
-              separatorBuilder: (BuildContext context, int index) => const Divider(),
+                    final patientName = userval.name;
+                    final patientSurname = userval.surname;
+                    final patientEmail = userval.email;
+                    final patientPhone = userval.phone;
+                    final patientDevice = userval.devices[0];
+                    deviceOfPatient?.setString('deviceOfPatient', patientDevice);
+                    return PatientScheduleCard(
+                      // 'Consultation',
+                      patientName, patientSurname, patientPhone, patientEmail,
+                      bookingToday, time,
+                      date, bookingDay, bookingMonth, patientDevice,appointmentId, consultationType,
+                      kBlueColor,
+                    );
+                  }else{
+                    return Container();
+                  }
+                },
+                separatorBuilder: (BuildContext context, int index) => const Divider(),
+              ),
             ),
-          ),
-          // ScheduleCard(
-          //   'Consultation',
-          //   'Sunday . 9am - 11am',
-          //   '12',
-          //   'Jan',
-          //   kBlueColor,
-          // ),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
+            // ScheduleCard(
+            //   'Consultation',
+            //   'Sunday . 9am - 11am',
+            //   '12',
+            //   'Jan',
+            //   kBlueColor,
+            // ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -264,63 +267,66 @@ class _DoctorMyAppointmentState extends State<DoctorMyAppointment> {
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
       ),
-      child: Column(
-        children: <Widget>[
-          Scrollbar(
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: appointments.length,
-              itemBuilder: (context, index) {
-                final appointment = appointments[index];
-                final userData = appointment['userInfo'];
-                userval = UserFetch.fromJson(userData);
-                final doctorData = appointment['doctorInfo'];
-                final consultationType = appointment['consultationType'];
-                doctorVal = DoctorFetch.fromJson(doctorData);
-                // if(patientId == userval.id){
-                if(user_id == doctorVal.userId){
-                  final appointmentId = appointment['_id'];
-                  final date = appointment['date'];
-                  final time = appointment['time'];
-                  final parseDate = DateTime.parse(date);
-                  // final parseTime = DateTime.parse(time);
-                  final String bookingToday = todayFormat.format(parseDate);
-                  final String bookingMonth = monthFormat.format(parseDate);
-                  final String bookingDay = dayFormat.format(parseDate);
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: appointments.length,
+                itemBuilder: (context, index) {
+                  final appointment = appointments[index];
+                  final userData = appointment['userInfo'];
+                  userval = UserFetch.fromJson(userData);
+                  final doctorData = appointment['doctorInfo'];
+                  final consultationType = appointment['consultationType'];
+                  doctorVal = DoctorFetch.fromJson(doctorData);
+                  // if(patientId == userval.id){
+                  if(user_id == doctorVal.userId){
+                    final appointmentId = appointment['_id'];
+                    final date = appointment['date'];
+                    final time = appointment['time'];
+                    final parseDate = DateTime.parse(date);
+                    // final parseTime = DateTime.parse(time);
+                    final String bookingToday = todayFormat.format(parseDate);
+                    final String bookingMonth = monthFormat.format(parseDate);
+                    final String bookingDay = dayFormat.format(parseDate);
 
-                  final patientName = userval.name;
-                  final patientSurname = userval.surname;
-                  final patientEmail = userval.email;
-                  final patientPhone = userval.phone;
-                  final patientDevice = userval.devices[0];
-                  // print("this is the patient: $patientDevice");
-                  deviceOfPatient?.setString('deviceToken', patientDevice);
-                  return PatientAppointmentScheduleCard(
-                    // 'Consultation',
-                    patientName, patientSurname, patientPhone, patientEmail,
-                    bookingToday, time,
-                    date, bookingDay, bookingMonth, patientDevice ,appointmentId, consultationType,
-                    kBlueColor,
-                  );
-                }else{
-                  // throw contactNumber;
-                  return Container();
-                }
-              },
-              separatorBuilder: (BuildContext context, int index) => const Divider(),
+                    final patientName = userval.name;
+                    final patientSurname = userval.surname;
+                    final patientEmail = userval.email;
+                    final patientPhone = userval.phone;
+                    final patientDevice = userval.devices[0];
+                    // print("this is the patient: $patientDevice");
+                    deviceOfPatient?.setString('deviceToken', patientDevice);
+                    return PatientAppointmentScheduleCard(
+                      // 'Consultation',
+                      patientName, patientSurname, patientPhone, patientEmail,
+                      bookingToday, time,
+                      date, bookingDay, bookingMonth, patientDevice ,appointmentId, consultationType,
+                      kBlueColor,
+                    );
+                  }else{
+                    // throw contactNumber;
+                    return Container();
+                  }
+                },
+                separatorBuilder: (BuildContext context, int index) => const Divider(),
+              ),
             ),
-          ),
-          // ScheduleCard(
-          //   'Consultation',
-          //   'Sunday . 9am - 11am',
-          //   '12',
-          //   'Jan',
-          //   kBlueColor,
-          // ),
-          const SizedBox(
-            height: 20,
-          ),
-        ],
+            // ScheduleCard(
+            //   'Consultation',
+            //   'Sunday . 9am - 11am',
+            //   '12',
+            //   'Jan',
+            //   kBlueColor,
+            // ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
       ),
     );
   }

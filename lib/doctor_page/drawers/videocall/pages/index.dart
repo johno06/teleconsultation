@@ -8,6 +8,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:teleconsultation/components/background.dart';
+import 'package:teleconsultation/components/background1.dart';
+import '../../../../constant.dart';
 import './call.dart';
 
 class IndexPage extends StatefulWidget {
@@ -53,135 +56,147 @@ class IndexState extends State<IndexPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xffF8AFA6),
         title: Text('Video Call'),
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.redAccent,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          height: 400,
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: _channelController,
-                      decoration: InputDecoration(
-                        errorText:
-                            _validateError ? 'Channel name is mandatory' : null,
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(width: 1),
-                        ),
-                        hintText: 'Channel name',
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Column(
-                children: [
-                  // ListTile(
-                  //   title: Text(ClientRole.Broadcaster.toString()),
-                  //   leading: Radio(
-                  //     value: ClientRole.Broadcaster,
-                  //     groupValue: _role,
-                  //     onChanged: (ClientRole? value) {
-                  //       setState(() {
-                  //         _role = value!;
-                  //       });
-                  //     },
-                  //   ),
-                  // ),
-                  // ListTile(
-                  //   title: Text(ClientRole.Audience.toString()),
-                  //   leading: Radio(
-                  //     value: ClientRole.Audience,
-                  //     groupValue: _role,
-                  //     onChanged: (ClientRole? value) {
-                  //       setState(() {
-                  //         _role = value!;
-                  //       });
-                  //     },
-                  //   ),
-                  // )
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Row(
+      body: Background1(
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            height: 400,
+            child: Column(
+              children: <Widget>[
+                Row(
                   children: <Widget>[
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: onJoin,
-                        child: Text('Join'),
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.blueAccent),
-                            foregroundColor:
-                                MaterialStateProperty.all(Colors.white)),
+                      child: TextField(
+                        controller: _channelController,
+                        decoration: InputDecoration(
+                          errorText:
+                              _validateError ? 'Channel name is mandatory' : null,
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(width: 1),
+                          ),
+                          hintText: 'Channel name',
+                        ),
                       ),
-                    ),
-                    // Expanded(
-                    //   child: RaisedButton(
-                    //     onPressed: onJoin,
-                    //     child: Text('Join'),
-                    //     color: Colors.blueAccent,
-                    //     textColor: Colors.white,
+                    )
+                  ],
+                ),
+                Column(
+                  children: [
+                    // ListTile(
+                    //   title: Text(ClientRole.Broadcaster.toString()),
+                    //   leading: Radio(
+                    //     value: ClientRole.Broadcaster,
+                    //     groupValue: _role,
+                    //     onChanged: (ClientRole? value) {
+                    //       setState(() {
+                    //         _role = value!;
+                    //       });
+                    //     },
+                    //   ),
+                    // ),
+                    // ListTile(
+                    //   title: Text(ClientRole.Audience.toString()),
+                    //   leading: Radio(
+                    //     value: ClientRole.Audience,
+                    //     groupValue: _role,
+                    //     onChanged: (ClientRole? value) {
+                    //       setState(() {
+                    //         _role = value!;
+                    //       });
+                    //     },
                     //   ),
                     // )
                   ],
                 ),
-              ),
-              SizedBox(height: 20,),
-              Text("---------------------------------------"),
-              SizedBox(height: 10,),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      controller: _createChannelController,
-                      decoration: InputDecoration(
-                        errorText:
-                        _validateError1 ? 'Channel name is mandatory' : null,
-                        border: UnderlineInputBorder(
-                          borderSide: BorderSide(width: 1),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: onJoin,
+                          child: Text('Join'),
+                          style: ElevatedButton.styleFrom(
+                          backgroundColor: shrinePink400,
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20))),
                         ),
-                        hintText: 'Create Channel Name',
                       ),
-                    ),
-                  )
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Row(
+                      // Expanded(
+                      //   child: RaisedButton(
+                      //     onPressed: onJoin,
+                      //     child: Text('Join'),
+                      //     color: Colors.blueAccent,
+                      //     textColor: Colors.white,
+                      //   ),
+                      // )
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20,),
+                Text("---------------------------------------"),
+                SizedBox(height: 10,),
+                Row(
                   children: <Widget>[
                     Expanded(
-                      child: ElevatedButton(
-                        onPressed: (){
-                          // print(_createChannelController.text);
-                          onCreate(_createChannelController.text);
-                        },
-                        child: Text('Create Channel'),
-                        style: ButtonStyle(
-                            backgroundColor:
-                            MaterialStateProperty.all(Colors.blueAccent),
-                            foregroundColor:
-                            MaterialStateProperty.all(Colors.white)),
+                      child: TextField(
+                        controller: _createChannelController,
+                        decoration: InputDecoration(
+                          errorText:
+                          _validateError1 ? 'Channel name is mandatory' : null,
+                          border: UnderlineInputBorder(
+                            borderSide: BorderSide(width: 1),
+                          ),
+                          hintText: 'Create Channel Name',
+                        ),
                       ),
-                    ),
-                    // Expanded(
-                    //   child: RaisedButton(
-                    //     onPressed: onJoin,
-                    //     child: Text('Join'),
-                    //     color: Colors.blueAccent,
-                    //     textColor: Colors.white,
-                    //   ),
-                    // )
+                    )
                   ],
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: (){
+                            // print(_createChannelController.text);
+                            onCreate(_createChannelController.text);
+                          },
+                          child: Text('Create Channel'),
+                          style: ElevatedButton.styleFrom(
+                          backgroundColor: shrinePink400,
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20))),
+                        ),
+                      ),
+                      // Expanded(
+                      //   child: RaisedButton(
+                      //     onPressed: onJoin,
+                      //     child: Text('Join'),
+                      //     color: Colors.blueAccent,
+                      //     textColor: Colors.white,
+                      //   ),
+                      // )
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

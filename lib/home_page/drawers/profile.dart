@@ -403,7 +403,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: Colors.white,
                             image: DecorationImage(
                               fit: BoxFit.fill,
-                              image: AssetImage("assets/images/user_profile_example.png"),
+                              image: AssetImage("assets/images/profile.png"),
                             ),
                           ),
                         ),
