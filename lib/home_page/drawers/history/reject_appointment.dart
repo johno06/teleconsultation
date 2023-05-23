@@ -145,7 +145,7 @@ class _HistoryScreenState1 extends State<HistoryScreen1> {
 
   List<dynamic> appointments = [];
   void fetchAppointments() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-rejected-appointments';
+    const url = 'https://latest-server.onrender.com/api/user/get-rejected-appointments';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;

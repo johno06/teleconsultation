@@ -509,7 +509,7 @@ class _PendingDetailScreenState extends State<PendingDetailScreen> {
     String body = json.encode(data);
     http.Response response = await http.patch(
       Uri.parse(
-          'https://newserverobgyn.herokuapp.com/api/user/updateAppointments/$id'),
+          'https://latest-server.onrender.com/api/user/updateAppointments/$id'),
       headers: {"Content-Type": "application/json"},
       body: body,
     );

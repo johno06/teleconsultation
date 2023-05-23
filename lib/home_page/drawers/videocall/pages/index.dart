@@ -209,7 +209,7 @@ class IndexState extends State<IndexPage> {
 
   String token = "";
   void fetchDoctor() async {
-    String url = 'https://newserverobgyn.herokuapp.com/api/user/getByIdPatient/$doctorId';
+    String url = 'https://latest-server.onrender.com/api/user/getByIdPatient/$doctorId';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;

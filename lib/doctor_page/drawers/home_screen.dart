@@ -430,7 +430,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                     final patientName = patient['name'];
                     final patientSurname = patient['surname'];
                     final patientEmail = patient['email'];
-                    final patientPhone = patient['phoneNumber'];
+                    final patientPhone = patient['phone'];
                     final patientBirthdate = patient['birthdate'];
                     final patientGender = "Female";
                     final patientAddress = patient['address'];
@@ -474,7 +474,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
 
   List<dynamic> patients = [];
   void fetchPatients() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-all-verified-patients';
+    const url = 'https://latest-server.onrender.com/api/user/get-all-verified-patients';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;

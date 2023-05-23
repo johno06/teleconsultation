@@ -105,7 +105,7 @@ class _AddAppointmentRecordState extends State<AddAppointmentRecord> {
       String bodyDoc = json.encode(data);
       http.Response responseDoc = await http.patch(
         Uri.parse(
-            'https://newserverobgyn.herokuapp.com/api/user/addRecord/$patientId'),
+            'https://latest-server.onrender.com/api/user/addRecord/$patientId'),
         headers: {"Content-Type": "application/json"},
         body: bodyDoc,
       );

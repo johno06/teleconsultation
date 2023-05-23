@@ -141,7 +141,7 @@ class _AbsentAppointmentState extends State<AbsentAppointment> {
 
   List<dynamic> appointments = [];
   void fetchAppointments() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-absent-appointments';
+    const url = 'https://latest-server.onrender.com/api/user/get-absent-appointments';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;

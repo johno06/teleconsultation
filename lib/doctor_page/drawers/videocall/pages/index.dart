@@ -236,7 +236,7 @@ class IndexState extends State<IndexPage> {
 
     String bodyDoc1 = json.encode(data1);
     http.Response responseDoc = await http.patch(
-      Uri.parse('https://newserverobgyn.herokuapp.com/api/user/updateRtcToken/$doctorId'),
+      Uri.parse('https://latest-server.onrender.com/api/user/updateRtcToken/$doctorId'),
       headers: {"Content-Type": "application/json"},
       body: bodyDoc1,
     );
@@ -251,7 +251,7 @@ class IndexState extends State<IndexPage> {
     });
     if (_createChannelController.text.isNotEmpty) {
       videocallToken = await SharedPreferences.getInstance();
-      String url = 'https://generate-token-teleconsultatio.herokuapp.com/rtc/$channelName/publisher/uid/0';
+      String url = 'https://token-server-20wg.onrender.com/rtc/$channelName/publisher/uid/0';
       final uri = Uri.parse(url);
       final response = await http.get(uri);
       final body = response.body;

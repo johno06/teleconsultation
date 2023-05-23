@@ -58,7 +58,7 @@ class _CallPageState extends State<CallPage> {
     videocallToken = await SharedPreferences.getInstance();
     setState(() {
       token = videocallToken?.getString('rtcToken')!;
-      print(token);
+      print("$token IAAAAAAAAAAAAAAAAADJK");
     });
   }
 

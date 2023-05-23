@@ -166,13 +166,13 @@ class _HomeScreenState extends State<HomeScreen> {
   List<dynamic> clients = [];
 
   void fetchClients() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-all-approved-doctors';
+    const url = 'https://latest-server.onrender.com/api/user/get-all-approved-doctors';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
     final json = jsonDecode(body);
 
-
+    doctorData = await SharedPreferences.getInstance();
     // clientData = await SharedPreferences.getInstance();
 
     // print(json['data']);
@@ -184,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<dynamic> appointments = [];
   void fetchAppointments() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-approved-appointments';
+    const url = 'https://latest-server.onrender.com/api/user/get-approved-appointments';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
@@ -200,6 +200,67 @@ class _HomeScreenState extends State<HomeScreen> {
     // print('fetchclients completed');
   }
 
+  //
+  // buildDoctorList() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(
+  //       horizontal: 30,
+  //     ),
+  //     child: SingleChildScrollView(
+  //       child: Column(
+  //         children: <Widget>[
+  //           Scrollbar(
+  //             child: ListView.separated(
+  //                 shrinkWrap: true,
+  //                 physics: ScrollPhysics(),
+  //                 itemCount: clients.length,
+  //                 separatorBuilder: (_ , __ ) => Divider(height: 0.6,
+  //                   color: Colors.black87,),
+  //                 itemBuilder: (context, index) {
+  //                   final client = clients[index];
+  //                   // final stylist_id = client['stylist_id'];
+  //                   // if(stylist_id == id){
+  //                   final id = client['_id'];
+  //                   final name = client['firstName'];
+  //                   final email = client['email'];
+  //                   final lastname = client['lastName'];
+  //                   final phone = client['phoneNumber'];
+  //                   final fee = client['fee'];
+  //                   final openTime = client['timings'][0];
+  //                   final closeTime = client['timings'][1];
+  //                   final specialization = client['specialization'];
+  //                   final exp = client['experience'];
+  //
+  //                   doctorData?.setString('docName', name);
+  //                   doctorData?.setString('docLname', lastname);
+  //                   doctorData?.setInt('fee', fee);
+  //                   doctorData?.setString('openTime', openTime);
+  //                   doctorData?.setString('closeTime', closeTime);
+  //                   doctorData?.setString('doctorId', id);
+  //                   // final verified = client['verified'];
+  //                   return DoctorCard(
+  //                     'Dr. $name $lastname',
+  //                     'Contact: $phone',
+  //                     'Specialization: $specialization',
+  //                     'Time available: $openTime - $closeTime',
+  //                     'Experience: $exp Years',
+  //                     'assets/images/doctor1.png',
+  //                     kBlueColor,
+  //                   );
+  //                   // }else{
+  //                   //   return Container();
+  //                   // }
+  //                 }
+  //             ),
+  //           ),
+  //           const SizedBox(
+  //             height: 20,
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   buildDoctorList() {
     return Padding(
@@ -221,22 +282,36 @@ class _HomeScreenState extends State<HomeScreen> {
                     // final stylist_id = client['stylist_id'];
                     // if(stylist_id == id){
                     final id = client['_id'];
+                    final userId = client['userId'];
+                    final address = client['address'];
+                    final status = client['status'];
+                    final createdAt = client['createdAt'];
+                    final updatedAt = client['updatedAt'];
                     final name = client['firstName'];
                     final email = client['email'];
                     final lastname = client['lastName'];
                     final phone = client['phoneNumber'];
-                    final fee = client['fee'];
                     final openTime = client['timings'][0];
                     final closeTime = client['timings'][1];
                     final specialization = client['specialization'];
                     final exp = client['experience'];
+                    final doctorDevice = client['devices'][0];
 
                     doctorData?.setString('docName', name);
                     doctorData?.setString('docLname', lastname);
-                    doctorData?.setInt('fee', fee);
                     doctorData?.setString('openTime', openTime);
                     doctorData?.setString('closeTime', closeTime);
+
                     doctorData?.setString('doctorId', id);
+                    doctorData?.setString('docUserId', userId);
+                    doctorData?.setString('address1', address);
+                    doctorData?.setString('status', status);
+                    doctorData?.setString('createdAt', createdAt);
+                    doctorData?.setString('updatedAt', updatedAt);
+                    doctorData?.setString('phone1', phone);
+                    doctorData?.setString('exp', exp);
+                    doctorData?.setString('specialization', specialization);
+                    doctorData?.setString('doctorDevice', doctorDevice);
                     // final verified = client['verified'];
                     return DoctorCard(
                       'Dr. $name $lastname',
@@ -261,6 +336,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
   buildAppointmentList() {
     return Padding(
       padding: const EdgeInsets.symmetric(

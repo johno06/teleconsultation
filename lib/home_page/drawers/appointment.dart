@@ -274,7 +274,7 @@ class _MyAppointmentState extends State<MyAppointment> {
 
   List<dynamic> clients = [];
   void fetchClients() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-all-approved-doctors';
+    const url = 'https://latest-server.onrender.com/api/user/get-all-approved-doctors';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
@@ -291,7 +291,7 @@ class _MyAppointmentState extends State<MyAppointment> {
 
   List<dynamic> appointments = [];
   void fetchAppointments() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-approved-appointments';
+    const url = 'https://latest-server.onrender.com/api/user/get-approved-appointments';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
@@ -308,7 +308,7 @@ class _MyAppointmentState extends State<MyAppointment> {
   }
   List<dynamic> pendingAppointments = [];
   void fetchPendingAppointments() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-pending-appointments';
+    const url = 'https://latest-server.onrender.com/api/user/get-pending-appointments';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;

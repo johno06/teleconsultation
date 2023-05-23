@@ -66,7 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       };
       //String body = json.encode(data);
       http.Response response = await http.post(
-          Uri.parse('https://newserverobgyn.herokuapp.com/api/user/register'), headers: {
+          Uri.parse('https://latest-server.onrender.com/api/user/register'), headers: {
         'Content-Type': 'application/json; charset=utf-8'
       },
           body: json.encode(data)

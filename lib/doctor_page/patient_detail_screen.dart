@@ -293,7 +293,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   List<dynamic> appointmentRecord = [];
   void fetchRecord() async {
-    String url = 'https://newserverobgyn.herokuapp.com/api/user/getByIdPatient/${widget.patientId}';
+    String url = 'https://latest-server.onrender.com/api/user/getByIdPatient/${widget.patientId}';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;
@@ -373,7 +373,7 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
 
   List<dynamic> appointments = [];
   void fetchAppointments() async {
-    const url = 'https://newserverobgyn.herokuapp.com/api/user/get-approved-appointments';
+    const url = 'https://latest-server.onrender.com/api/user/get-approved-appointments';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final body = response.body;

@@ -77,7 +77,7 @@ class UserFetch {
     surname: json["surname"] ?? "",
     birthdate: json["birthdate"] ?? "",
     address: json["address"] ?? "",
-    phone: json["phoneNumber"] ?? "",
+    phone: json["phone"] ?? "",
     // gender: json["gender"] ?? "",
     isDoctor: json["isDoctor"] ?? "",
     // emailVerificationToken: json["emailVerificationToken"] ?? "",

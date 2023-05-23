@@ -369,6 +369,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       contactNumber = loginData.getString('phone')!;
       birthday = loginData.getString('birthdate')!;
       homeAddress = loginData.getString('address')!;
+      print("$contactNumber + $fName");
     });
   }
 

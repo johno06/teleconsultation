@@ -359,7 +359,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           "_id": userId,
           "name": name,
           "surname": surname,
-          "phoneNumber": phone,
+          "phone": phone,
           "email": email,
           "verified": verified,
           "isDoctor": isDoctor,
@@ -377,7 +377,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         }
       };
       http.Response response = await http.post(
-          Uri.parse('https://newserverobgyn.herokuapp.com/api/user/bookAppointment'), headers: {
+          Uri.parse('https://latest-server.onrender.com/api/user/bookAppointment'), headers: {
         'Content-Type': 'application/json; charset=utf-8'
       },
           body: json.encode(data)

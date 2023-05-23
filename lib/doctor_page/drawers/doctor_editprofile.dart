@@ -160,7 +160,7 @@ class _DoctorEditProfileState extends State<DoctorEditProfile> {
 
     String bodyDoc = json.encode(data);
     http.Response responseDoc = await http.patch(
-      Uri.parse('https://newserverobgyn.herokuapp.com/api/doctor/updateDoctorProfile/$doctorId'),
+      Uri.parse('https://latest-server.onrender.com/api/doctor/updateDoctorProfile/$doctorId'),
       headers: {"Content-Type": "application/json"},
       body: bodyDoc,
     );

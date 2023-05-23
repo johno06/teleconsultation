@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
     };
     String body = json.encode(data);
     http.Response response = await http.patch(
-      Uri.parse('https://newserverobgyn.herokuapp.com/api/user/checkDevice/$id'),
+      Uri.parse('https://latest-server.onrender.com/api/user/checkDevice/$id'),
       headers: {"Content-Type": "application/json"},
       body: body,
     );
@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
     };
     String body = json.encode(data);
     http.Response response = await http.patch(
-      Uri.parse('https://newserverobgyn.herokuapp.com/api/doctor/checkDevice/$id'),
+      Uri.parse('https://latest-server.onrender.com/api/doctor/checkDevice/$id'),
       headers: {"Content-Type": "application/json"},
       body: body,
     );
@@ -182,13 +182,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
   Future login() async {
-    var link = 'https://newserverobgyn.herokuapp.com/api/utility/login';
+    var link = 'https://latest-server.onrender.com/api/utility/login';
     Map data2 = {
       'email': email,
       'password': password
     };
     var body2 = json.encode(data2);
-    var res = await http.post(Uri.parse("https://newserverobgyn.herokuapp.com/api/utility/login"),
+    var res = await http.post(Uri.parse("https://latest-server.onrender.com/api/utility/login"),
         // headers: <String, String>{
         //   'Context-Type': 'application/json;charSet=UTF-8'
         // },
@@ -221,6 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
       loginData.setBool('isDoctor', userval.isDoctor);
       if(userval.isDoctor == false) {
         loginData.setBool('login' ,true);
+        print("szojdfasojdoas ${userval.phone}");
         update(userval.id);
         loginData.setString('_id',userval.id);
         loginData.setString('email', userval.email);
@@ -268,12 +269,12 @@ class _LoginScreenState extends State<LoginScreen> {
         loginData.setString('_id',userval.id);
         // fetchDoctorCollection(userval.id);
         //
-        const url = 'https://newserverobgyn.herokuapp.com/api/doctor/get-doctor-info-by-its-id';
+        const url = 'https://latest-server.onrender.com/api/doctor/get-doctor-info-by-its-id';
         Map data2 = {
           'userId': userval.id
         };
         var body2 = json.encode(data2);
-        var res = await http.post(Uri.parse("https://newserverobgyn.herokuapp.com/api/doctor/get-doctor-info-by-its-id"),
+        var res = await http.post(Uri.parse("https://latest-server.onrender.com/api/doctor/get-doctor-info-by-its-id"),
             headers: {"Content-Type": "application/json"},
             body: body2);
 
