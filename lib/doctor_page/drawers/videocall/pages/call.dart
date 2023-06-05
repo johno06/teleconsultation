@@ -16,7 +16,8 @@ class CallPage extends StatefulWidget {
   final ClientRole role;
 
   /// Creates a call page with given channel name.
-  const CallPage({Key? key, required this.channelName, required this.role}) : super(key: key);
+  const CallPage({Key? key, required this.channelName, required this.role})
+      : super(key: key);
 
   @override
   _CallPageState createState() => _CallPageState();
@@ -29,7 +30,8 @@ class _CallPageState extends State<CallPage> {
   late RtcEngine _engine;
   bool recorded = false;
   SharedPreferences? videocallToken;
-
+  bool isCameraEnabled = true;
+  Map<int, bool> _remoteVideoStates = {};
 
   @override
   void dispose() {
@@ -54,14 +56,13 @@ class _CallPageState extends State<CallPage> {
   }
 
   String? token;
-  void initial() async{
+  void initial() async {
     videocallToken = await SharedPreferences.getInstance();
     setState(() {
       token = videocallToken?.getString('rtcToken')!;
-      print(token);
+      print("$token IAAAAAAAAAAAAAAAAADJK");
     });
   }
-
 
   Future<void> initialize() async {
     if (appId.isEmpty) {
@@ -92,49 +93,76 @@ class _CallPageState extends State<CallPage> {
 
   /// Add agora event handlers
   void _addAgoraEventHandlers() {
-    _engine.setEventHandler(RtcEngineEventHandler(error: (code) {
-      setState(() {
-        final info = 'onError: $code';
-        _infoStrings.add(info);
-      });
-    }, joinChannelSuccess: (channel, uid, elapsed) {
-      setState(() {
-        final info = 'onJoinChannel: $channel, uid: $uid';
-        _infoStrings.add(info);
-      });
-    }, leaveChannel: (stats) {
-      setState(() {
-        _infoStrings.add('onLeaveChannel');
-        _users.clear();
-      });
-    }, userJoined: (uid, elapsed) {
-      setState(() {
-        final info = 'userJoined: $uid';
-        _infoStrings.add(info);
-        _users.add(uid);
-      });
-    }, userOffline: (uid, elapsed) {
-      setState(() {
-        final info = 'userOffline: $uid';
-        _infoStrings.add(info);
-        _users.remove(uid);
-      });
-    }, firstRemoteVideoFrame: (uid, width, height, elapsed) {
-      setState(() {
-        final info = 'firstRemoteVideo: $uid ${width}x $height';
-        _infoStrings.add(info);
-      });
-    }));
+    _engine.setEventHandler(RtcEngineEventHandler(
+      error: (code) {
+        setState(() {
+          final info = 'onError: $code';
+          _infoStrings.add(info);
+        });
+      },
+      joinChannelSuccess: (channel, uid, elapsed) {
+        setState(() {
+          final info = 'onJoinChannel: $channel, uid: $uid';
+          _infoStrings.add(info);
+        });
+      },
+      leaveChannel: (stats) {
+        setState(() {
+          _infoStrings.add('onLeaveChannel');
+          _users.clear();
+        });
+      },
+      userJoined: (uid, elapsed) {
+        _addRemoteVideo(uid);
+        setState(() {
+          final info = 'userJoined: $uid';
+          _infoStrings.add(info);
+          _users.add(uid);
+        });
+      },
+      userOffline: (uid, elapsed) {
+        _removeRemoteVideo(uid);
+        setState(() {
+          final info = 'userOffline: $uid';
+          _infoStrings.add(info);
+          _users.remove(uid);
+        });
+      },
+      firstRemoteVideoFrame: (uid, width, height, elapsed) {
+        setState(() {
+          final info = 'firstRemoteVideo: $uid ${width}x $height';
+          _infoStrings.add(info);
+        });
+      },
+    ));
+  }
+
+  void _addRemoteVideo(int uid) {
+    setState(() {
+      _remoteVideoStates[uid] = true;
+    });
+  }
+
+  void _removeRemoteVideo(int uid) {
+    setState(() {
+      _remoteVideoStates.remove(uid);
+    });
   }
 
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
-    if (widget.role == ClientRole.Broadcaster) {
+    if (widget.role == ClientRole.Broadcaster && isCameraEnabled) {
       list.add(RtcLocalView.SurfaceView());
     }
-    _users.forEach((int uid) => list.add(
-        RtcRemoteView.SurfaceView(channelId: widget.channelName, uid: uid)));
+    _remoteVideoStates.forEach((uid, active) {
+      if (active) {
+        list.add(RtcRemoteView.SurfaceView(
+          channelId: widget.channelName,
+          uid: uid,
+        ));
+      }
+    });
     return list;
   }
 
@@ -160,32 +188,32 @@ class _CallPageState extends State<CallPage> {
       case 1:
         return Container(
             child: Column(
-          children: <Widget>[_videoView(views[0])],
-        ));
+              children: <Widget>[_videoView(views[0])],
+            ));
       case 2:
         return Container(
             child: Column(
-          children: <Widget>[
-            _expandedVideoRow([views[0]]),
-            _expandedVideoRow([views[1]])
-          ],
-        ));
+              children: <Widget>[
+                _expandedVideoRow([views[0]]),
+                _expandedVideoRow([views[1]])
+              ],
+            ));
       case 3:
         return Container(
             child: Column(
-          children: <Widget>[
-            _expandedVideoRow(views.sublist(0, 2)),
-            _expandedVideoRow(views.sublist(2, 3))
-          ],
-        ));
+              children: <Widget>[
+                _expandedVideoRow(views.sublist(0, 2)),
+                _expandedVideoRow(views.sublist(2, 3))
+              ],
+            ));
       case 4:
         return Container(
             child: Column(
-          children: <Widget>[
-            _expandedVideoRow(views.sublist(0, 2)),
-            _expandedVideoRow(views.sublist(2, 4))
-          ],
-        ));
+              children: <Widget>[
+                _expandedVideoRow(views.sublist(0, 2)),
+                _expandedVideoRow(views.sublist(2, 4))
+              ],
+            ));
       default:
     }
     return Container();
@@ -235,6 +263,18 @@ class _CallPageState extends State<CallPage> {
             elevation: 2.0,
             fillColor: Colors.white,
             padding: const EdgeInsets.all(12.0),
+          ),
+          RawMaterialButton(
+            onPressed: onCameraTogglePressed,
+            child: Icon(
+              isCameraEnabled ? Icons.camera : Icons.camera,
+              color: Colors.blueAccent,
+              size: 20.0,
+            ),
+            shape: CircleBorder(),
+            elevation: 2.0,
+            fillColor: Colors.white,
+            padding: const EdgeInsets.all(12.0),
           )
         ],
       ),
@@ -266,22 +306,22 @@ class _CallPageState extends State<CallPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Flexible(
-                      // child: Container(
-                      //   padding: const EdgeInsets.symmetric(
-                      //     vertical: 2,
-                      //     horizontal: 5,
-                      //   ),
-                      //   decoration: BoxDecoration(
-                      //     color: Colors.yellowAccent,
-                      //     borderRadius: BorderRadius.circular(5),
-                      //   ),
-                      //   child: Text(
-                      //     _infoStrings[index],
-                      //     style: TextStyle(color: Colors.blueGrey),
-                      //   ),
-                      // ),
-                    // )
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 2,
+                          horizontal: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.yellowAccent,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Text(
+                          _infoStrings[index],
+                          style: TextStyle(color: Colors.blueGrey),
+                        ),
+                      ),
+                    )
                   ],
                 ),
               );
@@ -303,41 +343,33 @@ class _CallPageState extends State<CallPage> {
     _engine.muteLocalAudioStream(muted);
   }
 
-  Future<void> _onToggleRecord() async {
-    // final bool start = await FlutterScreenRecording.startRecordScreenAndAudio("try");
-    setState(() {
-      recorded = !recorded;
-      // if(recorded == false) {
-      //   FlutterScreenRecording.stopRecordScreen;
-      // }
-    });
-    // return start;
-    // _engine.muteLocalAudioStream(muted);
-  }
-  // static Future<String> get stopRecordScreen async {
-  //   final String path = await FlutterScreenRecordingPlatform.instance.stopRecordScreen;
-  //   if (!kIsWeb && Platform.isAndroid) {
-  //     FlutterForegroundTask.stopService();
-  //   }
-  //   return path;
-  // }
-
   void _onSwitchCamera() {
     _engine.switchCamera();
+  }
+
+  void toggleCamera(bool enableCamera) {
+    _engine.enableLocalVideo(enableCamera);
+  }
+
+  void onCameraTogglePressed() {
+    setState(() {
+      isCameraEnabled = !isCameraEnabled;
+    });
+    toggleCamera(isCameraEnabled);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Agora Flutter QuickStart'),
+        title: Text('Agora Flutter Quic kStart'),
       ),
       backgroundColor: Colors.black,
       body: Center(
         child: Stack(
           children: <Widget>[
             _viewRows(),
-            _panel(),
+            // _panel(),
             _toolbar(),
           ],
         ),

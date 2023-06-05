@@ -57,7 +57,7 @@ class _HistoryScreenState2 extends State<HistoryScreen2> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: backgroundColor,
-        body: appointments.isEmpty
+        body: appointmentsById.isEmpty
             ? Center(
             child: SingleChildScrollView(
                 child: NoTranscationMessage(
@@ -66,9 +66,9 @@ class _HistoryScreenState2 extends State<HistoryScreen2> {
                   "Book appointment now.",
                 )))
             : ListView.builder(
-            itemCount: appointments.length,
+            itemCount: appointmentsById.length,
             itemBuilder: (BuildContext context, int index) {
-              final appointment = appointments[index];
+              final appointment = appointmentsById[index];
               final userId = appointment['userId'];
               print(userId);
               if(userId == user_id){
@@ -142,8 +142,9 @@ class _HistoryScreenState2 extends State<HistoryScreen2> {
             }));
   }
 
-
   List<dynamic> appointments = [];
+  List<dynamic> appointmentsById = [];
+  String status ="absent";
   void fetchAppointments() async {
     const url = 'https://latest-server.onrender.com/api/user/get-absent-appointments';
     final uri = Uri.parse(url);
@@ -158,6 +159,15 @@ class _HistoryScreenState2 extends State<HistoryScreen2> {
     setState(() {
       appointments = json['data'];
     });
+
+    for(int i=0; i<appointments.length; i++){
+      final client = appointments[i];
+      if(status == client['status'] && user_id == client['userId']){
+        // print("yes");
+        appointmentsById.add(client);
+      }
+    }
+
     // print('fetchclients completed');
   }
 

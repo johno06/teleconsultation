@@ -327,7 +327,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   Appointment newAppointment = Appointment('','','','');
 
-  Future bookAppointment() async {
+  Future bookAppointment(bookingDate) async {
       Map data = {
         "userId": newAppointment.userId,
         "doctorId": newAppointment.doctorId,
@@ -397,6 +397,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         );
       }else{
         //print("UnSuccessfull");
+        sendPushMessage('Patient: $name $surname has booked an appointment.\n'
+            'Date: $bookingDate, Time: $value', 'Teleconsultation', '$doctorDevice');
         Fluttertoast.showToast(
             msg: "Appointment booked successfully",
             toastLength: Toast.LENGTH_SHORT,
@@ -652,10 +654,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     newAppointment.date = bookingDate;
                     newAppointment.userId = userId!;
                     newAppointment.doctorId = doctorId!;
-                    bookAppointment();
+                    bookAppointment(bookingDate);
                     print(doctorDevice);
-                    sendPushMessage('Patient: $name $surname has booked an appointment.\n'
-                        'Date: $bookingDate, Time: $value', 'Teleconsultation', '$doctorDevice');
+                    // sendPushMessage('Patient: $name $surname has booked an appointment.\n'
+                    //     'Date: $bookingDate, Time: $value', 'Teleconsultation', '$doctorDevice');
                     // print(newAppointment.time);
                     // print(newAppointment.doctorId);
                     // print("Booking: "+newAppointment.date);

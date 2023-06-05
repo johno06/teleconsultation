@@ -55,6 +55,7 @@ dependencies:
   rxdart: ^0.27.4
   agora_rtc_engine: ^5.2.0
   agora_rtm: ^1.1.1
+  getstream: any
   lints: '>=1.0.1 <2.1.0'
 
   # The following adds the Cupertino Icons font to your application.

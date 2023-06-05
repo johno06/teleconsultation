@@ -57,7 +57,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: backgroundColor,
-        body: appointments.isEmpty
+        body: appointmentsById.isEmpty
             ? Center(
             child: SingleChildScrollView(
                 child: NoTranscationMessage(
@@ -66,9 +66,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   "",
                 )))
             : ListView.builder(
-            itemCount: appointments.length,
+            itemCount: appointmentsById.length,
             itemBuilder: (BuildContext context, int index) {
-              final appointment = appointments[index];
+              final appointment = appointmentsById[index];
               final userData = appointment['userInfo'];
               final doctorData = appointment['doctorInfo'];
               final appointmentDate = appointment['date'];
@@ -140,6 +140,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
 
   List<dynamic> appointments = [];
+  List<dynamic> appointmentsById = [];
+  String status ="completed";
   void fetchAppointments() async {
     const url = 'https://latest-server.onrender.com/api/user/get-completed-appointments';
     final uri = Uri.parse(url);
@@ -154,6 +156,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
     setState(() {
       appointments = json['data'];
     });
+
+
+    for(int i=0; i<appointments.length; i++){
+      final client = appointments[i];
+      if(status == client['status']){
+        // print("yes");
+        appointmentsById.add(client);
+      }
+    }
+
+
     // print('fetchclients completed');
   }
 
