@@ -416,12 +416,12 @@ class _PendingDetailScreenState extends State<PendingDetailScreen> {
                     if(update == "rejected"){
                       updateAppointment(context, widget.appointmentId);
                       print("this is the $deviceId");
-                      sendPushMessage('Dr: Marilyn Fuentes rejected your appointment Date:${widget.bookingDate}(${widget.bookingToday}) Time: ${widget.time}', 'Teleconsultation', '${widget.patientDevice}');
+                      sendPushMessage('Dr: Marilyn Fuentes canceled your appointment Date:${widget.bookingDate}(${widget.bookingToday}) Time: ${widget.time}', 'Teleconsultation', '${widget.patientDevice}');
                     }
 
                     // print(update);
                   },
-                  child: const Text("Reject")),
+                  child: const Text("Cancel")),
             ),
             SizedBox(width: size.width * 0.025),
             Expanded(

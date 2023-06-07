@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 
 import '../../home_page/components/schedule_card.dart';
 import '../../user.dart';
+import '../components/patient_appointment.dart';
 import '../components/patient_card.dart';
 
 class DoctorHomeScreen extends StatefulWidget {
@@ -234,9 +235,11 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
       address = loginData.getString('address');
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      fetchPatients();
-      // fetchAppointments();
+      // fetchPatients();
+      fetchAppointments();
+      fetchPendingAppointments();
     });
+
   }
 
   @override
@@ -272,7 +275,7 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30),
                   child: Text(
-                    'Patients',
+                    'Pending Appointments',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: kTitleTextColor,
@@ -283,7 +286,22 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                buildPatients(),
+                buildPendingAppointmentList(),
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Text(
+                    'Accepted Appointments',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: kTitleTextColor,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                buildAppointmentList(),
                 // const SizedBox(
                 //   height: 20,
                 // ),
@@ -409,85 +427,85 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
   //   print('fetchclients completed');
   // }
 
-  buildPatients() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 30,
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Scrollbar(
-              child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: ScrollPhysics(),
-                  itemCount: patients.length,
-                  itemBuilder: (context, index) {
-                    final patient = patients[index];
-                    // final stylist_id = client['stylist_id'];
-                    // if(stylist_id == id){
-                    final patientId = patient['_id'];
-                    final patientName = patient['name'];
-                    final patientSurname = patient['surname'];
-                    final patientEmail = patient['email'];
-                    final patientPhone = patient['phone'];
-                    final patientBirthdate = patient['birthdate'];
-                    final patientGender = "Female";
-                    final patientAddress = patient['address'];
-                    final patientDevice = patient['devices'][0];
-                    patientData?.setString('patientDevice', patientDevice);
-                    patientData?.setString('patientId', patientId);
-                    patientData?.setString('patientName', patientName);
-                    patientData?.setString('patientSurname', patientSurname);
-                    patientData?.setString('patientEmail', patientEmail);
-                    patientData?.setString('patientPhone', patientPhone);
-                    patientData?.setString('patientBirthdate', patientBirthdate);
-                    patientData?.setString('patientGender', patientGender);
-                    patientData?.setString('patientAddress', patientAddress);
-                    return PatientCard(
-                      "$patientName $patientSurname",
-                       patientPhone,
-                       patientEmail,
-                       patientBirthdate,
-                       patientGender,
-                       patientAddress,
-                      patientId,
-                      'assets/images/profile.png',
-                      kBlueColor,
-                    );
-                    // }else{
-                    //   return Container();
-                    // }
-                  },
-            separatorBuilder: (BuildContext context, int index) => const Divider(),
-              ),
-            ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
-          ],
-        ),
-      ),
-    );
-  }
-
-
-  List<dynamic> patients = [];
-  void fetchPatients() async {
-    const url = 'https://latest-server.onrender.com/api/user/get-all-verified-patients';
-    final uri = Uri.parse(url);
-    final response = await http.get(uri);
-    final body = response.body;
-    final json = jsonDecode(body);
-
-    patientData = await SharedPreferences.getInstance();
-
-    // print(json['data']);
-    setState(() {
-      patients = json['data'];
-    });
-    print('fetch patients completed');
-  }
+  // buildPatients() {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(
+  //       horizontal: 30,
+  //     ),
+  //     child: SingleChildScrollView(
+  //       child: Column(
+  //         children: <Widget>[
+  //           Scrollbar(
+  //             child: ListView.separated(
+  //                 shrinkWrap: true,
+  //                 physics: ScrollPhysics(),
+  //                 itemCount: patients.length,
+  //                 itemBuilder: (context, index) {
+  //                   final patient = patients[index];
+  //                   // final stylist_id = client['stylist_id'];
+  //                   // if(stylist_id == id){
+  //                   final patientId = patient['_id'];
+  //                   final patientName = patient['name'];
+  //                   final patientSurname = patient['surname'];
+  //                   final patientEmail = patient['email'];
+  //                   final patientPhone = patient['phone'];
+  //                   final patientBirthdate = patient['birthdate'];
+  //                   final patientGender = "Female";
+  //                   final patientAddress = patient['address'];
+  //                   final patientDevice = patient['devices'][0];
+  //                   patientData?.setString('patientDevice', patientDevice);
+  //                   patientData?.setString('patientId', patientId);
+  //                   patientData?.setString('patientName', patientName);
+  //                   patientData?.setString('patientSurname', patientSurname);
+  //                   patientData?.setString('patientEmail', patientEmail);
+  //                   patientData?.setString('patientPhone', patientPhone);
+  //                   patientData?.setString('patientBirthdate', patientBirthdate);
+  //                   patientData?.setString('patientGender', patientGender);
+  //                   patientData?.setString('patientAddress', patientAddress);
+  //                   return PatientCard(
+  //                     "$patientName $patientSurname",
+  //                      patientPhone,
+  //                      patientEmail,
+  //                      patientBirthdate,
+  //                      patientGender,
+  //                      patientAddress,
+  //                     patientId,
+  //                     'assets/images/profile.png',
+  //                     kBlueColor,
+  //                   );
+  //                   // }else{
+  //                   //   return Container();
+  //                   // }
+  //                 },
+  //           separatorBuilder: (BuildContext context, int index) => const Divider(),
+  //             ),
+  //           ),
+  //           // const SizedBox(
+  //           //   height: 20,
+  //           // ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
+  //
+  //
+  // List<dynamic> patients = [];
+  // void fetchPatients() async {
+  //   const url = 'https://latest-server.onrender.com/api/user/get-all-verified-patients';
+  //   final uri = Uri.parse(url);
+  //   final response = await http.get(uri);
+  //   final body = response.body;
+  //   final json = jsonDecode(body);
+  //
+  //   patientData = await SharedPreferences.getInstance();
+  //
+  //   // print(json['data']);
+  //   setState(() {
+  //     patients = json['data'];
+  //   });
+  //   print('fetch patients completed');
+  // }
 
   // buildPendingAppointmentList() {
   //   return Padding(
@@ -617,4 +635,185 @@ class _DoctorHomeScreenState extends State<DoctorHomeScreen> {
       ),
     );
   }
+
+
+  List<dynamic> pendingAppointments = [];
+  void fetchPendingAppointments() async {
+    const url = 'https://latest-server.onrender.com/api/user/get-pending-appointments';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+
+    appointmentData = await SharedPreferences.getInstance();
+    deviceOfPatient = await SharedPreferences.getInstance();
+    // clientData = await SharedPreferences.getInstance();
+
+    print(json['data']);
+    setState(() {
+      pendingAppointments = json['data'];
+    });
+    print('fetchclients completed');
+  }
+
+  buildPendingAppointmentList() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: pendingAppointments.length,
+                itemBuilder: (context, index) {
+                  final appointment = pendingAppointments[index];
+                  final doctorData = appointment['doctorInfo'];
+                  final consultationType = appointment['consultationType'];
+                  doctorVal = DoctorFetch.fromJson(doctorData);
+                  if(user_id == doctorVal.userId){
+                    final appointmentId = appointment['_id'];
+                    final userData = appointment['userInfo'];
+                    userval = UserFetch.fromJson(userData);
+                    final date = appointment['date'];
+                    final time = appointment['time'];
+                    final parseDate = DateTime.parse(date);
+                    // final parseTime = DateTime.parse(time);
+                    final String bookingToday = todayFormat.format(parseDate);
+                    final String bookingMonth = monthFormat.format(parseDate);
+                    final String bookingDay = dayFormat.format(parseDate);
+
+                    final patientName = userval.name;
+                    final patientSurname = userval.surname;
+                    final patientEmail = userval.email;
+                    final patientPhone = userval.phone;
+                    final patientDevice = userval.devices[0];
+                    deviceOfPatient?.setString('deviceOfPatient', patientDevice);
+                    return PatientScheduleCard(
+                      // 'Consultation',
+                      patientName, patientSurname, patientPhone, patientEmail,
+                      bookingToday, time,
+                      date, bookingDay, bookingMonth, patientDevice,appointmentId, consultationType,
+                      kBlueColor,
+                    );
+                  }else{
+                    return Container();
+                  }
+                },
+                separatorBuilder: (BuildContext context, int index) => const Divider(),
+              ),
+            ),
+            // ScheduleCard(
+            //   'Consultation',
+            //   'Sunday . 9am - 11am',
+            //   '12',
+            //   'Jan',
+            //   kBlueColor,
+            // ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
+
+
+
+
+  List<dynamic> appointments = [];
+  void fetchAppointments() async {
+    const url = 'https://latest-server.onrender.com/api/user/get-approved-appointments';
+    final uri = Uri.parse(url);
+    final response = await http.get(uri);
+    final body = response.body;
+    final json = jsonDecode(body);
+
+    // appointmentData = await SharedPreferences.getInstance();
+    // clientData = await SharedPreferences.getInstance();
+    deviceOfPatient = await SharedPreferences.getInstance();
+
+    print(json['data']);
+    setState(() {
+      appointments = json['data'];
+    });
+    print('fetchclients completed');
+  }
+
+  buildAppointmentList() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30,
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Scrollbar(
+              child: ListView.separated(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: appointments.length,
+                itemBuilder: (context, index) {
+                  final appointment = appointments[index];
+                  final userData = appointment['userInfo'];
+                  userval = UserFetch.fromJson(userData);
+                  final doctorData = appointment['doctorInfo'];
+                  final consultationType = appointment['consultationType'];
+                  doctorVal = DoctorFetch.fromJson(doctorData);
+                  // if(patientId == userval.id){
+                  if(user_id == doctorVal.userId){
+                    final appointmentId = appointment['_id'];
+                    final date = appointment['date'];
+                    final time = appointment['time'];
+                    final parseDate = DateTime.parse(date);
+                    // final parseTime = DateTime.parse(time);
+                    final String bookingToday = todayFormat.format(parseDate);
+                    final String bookingMonth = monthFormat.format(parseDate);
+                    final String bookingDay = dayFormat.format(parseDate);
+
+                    final patientName = userval.name;
+                    final patientSurname = userval.surname;
+                    final patientEmail = userval.email;
+                    final patientPhone = userval.phone;
+                    final patientDevice = userval.devices[0];
+                    // print("this is the patient: $patientDevice");
+                    deviceOfPatient?.setString('deviceToken', patientDevice);
+                    return PatientAppointmentScheduleCard(
+                      // 'Consultation',
+                      patientName, patientSurname, patientPhone, patientEmail,
+                      bookingToday, time,
+                      date, bookingDay, bookingMonth, patientDevice ,appointmentId, consultationType,
+                      kBlueColor,
+                    );
+                  }else{
+                    // throw contactNumber;
+                    return Container();
+                  }
+                },
+                separatorBuilder: (BuildContext context, int index) => const Divider(),
+              ),
+            ),
+            // ScheduleCard(
+            //   'Consultation',
+            //   'Sunday . 9am - 11am',
+            //   '12',
+            //   'Jan',
+            //   kBlueColor,
+            // ),
+            const SizedBox(
+              height: 20,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 }

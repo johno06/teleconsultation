@@ -232,8 +232,8 @@ class _HomePageState extends State<HomePage> {
          const Divider(),
          menuItem(7, "Privacy policy", Icons.privacy_tip_outlined,
              currentPage == DrawerSections.privacy_policy ? true : false),
-         menuItem(8, "Send feedback", Icons.feedback_outlined,
-             currentPage == DrawerSections.send_feedback ? true : false),
+         // menuItem(8, "Send feedback", Icons.feedback_outlined,
+         //     currentPage == DrawerSections.send_feedback ? true : false),
         ],
       ),
     );

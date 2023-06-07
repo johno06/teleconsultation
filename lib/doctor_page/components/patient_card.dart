@@ -35,7 +35,7 @@ class _PatientCardState extends State<PatientCard> {
         );
       },
       child: Container(
-        height: 190,
+        height: 120,
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: widget._bgColor.withOpacity(0.1),
@@ -57,7 +57,12 @@ class _PatientCardState extends State<PatientCard> {
                 ),
               ),
               subtitle: Text(
-                "Contact: ${widget.patientPhone} \nEmail: ${widget.patientEmail} \nBirthdate:  ${widget.patientBirthdate} \nGender: ${widget.patientGender} \nAddress: ${widget.patientAddress}",
+                "Contact: ${widget.patientPhone} \n"
+                    "Email: ${widget.patientEmail} \n"
+                    // "Birthdate:  ${widget.patientBirthdate} \n"
+                    // "Gender: ${widget.patientGender} \n"
+                    // "Address: ${widget.patientAddress}"
+                ,
                 style: TextStyle(
                   fontSize: 16,
                   color: kTitleTextColor.withOpacity(0.7),

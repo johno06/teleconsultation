@@ -55,7 +55,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen>
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.clear),
-            label: 'REJECTED',
+            label: 'CANCELED',
           ),
         ],
         currentIndex: _selectedIndex,

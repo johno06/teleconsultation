@@ -61,7 +61,7 @@ class _AbsentAppointmentState extends State<AbsentAppointment> {
             ? Center(
             child: SingleChildScrollView(
                 child: NoTranscationMessage(
-                  messageTitle: "No Rejected Appointments.",
+                  messageTitle: "No Absent Appointments.",
                   messageDesc:
                   "",
                 )))

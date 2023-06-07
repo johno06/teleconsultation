@@ -61,7 +61,7 @@ class _HistoryScreenState1 extends State<HistoryScreen1> {
             ? Center(
             child: SingleChildScrollView(
                 child: NoTranscationMessage(
-                  messageTitle: "No Rejected Appointments.",
+                  messageTitle: "No Canceled Appointments.",
                   messageDesc:
                   "Book appointment now.",
                 )))
@@ -127,7 +127,7 @@ class _HistoryScreenState1 extends State<HistoryScreen1> {
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(color: Colors.red)),
                             child: Text(
-                              "REJECTED",
+                              "CANCELED",
                               style: normalTextStyle.copyWith(
                                   fontWeight: FontWeight.w500,
                                   color: Colors.red),
